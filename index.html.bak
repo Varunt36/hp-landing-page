@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YDS Germany — Na me rahu na meri arzoo rahe | August 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* === SECTION 1: Global Styles + Reset === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #365288;
+      --blue-dark: #253a61;
+      --orange:    #F37C3E;
+      --offwhite:  #F9F7F4;
+      --white:     #ffffff;
+      --text:      #212121;
+      --muted:     #666;
+      --radius:    10px;
+      --font:      'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      color: var(--text);
+      background: var(--offwhite);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn-primary { background: var(--orange); color: var(--white); }
+    .btn-outline { background: transparent; border: 2px solid var(--white); color: var(--white); }
+
+    /* === SECTION 2: Sticky Navigation Bar === */
+    #navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--blue);
+      padding: 14px 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo-text {
+      color: var(--white);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      font-weight: 500;
+      font-size: 15px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta { padding: 9px 22px; font-size: 14px; }
+
+    /* === SECTION 3: Hero Banner === */
+    #hero {
+      min-height: 520px;
+      background:
+        linear-gradient(to bottom, rgba(30,50,100,0.55) 0%, rgba(200,100,50,0.4) 100%),
+        linear-gradient(135deg, #365288 0%, #6a4c93 40%, #c0714a 100%);
+      display: flex;
+      align-items: center;
+    }
+    .hero-overlay { width: 100%; padding: 80px 0; }
+    .hero-content { text-align: center; color: var(--white); }
+    .hero-subtitle {
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 16px;
+    }
+    .hero-title {
+      font-size: clamp(32px, 6vw, 64px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .hero-dates {
+      font-size: 18px;
+      font-weight: 500;
+      opacity: 0.9;
+      margin-bottom: 36px;
+    }
+    .hero-btn { font-size: 17px; padding: 16px 40px; }
+
+    /* === SECTION 4: About the Event === */
+    #about {
+      background: var(--white);
+      padding: 80px 0;
+    }
+    .section-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--blue);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .about-text {
+      max-width: 680px;
+      margin: 0 auto 48px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+    }
+    .info-card {
+      background: var(--offwhite);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+      border-top: 4px solid var(--orange);
+    }
+    .info-icon { font-size: 28px; margin-bottom: 12px; }
+    .info-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+    .info-value { font-size: 18px; font-weight: 600; color: var(--blue); }
+
+    /* === SECTION 5: Venue & How to Reach === */
+    #venue {
+      background: var(--offwhite);
+      padding: 80px 0;
+    }
+    .venue-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-top: 40px;
+    }
+    @media (max-width: 700px) {
+      .venue-grid { grid-template-columns: 1fr; }
+    }
+    .venue-address, .travel-tips {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .venue-address h3, .travel-tips h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 12px;
+    }
+    .venue-address p { color: var(--muted); line-height: 1.8; }
+    .travel-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .travel-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: var(--muted); }
+    .travel-icon { flex-shrink: 0; font-size: 18px; }
+
+    /* === SECTION 6: FAQ === */
+    #faq {
+      background: var(--blue);
+      padding: 80px 0;
+    }
+    #faq .section-title { color: var(--white); }
+    .faq-list { margin-top: 40px; display: flex; flex-direction: column; gap: 12px; }
+    .faq-item { background: rgba(255,255,255,0.1); border-radius: var(--radius); overflow: hidden; }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--white);
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      padding: 20px 24px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .faq-arrow { transition: transform 0.3s; font-size: 12px; opacity: 0.7; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a { display: none; padding: 0 24px 20px; }
+    .faq-item.open .faq-a { display: block; }
+    .faq-a p { color: rgba(255,255,255,0.8); font-size: 15px; line-height: 1.7; }
+
+    /* === SECTION 7: Registration Section Shell + Progress Bar === */
+    #register {
+      background: var(--offwhite);
+      padding: 80px 0;
+    }
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 40px auto 40px;
+      max-width: 560px;
+    }
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ccc;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      transition: background 0.3s;
+    }
+    .progress-step.active .step-num,
+    .progress-step.done .step-num { background: var(--orange); }
+    .step-label { font-size: 11px; color: var(--muted); font-weight: 500; white-space: nowrap; }
+    .progress-line { flex: 1; height: 3px; background: #ccc; margin: 0 4px; margin-bottom: 20px; transition: background 0.3s; }
+    .progress-line.done { background: var(--orange); }
+    .form-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    /* === SECTION 8: Form Steps CSS === */
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+
+    .step-title { font-size: 22px; font-weight: 700; color: var(--blue); margin-bottom: 6px; }
+    .step-subtitle { color: var(--muted); font-size: 15px; margin-bottom: 28px; }
+
+    .field { margin-bottom: 20px; }
+    .field label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+    .req { color: red; }
+    .field input[type=text],
+    .field input[type=email],
+    .field input[type=tel],
+    .field input[type=date],
+    .field select {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 15px;
+      color: var(--blue);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--blue); }
+    .field-note { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .sub-label { font-size: 12px; color: var(--muted); display: block; margin-top: 4px; }
+    .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .radio-group { display: flex; gap: 24px; }
+    .radio-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 15px; }
+
+    .terms-box {
+      background: var(--offwhite);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-height: 260px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .terms-box h4 { color: var(--blue); font-size: 15px; margin: 16px 0 8px; }
+    .terms-box ul { padding-left: 18px; }
+    .terms-box li { margin-bottom: 6px; }
+    .checkbox-label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 15px; font-weight: 500; }
+    .checkbox-label input { margin-top: 3px; width: 17px; height: 17px; accent-color: var(--orange); }
+
+    .payment-summary {
+      background: var(--blue);
+      color: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+    .payment-row { display: flex; justify-content: space-between; font-size: 15px; padding: 6px 0; }
+    .payment-row.total { font-size: 18px; font-weight: 700; }
+    .payment-divider { height: 1px; background: rgba(255,255,255,0.2); margin: 10px 0; }
+    .cc-heading { font-size: 17px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+    .powered-stripe { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+    .card-number-field { position: relative; }
+    .card-icons { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 20px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .payment-notes { margin: 20px 0; padding-left: 18px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 10px; font-style: italic; }
+
+    .confirmation { text-align: center; padding: 20px 0; }
+    .confirm-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--orange); color: white;
+      font-size: 32px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .confirmation h3 { font-size: 26px; font-weight: 700; color: var(--blue); margin-bottom: 12px; }
+    .confirmation p { color: var(--muted); margin-bottom: 10px; }
+    .confirm-ref {
+      display: inline-block;
+      background: var(--offwhite);
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius);
+      padding: 10px 20px;
+      font-size: 15px;
+      margin: 14px 0;
+    }
+    .confirm-note { font-size: 14px; color: var(--muted); max-width: 420px; margin: 0 auto; }
+
+    .form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; }
+    .btn-ghost {
+      background: none;
+      border: 1.5px solid #ddd;
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* === SECTION 10: Footer === */
+    footer {
+      background: var(--blue-dark);
+      color: rgba(255,255,255,0.7);
+      padding: 40px 0;
+      text-align: center;
+    }
+    .footer-brand { font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+    .footer-text { font-size: 14px; margin-bottom: 6px; }
+    .footer-text a { color: var(--orange); }
+  </style>
+</head>
+<body>
+
+  <!-- === SECTION 2: Sticky Navigation Bar === -->
+  <nav id="navbar">
+    <div class="container nav-inner">
+      <div class="nav-logo">
+        <span class="nav-logo-text">YDS Germany</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#venue">Venue</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#register" class="btn btn-primary nav-cta">Register</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- === SECTION 3: Hero Banner === -->
+  <section id="hero">
+    <div class="hero-overlay">
+      <div class="container hero-content">
+        <p class="hero-subtitle">Yogi Divine Society Germany presents</p>
+        <h1 class="hero-title">Na me rahu na<br>meri arzoo rahe</h1>
+        <p class="hero-dates">August 16 – 18, 2026 &nbsp;·&nbsp; Berlin, Germany</p>
+        <a href="#register" class="btn btn-outline hero-btn">Register Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- === SECTION 4: About the Event === -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title">About the Event</h2>
+      <p class="about-text">
+        "Na me rahu na meri arzoo rahe" is a deeply spiritual gathering organised by Yogi Divine Society Germany,
+        bringing together the satsang family for three days of devotion, kirtan, and divine blessings.
+        This event is an opportunity to immerse ourselves in the presence of saints and strengthen our spiritual journey together.
+      </p>
+      <div class="info-cards">
+        <div class="info-card">
+          <div class="info-icon">📅</div>
+          <div class="info-label">Dates</div>
+          <div class="info-value">16 – 18 August 2026</div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">📍</div>
+          <div class="info-label">Location</div>
+          <div class="info-value">Berlin, Germany</div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">🙏</div>
+          <div class="info-label">Organised by</div>
+          <div class="info-value">YDS Germany</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === SECTION 5: Venue & How to Reach === -->
+  <section id="venue">
+    <div class="container">
+      <h2 class="section-title">Venue &amp; How to Reach</h2>
+      <div class="venue-grid">
+        <div class="venue-info">
+          <div class="venue-address">
+            <h3>Event Venue</h3>
+            <p>📍 Placeholder Venue Name<br>
+               Musterstraße 1, 10115 Berlin<br>
+               Germany</p>
+          </div>
+          <div class="travel-tips">
+            <h3>Getting There</h3>
+            <ul class="travel-list">
+              <li><span class="travel-icon">✈️</span> <strong>By Air:</strong> Berlin Brandenburg Airport (BER) — approx. 30 min by S-Bahn</li>
+              <li><span class="travel-icon">🚆</span> <strong>By Train:</strong> Berlin Hauptbahnhof — U-Bahn / S-Bahn connections available</li>
+              <li><span class="travel-icon">🚗</span> <strong>By Car:</strong> Parking available nearby. GPS: 52.5200° N, 13.4050° E</li>
+            </ul>
+          </div>
+        </div>
+        <div class="venue-map">
+          <iframe
+            src="https://www.openstreetmap.org/export/embed.html?bbox=13.35,52.50,13.45,52.54&layer=mapnik"
+            width="100%" height="320" style="border:0; border-radius:10px;"
+            loading="lazy" title="Venue Map">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === SECTION 6: FAQ === -->
+  <section id="faq">
+    <div class="container">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Who can attend this event? <span class="faq-arrow">▼</span></button>
+          <div class="faq-a"><p>This event is open to all members of the satsang family. Children must be accompanied by a parent or guardian who is registered.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Is accommodation provided? <span class="faq-arrow">▼</span></button>
+          <div class="faq-a"><p>Accommodation details will be shared with registered attendees via email. Please register early to secure your spot.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">What is the registration fee? <span class="faq-arrow">▼</span></button>
+          <div class="faq-a"><p>The registration fee per person will be displayed during the registration process. A small service fee applies for payment processing.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Can I cancel my registration? <span class="faq-arrow">▼</span></button>
+          <div class="faq-a"><p>Please contact the YDS Germany team to discuss cancellation and refund arrangements if your travel plans change.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">What language will the event be in? <span class="faq-arrow">▼</span></button>
+          <div class="faq-a"><p>The event will primarily be in Gujarati and Hindi, with some sessions in German and English.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === SECTION 7 + 8: Registration Section === -->
+  <section id="register">
+    <div class="container">
+      <h2 class="section-title" style="color:var(--blue)">Register for the Event</h2>
+      <p class="about-text">Fill in the details below to secure your spot.</p>
+
+      <div class="progress-bar">
+        <div class="progress-step active" data-step="1"><span class="step-num">1</span><span class="step-label">Group</span></div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="2"><span class="step-num">2</span><span class="step-label">Members</span></div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="3"><span class="step-num">3</span><span class="step-label">Terms</span></div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="4"><span class="step-num">4</span><span class="step-label">Payment</span></div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="5"><span class="step-num">✓</span><span class="step-label">Done</span></div>
+      </div>
+
+      <div class="form-card" id="form-container">
+
+        <!-- STEP 1: Group Info -->
+        <div id="step-1" class="form-step active">
+          <h3 class="step-title">Group Information</h3>
+          <div class="field">
+            <label>Your country of residence <span class="req">*</span></label>
+            <select id="country">
+              <option value="">Select country</option>
+              <option value="DE" selected>Germany</option>
+              <option value="AT">Austria</option>
+              <option value="CH">Switzerland</option>
+              <option value="UK">United Kingdom</option>
+              <option value="US">United States</option>
+              <option value="IN">India</option>
+              <option value="NZ">New Zealand</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Local karyakarta name</label>
+            <input type="text" id="karyakarta" placeholder="Enter name" />
+          </div>
+          <div class="field">
+            <label>How many family members are attending (including yourself)? <span class="req">*</span></label>
+            <select id="member-count">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+            <p class="field-note">NOTE: At least one member must be over the age of 18.</p>
+          </div>
+          <div class="form-nav">
+            <span></span>
+            <button class="btn btn-primary" onclick="goToStep(2)">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Member Details -->
+        <div id="step-2" class="form-step">
+          <h3 class="step-title">Member Details</h3>
+          <p class="step-subtitle" id="member-subtitle">Member 1 of 1</p>
+          <p class="field-note" id="member-contact-note" style="margin-bottom:16px">Contact details (email &amp; phone) are only required for the primary registrant.</p>
+          <div class="field">
+            <label>Name (as per passport) <span class="req">*</span></label>
+            <div class="name-grid">
+              <div><input type="text" id="first-name" placeholder="First name" /><span class="sub-label">First name</span></div>
+              <div><input type="text" id="middle-name" placeholder="Middle name" /><span class="sub-label">Middle name</span></div>
+            </div>
+            <input type="text" id="last-name" placeholder="Last name" style="margin-top:10px" /><span class="sub-label">Last name</span>
+          </div>
+          <div class="field">
+            <label>Gender <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="gender" value="male" checked /> Male</label>
+              <label class="radio-label"><input type="radio" name="gender" value="female" /> Female</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Date of birth <span class="req">*</span></label>
+            <input type="date" />
+          </div>
+          <div class="field" id="email-field">
+            <label for="member-email">Email <span class="req">*</span></label>
+            <input type="email" id="member-email" placeholder="your@email.com" />
+            <p class="field-note">NOTE: Please enter a valid personal email. All correspondence will be sent to this address.</p>
+          </div>
+          <div class="field" id="phone-field">
+            <label for="member-phone">Mobile number <span class="req">*</span></label>
+            <input type="tel" id="member-phone" placeholder="+49 123 456789" />
+          </div>
+          <div class="form-nav">
+            <button class="btn btn-ghost" onclick="prevMemberOrStep()">← Back</button>
+            <button class="btn btn-primary" onclick="nextMemberOrStep()">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Terms & Seva -->
+        <div id="step-3" class="form-step">
+          <h3 class="step-title">In the Spirit of Seva</h3>
+          <p class="step-subtitle">By registering for this event, you agree to the following:</p>
+          <div class="terms-box">
+            <h4>1. Participation &amp; Responsibility</h4>
+            <ul>
+              <li>All attendees voluntarily agree to participate in this event.</li>
+              <li>Participants under 18 must be registered by a parent or guardian who assumes full responsibility.</li>
+            </ul>
+            <h4>2. Health &amp; Safety</h4>
+            <ul>
+              <li>Please remain mindful of your surroundings and communicate any concerns to event volunteers.</li>
+              <li>The organising team will act in accordance with local health guidelines.</li>
+            </ul>
+            <h4>3. Photography &amp; Media</h4>
+            <ul>
+              <li>Photos and videos may be taken during the event and used for YDS Germany communications.</li>
+            </ul>
+            <h4>4. Code of Conduct</h4>
+            <ul>
+              <li>All attendees are expected to maintain the spiritual atmosphere of the event with respect and devotion.</li>
+            </ul>
+          </div>
+          <div class="field">
+            <label class="checkbox-label">
+              <input type="checkbox" id="agree-terms" />
+              I have read and agree to the above terms and conditions.
+            </label>
+          </div>
+          <div class="form-nav">
+            <button class="btn btn-ghost" onclick="goToStep(2)">← Back</button>
+            <button class="btn btn-primary" onclick="proceedFromTerms()">Next →</button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Payment -->
+        <div id="step-4" class="form-step">
+          <h3 class="step-title">Payment Summary</h3>
+          <div class="payment-summary">
+            <div id="member-rows"></div>
+            <div class="payment-divider"></div>
+            <div class="payment-row"><span>Base Total</span><span id="base-total">€50.00</span></div>
+            <div class="payment-row"><span>Service Fee (4%)</span><span id="service-fee">€2.00</span></div>
+            <div class="payment-divider"></div>
+            <div class="payment-row total"><span>Total</span><span id="grand-total">€52.00</span></div>
+          </div>
+          <h4 class="cc-heading">Credit Card Details</h4>
+          <p class="powered-stripe">Powered by Stripe</p>
+          <div class="field"><input type="text" placeholder="First Name" /></div>
+          <div class="field"><input type="text" placeholder="Last Name" /></div>
+          <div class="field card-number-field">
+            <input type="text" placeholder="1234 1234 1234 1234" />
+            <div class="card-icons">💳</div>
+          </div>
+          <div class="field-row">
+            <div class="field"><input type="text" placeholder="MM / YY" /></div>
+            <div class="field"><input type="text" placeholder="CVC" /></div>
+          </div>
+          <div class="field">
+            <select><option value="DE">Germany</option><option value="AT">Austria</option></select>
+          </div>
+          <ul class="payment-notes">
+            <li>If your travel plans are cancelled for any reason, please contact the registration team to discuss refund arrangements.</li>
+            <li>The final registration price includes a service fee, which covers processing and administrative costs.</li>
+            <li>All payments are securely processed through Stripe, ensuring a safe and reliable transaction.</li>
+          </ul>
+          <div class="form-nav">
+            <button class="btn btn-ghost" onclick="goToStep(3)">← Back</button>
+            <button class="btn btn-primary" onclick="goToStep(5)">Pay &amp; Register</button>
+          </div>
+        </div>
+
+        <!-- STEP 5: Confirmation -->
+        <div id="step-5" class="form-step">
+          <div class="confirmation">
+            <div class="confirm-icon">✓</div>
+            <h3>Registration Received!</h3>
+            <p>Thank you for registering for <strong>Na me rahu na meri arzoo rahe</strong>.</p>
+            <p>A confirmation email has been sent to your registered email address.</p>
+            <div class="confirm-ref">Reference: <strong>#YDS-2026-00123</strong></div>
+            <p class="confirm-note">Please keep this reference number for your records. The YDS Germany team will be in touch with further details closer to the event.</p>
+            <p style="margin-top:24px; color:var(--muted); font-size:14px">Jai Swaminarayan 🙏</p>
+          </div>
+        </div>
+
+      </div><!-- end .form-card -->
+    </div><!-- end .container -->
+  </section>
+
+  <!-- === SECTION 10: Footer === -->
+  <footer>
+    <div class="container footer-inner">
+      <p class="footer-brand">YDS Germany</p>
+      <p class="footer-text">© 2026 Yogi Divine Society Germany. All rights reserved.</p>
+      <p class="footer-text">Questions? Email: <a href="mailto:info@yds-germany.de">info@yds-germany.de</a></p>
+    </div>
+  </footer>
+
+  <script>
+    /* === FAQ Toggle === */
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      item.classList.toggle('open');
+    }
+
+    /* === Form Navigation === */
+    let currentStep = 1;
+    let currentMember = 1;
+    let totalMembers = 1;
+
+    const memberData = {};
+
+    function saveMemberData(memberIndex) {
+      memberData[memberIndex] = {
+        firstName: document.getElementById('first-name').value,
+        middleName: document.getElementById('middle-name').value,
+        lastName: document.getElementById('last-name').value,
+        gender: document.querySelector('input[name="gender"]:checked')?.value || 'male',
+        dob: document.querySelector('#step-2 input[type="date"]').value,
+        email: document.getElementById('member-email').value,
+        phone: document.getElementById('member-phone').value,
+      };
+    }
+
+    function restoreMemberData(memberIndex) {
+      const d = memberData[memberIndex] || {};
+      document.getElementById('first-name').value = d.firstName || '';
+      document.getElementById('middle-name').value = d.middleName || '';
+      document.getElementById('last-name').value = d.lastName || '';
+      const radio = document.querySelector(`input[name="gender"][value="${d.gender || 'male'}"]`);
+      if (radio) radio.checked = true;
+      document.querySelector('#step-2 input[type="date"]').value = d.dob || '';
+      document.getElementById('member-email').value = d.email || '';
+      document.getElementById('member-phone').value = d.phone || '';
+    }
+
+    function proceedFromTerms() {
+      if (!document.getElementById('agree-terms').checked) {
+        alert('Please agree to the terms and conditions to continue.');
+        return;
+      }
+      goToStep(4);
+    }
+
+    function updatePaymentSummary() {
+      const pricePerPerson = 50;
+      const memberRowsEl = document.getElementById('member-rows');
+      let rows = '';
+      for (let i = 1; i <= totalMembers; i++) {
+        const d = memberData[i] || {};
+        const name = [d.firstName, d.lastName].filter(Boolean).join(' ') || ('Member ' + i);
+        rows += `<div class="payment-row"><span>${name}</span><span>€${pricePerPerson.toFixed(2)}</span></div>`;
+      }
+      memberRowsEl.innerHTML = rows;
+      const base = pricePerPerson * totalMembers;
+      const fee = base * 0.04;
+      const total = base + fee;
+      document.getElementById('base-total').textContent = '€' + base.toFixed(2);
+      document.getElementById('service-fee').textContent = '€' + fee.toFixed(2);
+      document.getElementById('grand-total').textContent = '€' + total.toFixed(2);
+    }
+
+    function goToStep(step) {
+      if (step === 2 && currentStep === 1) {
+        totalMembers = parseInt(document.getElementById('member-count').value) || 1;
+        currentMember = 1;
+        updateMemberSubtitle();
+      }
+      if (step === 4) {
+        updatePaymentSummary();
+      }
+      document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step-' + step).classList.add('active');
+      currentStep = step;
+      updateProgressBar(step);
+      document.getElementById('register').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function updateProgressBar(step) {
+      document.querySelectorAll('.progress-step').forEach((el, i) => {
+        el.classList.remove('active', 'done');
+        if (i + 1 < step) el.classList.add('done');
+        if (i + 1 === step) el.classList.add('active');
+      });
+      document.querySelectorAll('.progress-line').forEach((el, i) => {
+        el.classList.toggle('done', i + 1 < step);
+      });
+    }
+
+    function updateMemberSubtitle() {
+      document.getElementById('member-subtitle').textContent =
+        'Member ' + currentMember + ' of ' + totalMembers;
+      document.getElementById('phone-field').style.display = currentMember === 1 ? 'block' : 'none';
+    }
+
+    function nextMemberOrStep() {
+      saveMemberData(currentMember);
+      if (currentMember < totalMembers) {
+        currentMember++;
+        updateMemberSubtitle();
+        restoreMemberData(currentMember);
+        document.getElementById('register').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        goToStep(3);
+      }
+    }
+
+    function prevMemberOrStep() {
+      saveMemberData(currentMember);
+      if (currentMember > 1) {
+        currentMember--;
+        updateMemberSubtitle();
+        restoreMemberData(currentMember);
+      } else {
+        goToStep(1);
+      }
+    }
+  </script>
+
+</body>
+</html>
