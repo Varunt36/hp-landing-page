@@ -1,1 +1,11 @@
 /* Global styles — MUI CssBaseline handles resets */
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shimmer {
+  from { left: -100%; }
+  to   { left: 100%; }
+}
