@@ -37,7 +37,9 @@ export default function RegisterSection() {
           elevation={0}
           sx={registerStyles.paper}
         >
-          {stepComponents[currentStep]}
+          <Box key={currentStep} sx={registerStyles.stepWrapper}>
+            {stepComponents[currentStep]}
+          </Box>
         </Paper>
       </Container>
     </Box>
