@@ -125,6 +125,8 @@ export default function Step4Payment() {
           color="inherit"
           onClick={handlePay}
           disabled={loading}
+          aria-busy={loading}
+          aria-label={loading ? 'Processing payment, please wait' : undefined}
           sx={step4Styles.payButton}
         >
           {loading

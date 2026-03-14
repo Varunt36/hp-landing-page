@@ -13,12 +13,6 @@ export const progressStyles: Record<string, SxProps<Theme>> = {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // Label row beneath the circles
-  labelRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    mt: 1,
-  },
   // Connector line between circles
   connector: {
     flex: 1,

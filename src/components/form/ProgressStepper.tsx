@@ -6,13 +6,12 @@ import { Box, Typography } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import { useRegistrationStore } from '../../store/registrationStore'
 import { progressStyles } from './ProgressStepper.styles'
+import { PRIMARY, SECONDARY } from '../../theme/theme'
 
 const STEPS = ['Group', 'Members', 'Terms', 'Payment', 'Done']
 
-// Colors matching Boudoir Luxe theme
-const PRIMARY   = '#81688f'   // active step fill
-const SECONDARY = '#6ea096'   // complete step fill
-const MUTED     = '#c5b8cc'   // pending step border/color
+// Muted color for inactive step circles — intentionally dimmer than theme.MUTED
+const STEP_MUTED = '#c5b8cc'
 
 type CircleProps = { index: number; activeStep: number }
 
@@ -21,8 +20,8 @@ function StepCircle({ index, activeStep }: CircleProps) {
   const isActive   = index === activeStep
 
   const bg     = isComplete ? SECONDARY : isActive ? PRIMARY : 'transparent'
-  const border = isComplete || isActive ? 'none' : `2px solid ${MUTED}`
-  const color  = isComplete || isActive ? 'white' : MUTED
+  const border = isComplete || isActive ? 'none' : `2px solid ${STEP_MUTED}`
+  const color  = isComplete || isActive ? 'white' : STEP_MUTED
   const shadow = isActive ? `0 0 0 4px rgba(129,104,143,0.25)` : 'none'
 
   return (
@@ -57,42 +56,49 @@ export default function ProgressStepper() {
 
   return (
     <Box sx={progressStyles.wrapper}>
-      {/* Circle row with connectors */}
+      {/* Single row: each step is a column of [connector | circle | label], connectors fill space */}
       <Box sx={progressStyles.row}>
         {STEPS.map((label, i) => (
-          <Box key={label} sx={{ display: 'flex', alignItems: 'center', flex: i < STEPS.length - 1 ? 1 : 'none' }}>
-            <StepCircle index={i} activeStep={activeStep} />
+          <Box
+            key={label}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              flex: i < STEPS.length - 1 ? 1 : 'none',
+            }}
+          >
+            {/* Step column: circle above label */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <StepCircle index={i} activeStep={activeStep} />
+              <Typography
+                variant="caption"
+                sx={{
+                  mt: 0.5,
+                  textAlign: 'center',
+                  color: i === activeStep ? PRIMARY : STEP_MUTED,
+                  fontWeight: i === activeStep ? 700 : 400,
+                  display: { xs: i === activeStep ? 'block' : 'none', sm: 'block' },
+                  transition: 'color 300ms ease',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {label}
+              </Typography>
+            </Box>
+
+            {/* Connector to next step */}
             {i < STEPS.length - 1 && (
               <Box
                 sx={{
                   ...progressStyles.connector,
-                  background: i < activeStep ? SECONDARY : MUTED,
+                  background: i < activeStep ? SECONDARY : STEP_MUTED,
                   transition: 'background 300ms ease',
+                  alignSelf: 'flex-start',
+                  mt: '20px', // vertically center with circle (40px / 2 = 20px)
                 }}
               />
             )}
           </Box>
-        ))}
-      </Box>
-
-      {/* Label row */}
-      <Box sx={progressStyles.labelRow}>
-        {STEPS.map((label, i) => (
-          <Typography
-            key={label}
-            variant="caption"
-            sx={{
-              flex: 1,
-              textAlign: 'center',
-              color: i === activeStep ? PRIMARY : MUTED,
-              fontWeight: i === activeStep ? 700 : 400,
-              // Hide non-active labels on mobile
-              display: { xs: i === activeStep ? 'block' : 'none', sm: 'block' },
-              transition: 'color 300ms ease',
-            }}
-          >
-            {label}
-          </Typography>
         ))}
       </Box>
     </Box>

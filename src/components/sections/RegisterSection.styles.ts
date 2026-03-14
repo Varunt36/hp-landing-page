@@ -15,6 +15,7 @@ export const registerStyles: Record<string, SxProps<Theme>> = {
     borderRadius: '20px',
     background: 'rgba(255, 255, 255, 0.65)',
     backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
     border: '1px solid rgba(255, 255, 255, 0.4)',
     boxShadow: '0 8px 40px rgba(129, 104, 143, 0.15)',
   },
