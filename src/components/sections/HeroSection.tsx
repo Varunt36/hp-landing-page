@@ -7,24 +7,18 @@ export default function HeroSection() {
     document.querySelector('#register')?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <Box
-      id="hero"
-      sx={heroStyles.outerBox}
-    >
-      <Container maxWidth="md" sx={heroStyles.container}>
-        <Typography
-          variant="overline"
-          sx={heroStyles.subtitle}
-        >
+    <Box id="hero" sx={heroStyles.outerBox}>
+      <Container maxWidth="lg" sx={heroStyles.container}>
+        <Typography variant="overline" sx={heroStyles.subtitle}>
           {EVENT.subtitle}
         </Typography>
 
-        <Typography
-          variant="h1"
-          sx={heroStyles.title}
-        >
-          {EVENT.title}
-        </Typography>
+        <Box
+          component="img"
+          src="/images/Title.png"
+          alt={EVENT.title}
+          sx={heroStyles.titleImage}
+        />
 
         <Typography variant="h6" sx={heroStyles.dates}>
           {EVENT.dates} &nbsp;·&nbsp; {EVENT.location}
@@ -40,5 +34,5 @@ export default function HeroSection() {
         </Button>
       </Container>
     </Box>
-  )
+  );
 }

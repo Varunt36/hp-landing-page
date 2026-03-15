@@ -6,7 +6,7 @@ import { createTheme, responsiveFontSizes } from '@mui/material/styles'
 //      2 = 👑 Swan Queen
 //      3 = 🌊 Velvet Teal
 //      4 = 🌸 Boudoir Luxe
-const ACTIVE_THEME = 4
+const ACTIVE_THEME = 3
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // ─── CHANGE FONT HERE ────────────────────────────────────
