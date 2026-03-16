@@ -56,11 +56,13 @@ export const TERMS = `
 - All attendees are expected to maintain the spiritual atmosphere of the event with respect and devotion.
 `
 
+export const MAX_GROUP_SIZE = 4
+
 export const PRICING = {
-  perPerson:      50,    // EUR
-  serviceFeeRate: 0.04,  // 4%
-  currency:       '€',
-}
+  perPerson: 250, // EUR
+  serviceFeeRate: 0.04, // 4%
+  currency: '€',
+};
 
 export const COUNTRIES = [
   { code: 'DE', label: 'Germany' },

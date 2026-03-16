@@ -11,9 +11,9 @@ export default function FaqSection() {
           Frequently Asked Questions
         </Typography>
 
-        {FAQS.map((faq, i) => (
+        {FAQS.map((faq) => (
           <Accordion
-            key={i}
+            key={faq.q}
             sx={faqStyles.accordion}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={faqStyles.expandIcon} />}>

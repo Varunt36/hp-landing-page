@@ -1,4 +1,7 @@
 // src/components/form/Step3Terms.tsx
+// Step 3 of the registration form.
+// Displays the event terms and conditions and requires the user to agree before payment.
+
 import { useState } from 'react'
 import {
   Typography, Box, Checkbox, FormControlLabel, Button, Alert,
@@ -6,12 +9,18 @@ import {
 import { useRegistrationStore } from '../../store/registrationStore'
 import { TERMS } from '../../data/data'
 import { step3Styles } from './Step3Terms.styles'
+import { sharedFormStyles } from './formShared.styles'
 
 export default function Step3Terms() {
   const { termsAccepted, setTerms, setStep } = useRegistrationStore()
-  const [checked, setChecked] = useState(termsAccepted)
-  const [error,   setError]   = useState(false)
 
+  // Local checkbox state — mirrors the store so the user's previous choice is preserved on back-nav
+  const [checked, setChecked] = useState(termsAccepted)
+
+  // Controls the warning shown when the user tries to continue without ticking the box
+  const [error, setError] = useState(false)
+
+  // Validates that the box is checked, then saves to store and advances to Step 4
   const handleNext = () => {
     if (!checked) { setError(true); return }
     setTerms(true)
@@ -31,6 +40,7 @@ export default function Step3Terms() {
         {TERMS}
       </Box>
 
+      {/* Only shown after the user tries to proceed without accepting */}
       {error && (
         <Alert severity="warning" sx={step3Styles.alert}>
           Please agree to the terms and conditions to continue.
@@ -38,6 +48,7 @@ export default function Step3Terms() {
       )}
 
       <FormControlLabel
+        sx={{ mb: 1 }}
         control={
           <Checkbox
             checked={checked}
@@ -48,9 +59,11 @@ export default function Step3Terms() {
         label="I have read and agree to the above terms and conditions."
       />
 
-      <Box sx={step3Styles.navBox}>
-        <Button variant="outlined" onClick={() => setStep(2)}>← Back</Button>
-        <Button variant="contained" color="secondary" onClick={handleNext} sx={step3Styles.nextButton}>
+      <Box sx={sharedFormStyles.navBox}>
+        <Button variant="outlined" onClick={() => setStep(2)} sx={sharedFormStyles.backButton}>
+          ← Back
+        </Button>
+        <Button variant="contained" color="inherit" onClick={handleNext} sx={sharedFormStyles.nextButton}>
           Next →
         </Button>
       </Box>

@@ -1,12 +1,10 @@
 import type { SxProps, Theme } from '@mui/material'
+import { HERO_GRADIENT } from '../../theme/theme'
 
 export const heroStyles: Record<string, SxProps<Theme>> = {
   outerBox: {
-    minHeight: 520,
-    background: `
-      linear-gradient(to bottom, rgba(30,50,100,0.55) 0%, rgba(200,100,50,0.4) 100%),
-      linear-gradient(135deg, #365288 0%, #6a4c93 40%, #c0714a 100%)
-    `,
+    minHeight: 640,
+    background: HERO_GRADIENT,
     display: 'flex',
     alignItems: 'center',
   },
@@ -20,13 +18,13 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     mb: 2,
     display: 'block',
   },
-  title: {
-    color: 'white',
-    fontSize: 'clamp(26px, 5vw, 44px)',
-    lineHeight: 1.15,
-    mb: 2.5,
-    textShadow: '0 2px 12px rgba(0,0,0,0.3)',
-    whiteSpace: 'pre-line',
+  titleImage: {
+    width: 'clamp(360px, 100vw, 1200px)',
+    maxWidth: '1200px',
+    mx: 'auto',
+    mb: 0,
+    display: 'block',
+    height: 'auto',
   },
   dates: {
     color: 'rgba(255,255,255,0.9)',
@@ -39,4 +37,4 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     borderWidth: 2,
     '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.1)' },
   },
-}
+};

@@ -1,15 +1,9 @@
 // src/store/registrationStore.ts
 import { create } from 'zustand'
+import { type MemberDetail } from '../api/registrations'
 
-export interface MemberDetail {
-  firstName:  string
-  middleName: string
-  lastName:   string
-  gender:     'male' | 'female'
-  dob:        string
-  email?:     string
-  phone?:     string
-}
+// Re-export so components can get MemberDetail from either layer without a circular dep
+export type { MemberDetail }
 
 interface GroupInfo {
   country:     string
