@@ -68,7 +68,7 @@ export const COUNTRIES = [
   { code: 'DE', label: 'Germany' },
   { code: 'AT', label: 'Austria' },
   { code: 'CH', label: 'Switzerland' },
-  { code: 'UK', label: 'United Kingdom' },
+  { code: 'GB', label: 'United Kingdom' },
   { code: 'US', label: 'United States' },
   { code: 'IN', label: 'India' },
   { code: 'NZ', label: 'New Zealand' },
