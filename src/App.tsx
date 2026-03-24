@@ -8,6 +8,9 @@ import FaqSection from './components/sections/FaqSection'
 import RegisterSection from './components/sections/RegisterSection'
 import PaymentSuccess from './pages/PaymentSuccess'
 import PaymentCancel from './pages/PaymentCancel'
+import AdminLogin from './pages/admin/AdminLogin'
+import AdminScan from './pages/admin/AdminScan'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 function LandingPage() {
   return (
@@ -31,6 +34,8 @@ export default function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/payment/success" element={<PaymentSuccess />} />
       <Route path="/payment/cancel"  element={<PaymentCancel />} />
+      <Route path="/admin/login"     element={<AdminLogin />} />
+      <Route path="/admin/scan"      element={<ProtectedRoute><AdminScan /></ProtectedRoute>} />
     </Routes>
   )
 }

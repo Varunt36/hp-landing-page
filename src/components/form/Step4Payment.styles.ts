@@ -2,12 +2,13 @@
 // navBox/backButton come from formShared.styles.ts.
 // The Pay button has its own sx on the component (shimmer + gradient) extending sharedFormStyles.nextButton.
 import type { SxProps, Theme } from '@mui/material'
+import { ACCENT, SECONDARY } from '../../theme/theme'
 
 export const step4Styles: Record<string, SxProps<Theme>> = {
   // Translucent inner card replacing the previous solid mauve box
   summaryBox: {
-    background: 'rgba(129, 104, 143, 0.06)',
-    border: '1px solid rgba(129, 104, 143, 0.2)',
+    background: 'rgba(45, 43, 107, 0.06)',
+    border: '1px solid rgba(45, 43, 107, 0.2)',
     borderRadius: '14px',
     p: '20px',
     mb: 3.5,
@@ -24,7 +25,7 @@ export const step4Styles: Record<string, SxProps<Theme>> = {
 
   // Divider between member rows and totals — visible on light background
   divider: {
-    borderColor: 'rgba(129, 104, 143, 0.3)',
+    borderColor: 'rgba(45, 43, 107, 0.3)',
     my: 1.5,
   },
 
@@ -40,7 +41,7 @@ export const step4Styles: Record<string, SxProps<Theme>> = {
     display: 'flex',
     justifyContent: 'space-between',
     py: 0.75,
-    background: 'rgba(232, 197, 90, 0.15)',
+    background: `rgba(200, 135, 42, 0.15)`,
     borderRadius: '8px',
     px: '12px',
     mx: '-12px',
@@ -59,7 +60,7 @@ export const step4Styles: Record<string, SxProps<Theme>> = {
   // Pay button — gradient + shimmer hover. Uses color="inherit" to prevent MUI palette override.
   payButton: {
     minWidth: { xs: '100%', sm: 160 },
-    background: 'linear-gradient(135deg, #E8C55A, #6ea096)',
+    background: `linear-gradient(135deg, ${ACCENT}, ${SECONDARY})`,
     color: 'white',
     position: 'relative',
     overflow: 'hidden',

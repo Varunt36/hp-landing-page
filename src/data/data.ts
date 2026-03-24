@@ -3,21 +3,21 @@
 
 export const EVENT = {
   title:      'Na me rahu na\nmeri arzoo rahe',
-  subtitle:   'Yogi Divine Society Germany presents',
+  subtitle:   'HariPrabodham Germany presents',
   dates:      'August 16 – 18, 2026',
   location:   'Berlin, Germany',
-  organiser:  'YDS Germany',
+  organiser:  'HariPrabodham Germany',
   ctaLabel:   'Register Now',
 }
 
 export const ABOUT = {
-  description: `"Na me rahu na meri arzoo rahe" is a deeply spiritual gathering organised by Yogi Divine Society Germany,
+  description: `"Na me rahu na meri arzoo rahe" is a deeply spiritual gathering organised by HariPrabodham Germany,
 bringing together the satsang family for three days of devotion, kirtan, and divine blessings.
 This event is an opportunity to immerse ourselves in the presence of saints and strengthen our spiritual journey together.`,
   cards: [
     { icon: '📅', label: 'Dates',        value: '16 – 18 August 2026' },
     { icon: '📍', label: 'Location',     value: 'Berlin, Germany' },
-    { icon: '🙏', label: 'Organised by', value: 'YDS Germany' },
+    { icon: '🙏', label: 'Organised by', value: 'HariPrabodham Germany' },
   ],
 }
 
@@ -36,7 +36,7 @@ export const FAQS = [
   { q: 'Who can attend this event?',      a: 'This event is open to all members of the satsang family. Children must be accompanied by a parent or guardian who is registered.' },
   { q: 'Is accommodation provided?',      a: 'Accommodation details will be shared with registered attendees via email. Please register early to secure your spot.' },
   { q: 'What is the registration fee?',   a: 'The registration fee per person will be displayed during the registration process. A small service fee applies for payment processing.' },
-  { q: 'Can I cancel my registration?',   a: 'Please contact the YDS Germany team to discuss cancellation and refund arrangements if your travel plans change.' },
+  { q: 'Can I cancel my registration?',   a: 'Please contact the HariPrabodham Germany team to discuss cancellation and refund arrangements if your travel plans change.' },
   { q: 'What language will the event be in?', a: 'The event will primarily be in Gujarati and Hindi, with some sessions in German and English.' },
 ]
 
@@ -50,7 +50,7 @@ export const TERMS = `
 - The organising team will act in accordance with local health guidelines.
 
 **3. Photography & Media**
-- Photos and videos may be taken during the event and used for YDS Germany communications.
+- Photos and videos may be taken during the event and used for HariPrabodham Germany communications.
 
 **4. Code of Conduct**
 - All attendees are expected to maintain the spiritual atmosphere of the event with respect and devotion.
@@ -75,8 +75,8 @@ export const COUNTRIES = [
 ]
 
 export const FOOTER = {
-  brand:   'YDS Germany',
-  legal:   '© 2026 Yogi Divine Society Germany. All rights reserved.',
+  brand:   'HariPrabodham Germany',
+  legal:   '© 2026 HariPrabodham Germany. All rights reserved.',
   email:   'info@yds-germany.de',
   closing: 'Jai Swaminarayan 🙏',
 }

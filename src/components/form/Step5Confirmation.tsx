@@ -44,7 +44,7 @@ export default function Step5Confirmation() {
       </Box>
 
       <Typography color="text.secondary" fontSize={14} maxWidth={420} mx="auto" mb={3}>
-        Please keep this reference number for your records. The YDS Germany team will be in touch with further details closer to the event.
+        Please keep this reference number for your records. The HariPrabodham Germany team will be in touch with further details closer to the event.
       </Typography>
 
       <Typography color="text.secondary" fontSize={14} mb={3}>
