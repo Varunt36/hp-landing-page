@@ -25,41 +25,87 @@ Frontend-only change. No backend or database schema changes required.
 
 ## Rules
 
-1. **Only paid registrations count.** `registrations` joined with `payments` where `payments.status = 'paid'`.
-2. **Strict group-size check.** If `max_members - used < requestedMembers` → quota exceeded (not just if it reaches 0).
+1. **Only paid registrations count.** Join `registrations` with `payments` where `payments.status = 'paid'`.
+2. **Strict group-size check.** If `max_members - used < requestedMembers` → block.
 3. **Two trigger points:** on country selection change (inline warning) and on "Next" click (hard block with popup).
+4. **Fail open.** If the Supabase query fails, allow the user to proceed. The backend enforces the real gate.
 
 ---
 
-## Data Query
+## New File: `src/api/quota.ts`
 
-`checkCountryQuota(countryCode: string, requestedMembers: number)` in `src/api/registrations.ts`:
-
-```typescript
-const { data } = await supabase
-  .from('country_quotas')
-  .select(`
-    max_members,
-    registrations!inner (
-      member_count,
-      payments!inner ( status )
-    )
-  `)
-  .eq('country_code', countryCode)
-  .eq('registrations.payments.status', 'paid')
-  .single()
-```
-
-Or equivalently as a raw aggregation via `supabase.rpc` / chained query. The function returns:
+### Return type
 
 ```typescript
-interface QuotaResult {
-  allowed: boolean    // true if remaining >= requestedMembers
-  remaining: number   // max_members - used
+export interface QuotaResult {
+  allowed: boolean
 }
 ```
 
-If `country_quotas` has no row for the country, the function returns `{ allowed: true, remaining: Infinity }` — unregistered countries are unrestricted.
+`remaining` is intentionally omitted — it is not displayed in any UI element and exposing it in the public interface would be dead surface area.
+
+### Failure fallback
+
+If any Supabase query throws (network error, RLS denial), catch the error, log it, and return `{ allowed: true }` — fail open so transient errors do not permanently block registration.
+
+### Implementation
+
+Two sequential Supabase JS client calls (no raw SQL, no RPC — both use the query builder API):
+
+**Step 1 — fetch quota**
+
+```typescript
+const { data: quotaRow, error: quotaError } = await supabase
+  .from('country_quotas')
+  .select('max_members')
+  .eq('country_code', countryCode)
+  .single()
+
+if (quotaError || !quotaRow) return { allowed: true }  // no quota row → unrestricted
+```
+
+**Step 2 — fetch registrations for the country**
+
+```typescript
+const { data: regs, error: regsError } = await supabase
+  .from('registrations')
+  .select('id, member_count')
+  .eq('country', countryCode)
+
+if (regsError) return { allowed: true }
+if (!regs || regs.length === 0) return { allowed: quotaRow.max_members >= requestedMembers }
+```
+
+**Step 3 — fetch paid payment IDs**
+
+Avoids embedded joins entirely (and the array-vs-object ambiguity they introduce). Queries `payments` directly:
+
+```typescript
+const regIds = regs.map(r => r.id)
+
+const { data: paidPayments, error: pmtError } = await supabase
+  .from('payments')
+  .select('registration_id')
+  .in('registration_id', regIds)
+  .eq('status', 'paid')
+
+if (pmtError) return { allowed: true }
+```
+
+**Step 4 — aggregate client-side**
+
+```typescript
+const paidIds = new Set((paidPayments ?? []).map(p => p.registration_id))
+const used = regs
+  .filter(r => paidIds.has(r.id))
+  .reduce((sum, r) => sum + r.member_count, 0)
+
+return { allowed: quotaRow.max_members - used >= requestedMembers }
+```
+
+### Country code contract
+
+The `country` column in `registrations` stores ISO codes (e.g. `'DE'`, `'GB'`), matching `country_quotas.country_code`. This is guaranteed by `Step1GroupInfo.tsx` using `c.code` (not `c.label`) as the Select value. Do not change the Select value to `c.label`.
 
 ---
 
@@ -68,87 +114,149 @@ If `country_quotas` has no row for the country, the function returns `{ allowed:
 ### New local state
 
 ```typescript
-const [quotaBlocked,   setQuotaBlocked]   = useState(false)
-const [checkingQuota,  setCheckingQuota]  = useState(false)
-const [quotaChecked,   setQuotaChecked]   = useState(false)  // tracks if check ran
-const [popupOpen,      setPopupOpen]      = useState(false)
+const [quotaBlocked,  setQuotaBlocked]  = useState(false)
+const [checkingQuota, setCheckingQuota] = useState(false)
+const [popupOpen,     setPopupOpen]     = useState(false)
 ```
+
+### Race condition handling — generation counter
+
+Supabase JS v2 does not support `AbortSignal`, so AbortController cannot cancel in-flight requests. Instead, use a generation counter to discard stale results:
+
+```typescript
+const checkGenRef = useRef(0)
+
+const runQuotaCheck = async (countryCode: string, members: number) => {
+  const gen = ++checkGenRef.current
+  setCheckingQuota(true)
+  const result = await checkCountryQuota(countryCode, members)
+  if (gen !== checkGenRef.current) {
+    // Stale result — a newer check is already in flight or has completed.
+    // Do NOT clear checkingQuota here — the winning call owns that state
+    // and is still running (or has already cleared it). Touching it here
+    // would prematurely remove the spinner while the winning call runs.
+    // Do NOT touch quotaBlocked for the same reason.
+    return
+  }
+  setQuotaBlocked(!result.allowed)
+  setCheckingQuota(false)
+}
+```
+
+`checkGenRef` is only incremented inside `runQuotaCheck` — never externally — to prevent the ref advancing without a corresponding async call that would eventually clear `checkingQuota`.
+
+### Initial mount check
+
+On mount, run the quota check for the current `country` and `memberCount` values (which default to `'DE'` and `1` from the store):
+
+```typescript
+useEffect(() => {
+  runQuotaCheck(country, memberCount)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Intentional mount-only check — changes are handled by onChange handlers above
+}, [])
+```
+
+If the default country (`'DE'`) is already over quota, the user sees the inline warning immediately. This is intentional — a user who loads the page when Germany is full should know before interacting.
 
 ### On country change
 
 ```typescript
-const handleCountryChange = async (newCountry: string) => {
+const handleCountryChange = (newCountry: string) => {
   setCountry(newCountry)
-  setCheckingQuota(true)
-  const result = await checkCountryQuota(newCountry, memberCount)
-  setQuotaBlocked(!result.allowed)
-  setCheckingQuota(false)
-  setQuotaChecked(true)
+  runQuotaCheck(newCountry, memberCount)
 }
 ```
 
-Shows an MUI `Alert severity="warning"` below the country dropdown if `quotaBlocked`.
-
 ### On member count change
 
-Re-runs the quota check (same country, new member count) so the inline warning stays accurate.
+```typescript
+const handleMemberCountChange = (newCount: number) => {
+  setMemberCount(newCount)
+  runQuotaCheck(country, newCount)
+}
+```
 
-### On Next click
+### On Next click — validation order
+
+1. **Synchronous field validation first** — if `karyakarta` is blank, show field error and return. No async call.
+2. **Always re-check quota** — never trust cached `quotaBlocked` state. The quota may have freed up (a payment failed) or filled up (another group paid) since the last inline check. Always do a fresh Supabase check as the hard gate. `checkingQuota` is set to `true` immediately to disable the button and prevent double-clicks.
+
+`handleNext` must be `async`:
 
 ```typescript
 const handleNext = async () => {
-  if (!karyakarta.trim()) { ... return }
+  if (!karyakarta.trim()) {
+    setKaryakartaError('Local karyakarta name is required.')
+    return
+  }
 
+  // Always re-check — do not trust cached quotaBlocked state.
+  // Disabling the button (checkingQuota=true) prevents concurrent calls.
   setCheckingQuota(true)
   const result = await checkCountryQuota(country, memberCount)
   setCheckingQuota(false)
 
   if (!result.allowed) {
-    setQuotaBlocked(true)
+    setQuotaBlocked(true)   // sync inline Alert with re-check result
     setPopupOpen(true)
     return
   }
 
+  setQuotaBlocked(false)    // clear stale inline warning if quota freed up
   setGroupInfo({ country, karyakarta, memberCount })
   setStep(2)
 }
 ```
 
----
+### Inline Alert placement
 
-## Popup (MUI Dialog)
+The MUI `Alert` is rendered **inside** `<Box sx={step1Styles.fieldStack}>`, immediately after the country `<FormControl>` and before the karyakarta `<TextField>`. This keeps it within the shared gap spacing.
 
-- **Title:** none (clean look)
-- **Body:**
-  > Jay Swaminarayan Bhagat,
-  > Registration is not possible please contact responsible enquiry person.
-- **Action:** Single "Close" button — dismisses dialog, user stays on Step 1
-- `disableBackdropClick` / `onClose` guard so backdrop click does not close it
+Shown only when `quotaBlocked && !checkingQuota`. Country name resolved via:
 
----
+```typescript
+COUNTRIES.find(c => c.code === country)?.label ?? country
+```
 
-## Inline Warning (MUI Alert)
-
-Shown below the country dropdown when `quotaBlocked && !checkingQuota`:
+Alert message:
 
 ```
 Registration for [Country Name] is currently full. Please select a different country or contact your enquiry person.
 ```
 
-Severity: `warning`. Disappears when user selects a different (non-full) country.
+`severity="warning"`.
+
+### Next button loading state
+
+While `checkingQuota === true`, the Next button is `disabled` and renders a `CircularProgress` (size 20) in place of the arrow label.
 
 ---
 
-## Loading State
+## Popup — MUI Dialog
 
-- Next button shows a `CircularProgress` spinner and is `disabled` while `checkingQuota === true`
-- Country dropdown is not disabled during check (user can change selection freely)
+In MUI v5, `disableBackdropClick` was removed. The correct approach is a no-op `onClose` combined with `disableEscapeKeyDown`. The no-op suppresses both backdrop clicks and Escape key (even though `disableEscapeKeyDown` also handles Escape — belt and suspenders):
 
----
+```tsx
+<Dialog
+  open={popupOpen}
+  onClose={() => {}}        // no-op: suppresses backdrop click AND Escape (MUI v5 pattern)
+  disableEscapeKeyDown      // extra guard for Escape key
+  aria-describedby="quota-dialog-description"
+>
+  <DialogContent>
+    <Typography id="quota-dialog-description">
+      Jay Swaminarayan Bhagat,<br />
+      Registration is not possible please contact responsible enquiry person.
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setPopupOpen(false)}>Close</Button>
+  </DialogActions>
+</Dialog>
+```
 
-## Error Handling
-
-If the Supabase query fails (network error, RLS denial), `checkCountryQuota` logs the error and returns `{ allowed: true, remaining: 0 }` — fail open so a network blip does not permanently block registration. The backend enforces the real gate at submission time.
+After clicking Close the user remains on Step 1 and can select a different country.
 
 ---
 
@@ -156,7 +264,7 @@ If the Supabase query fails (network error, RLS denial), `checkCountryQuota` log
 
 | File | Change |
 |------|--------|
-| `src/api/registrations.ts` | Add `checkCountryQuota()` function |
+| `src/api/quota.ts` | **New file** — exports `checkCountryQuota()` and `QuotaResult` |
 | `src/components/form/Step1GroupInfo.tsx` | Add quota check logic, inline Alert, Dialog popup |
 
-No changes to: store, styles (unless minor), other steps, backend, DB schema.
+No changes to: `src/api/registrations.ts`, store, other steps, backend, DB schema.
