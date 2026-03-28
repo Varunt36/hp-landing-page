@@ -11,7 +11,7 @@ import { PRIMARY, SECONDARY } from '../../theme/theme'
 const STEPS = ['Group', 'Members', 'Terms', 'Payment', 'Done']
 
 // Muted color for inactive step circles — intentionally dimmer than theme.MUTED
-const STEP_MUTED = '#c5b8cc'
+const STEP_MUTED = '#A8A4CC'
 
 type CircleProps = { index: number; activeStep: number }
 
@@ -22,7 +22,7 @@ function StepCircle({ index, activeStep }: CircleProps) {
   const bg     = isComplete ? SECONDARY : isActive ? PRIMARY : 'transparent'
   const border = isComplete || isActive ? 'none' : `2px solid ${STEP_MUTED}`
   const color  = isComplete || isActive ? 'white' : STEP_MUTED
-  const shadow = isActive ? `0 0 0 4px rgba(129,104,143,0.25)` : 'none'
+  const shadow = isActive ? `0 0 0 4px rgba(43,38,112,0.28)` : 'none'
 
   return (
     <Box

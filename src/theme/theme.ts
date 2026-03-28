@@ -6,7 +6,8 @@ import { createTheme, responsiveFontSizes } from '@mui/material/styles'
 //      2 = 👑 Swan Queen
 //      3 = 🌊 Velvet Teal
 //      4 = 🌸 Boudoir Luxe
-const ACTIVE_THEME = 3
+//      5 = 🪔 Indigo Darbar
+const ACTIVE_THEME = 5
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // ─── CHANGE FONT HERE ────────────────────────────────────
@@ -68,6 +69,16 @@ const themes = {
       linear-gradient(135deg, #4A3057 0%, #81688f 40%, #6ea096 100%)
     `,
   },
+  /** 🪔 THEME 5: Indigo Darbar */
+  5: {
+    primary:       '#2B2670',   // vivid deep indigo (matches hero top)
+    secondary:     '#5A4895',   // warm medium violet
+    accent:        '#C8872A',   // saffron gold
+    bg:            '#FDF8F0',   // warm ivory
+    muted:         '#7B5E3A',   // warm brown
+    dark:          '#1A1545',   // midnight indigo
+    heroGradient:  `linear-gradient(135deg, #252568 0%, #8A5595 50%, #C47A2A 100%)`,
+  },
 } as const
 
 const c = themes[ACTIVE_THEME as keyof typeof themes]
@@ -83,9 +94,9 @@ const baseTheme = createTheme({
   },
   typography: {
     fontFamily: FONT_FAMILY,
-    h1: { fontWeight: 700, fontSize: '2.75rem' },
-    h2: { fontWeight: 700, fontSize: '2rem' },
-    h3: { fontWeight: 700, fontSize: '1.625rem' },
+    h1: { fontFamily: '"Cormorant Garamond", serif', fontWeight: 700, fontStyle: 'italic', fontSize: '2.75rem' },
+    h2: { fontFamily: '"Cormorant Garamond", serif', fontWeight: 700, fontStyle: 'italic', fontSize: '2rem' },
+    h3: { fontFamily: '"Cormorant Garamond", serif', fontWeight: 700, fontStyle: 'italic', fontSize: '1.625rem' },
     h4: { fontWeight: 700, fontSize: '1.375rem' },
     h5: { fontWeight: 700, fontSize: '1.125rem' },
     h6: { fontWeight: 700, fontSize: '1rem' },
@@ -108,7 +119,7 @@ const baseTheme = createTheme({
           '& .MuiOutlinedInput-root': {
             background: 'rgba(255,255,255,0.8)',
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: c.primary,   // #81688f mauve
+              borderColor: c.primary,
               borderWidth: 2,
             },
           },

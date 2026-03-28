@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   AppBar, Toolbar, Typography, Button, Box,
   IconButton, Drawer, List, ListItem, ListItemButton, ListItemText,
   useMediaQuery, useTheme,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import { NAV_LINKS } from '../../data/data'
 import { navbarStyles } from './Navbar.styles'
 
@@ -12,6 +14,7 @@ export default function Navbar() {
   const theme    = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const navigate = useNavigate()
 
   const scrollTo = (href: string) => {
     document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
@@ -22,7 +25,7 @@ export default function Navbar() {
     <AppBar position="sticky" sx={navbarStyles.appBar}>
       <Toolbar sx={navbarStyles.toolbar}>
         <Typography variant="h6" fontWeight={700} letterSpacing={0.5} color="white">
-          YDS Germany
+          HariPrabodham Germany
         </Typography>
 
         {isMobile ? (
@@ -68,6 +71,13 @@ export default function Navbar() {
             >
               Register
             </Button>
+            <IconButton
+              onClick={() => navigate('/admin/login')}
+              sx={{ color: 'white', ml: 0.5 }}
+              title="Admin"
+            >
+              <AdminPanelSettingsIcon />
+            </IconButton>
           </Box>
         )}
       </Toolbar>
