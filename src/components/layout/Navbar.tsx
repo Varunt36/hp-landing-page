@@ -30,9 +30,18 @@ export default function Navbar() {
 
         {isMobile ? (
           <>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton
+              color="inherit"
+              onClick={() => navigate('/admin/login')}
+              title="Admin"
+            >
+              <AdminPanelSettingsIcon />
+            </IconButton>
             <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
               <MenuIcon />
             </IconButton>
+            </Box>
             <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
               <Box sx={navbarStyles.drawerBox}>
                 <List>
