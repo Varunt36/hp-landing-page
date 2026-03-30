@@ -6,11 +6,12 @@ export const progressStyles: Record<string, SxProps<Theme>> = {
     maxWidth: 560,
     mx: 'auto',
     my: 5,
+    px: 1,
   },
   // Row that holds circles + connectors
   row: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
   },
   // Connector line between circles
