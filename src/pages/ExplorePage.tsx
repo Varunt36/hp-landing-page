@@ -16,6 +16,7 @@ const HOTELS = [
     dist: '0.4 km from venue',
     desc: 'Iconic five-star hotel beside the Brandenburg Gate. Spa, fine dining, and timeless German hospitality.',
     price: '€420',
+    image: 'https://images.unsplash.com/photo-1455587734955-081b22074882?w=600&q=75&auto=format&fit=crop',
   },
   {
     tag: 'Boutique',
@@ -25,6 +26,7 @@ const HOTELS = [
     dist: '2.1 km from venue',
     desc: 'A design-forward boutique stay on Kurfürstendamm — warm interiors and a leafy rooftop terrace.',
     price: '€235',
+    image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&q=75&auto=format&fit=crop',
   },
   {
     tag: 'Best Value',
@@ -34,6 +36,7 @@ const HOTELS = [
     dist: '1.6 km from venue',
     desc: 'Smart, comfortable rooms beside Alexanderplatz station — easy U-Bahn access and great value for groups.',
     price: '€119',
+    image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&q=75&auto=format&fit=crop',
   },
   {
     tag: 'Family',
@@ -43,6 +46,7 @@ const HOTELS = [
     dist: '1.2 km from venue',
     desc: 'Landmark tower with skyline views, family suites, vegetarian buffet and on-site parking.',
     price: '€168',
+    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=75&auto=format&fit=crop',
   },
   {
     tag: 'Quiet Stay',
@@ -52,6 +56,7 @@ const HOTELS = [
     dist: '2.4 km from venue',
     desc: 'Calm suite-only retreat near Tiergarten — perfect for early-morning meditation and quiet reflection.',
     price: '€289',
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=75&auto=format&fit=crop',
   },
   {
     tag: 'Group Friendly',
@@ -61,6 +66,7 @@ const HOTELS = [
     dist: '1.8 km from venue',
     desc: 'Self-catering apartments with kitchens — well-suited for families and small group bookings.',
     price: '€142',
+    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=75&auto=format&fit=crop',
   },
 ]
 
@@ -71,6 +77,7 @@ const SIGHTS = [
     desc: 'The neoclassical heart of Berlin — a symbol of unity and renewal, beautiful at dawn and lit gold at night.',
     time: '20 min',
     entry: 'Free entry',
+    image: 'https://images.unsplash.com/photo-1560969184-10fe8719e047?w=600&q=75&auto=format&fit=crop',
   },
   {
     cat: 'Architecture',
@@ -78,6 +85,7 @@ const SIGHTS = [
     desc: 'Climb Foster\'s glass dome for sweeping views of the city — register in advance for a quiet, peaceful visit.',
     time: '1 hr',
     entry: 'Free · Reserve',
+    image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=600&q=75&auto=format&fit=crop',
   },
   {
     cat: 'Culture · UNESCO',
@@ -85,6 +93,7 @@ const SIGHTS = [
     desc: 'Five world-class museums on a single island in the Spree — Pergamon, Bode, Altes, Neues, Alte Nationalgalerie.',
     time: '3–4 hrs',
     entry: '€19 day pass',
+    image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=600&q=75&auto=format&fit=crop',
   },
   {
     cat: 'Nature',
@@ -92,6 +101,7 @@ const SIGHTS = [
     desc: 'Berlin\'s vast green lung — perfect for a contemplative morning walk among ancient trees and quiet ponds.',
     time: '1–2 hrs',
     entry: 'Free entry',
+    image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&q=75&auto=format&fit=crop',
   },
   {
     cat: 'History · Art',
@@ -99,6 +109,7 @@ const SIGHTS = [
     desc: 'A 1.3 km open-air mural along the longest preserved stretch of the Berlin Wall — themes of freedom and unity.',
     time: '1 hr',
     entry: 'Free entry',
+    image: 'https://images.unsplash.com/photo-1646489752489-e5831112c767?w=600&q=75&auto=format&fit=crop',
   },
   {
     cat: 'Day Trip',
@@ -106,32 +117,14 @@ const SIGHTS = [
     desc: 'Frederick the Great\'s summer palace and gardens — a serene rococo retreat 35 minutes by S-Bahn from Berlin.',
     time: 'Half-day',
     entry: '€14 entry',
+    image: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=600&q=75&auto=format&fit=crop',
   },
 ]
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-const PLACEHOLDER_COLORS = [
-  C.lavender100, C.lavender200, C.cream2, C.lavender50, C.lavender100, C.lavender200,
-]
 
-function ImgPlaceholder({ index, aspect }: { index: number; aspect: string }) {
-  return (
-    <Box
-      sx={{
-        aspectRatio: aspect,
-        background: PLACEHOLDER_COLORS[index % PLACEHOLDER_COLORS.length],
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: { xs: 36, md: 48 },
-      }}
-    >
-     </Box>
-  )
-}
-
-function HotelCard({ hotel, index }: { hotel: typeof HOTELS[0]; index: number }) {
+function HotelCard({ hotel }: { hotel: typeof HOTELS[0] }) {
   return (
     <Box
       sx={{
@@ -150,9 +143,24 @@ function HotelCard({ hotel, index }: { hotel: typeof HOTELS[0]; index: number })
         },
       }}
     >
-      {/* Image placeholder */}
+      {/* Hotel image */}
       <Box sx={{ position: 'relative' }}>
-        <ImgPlaceholder index={index} aspect="16/10" />
+        <Box
+          component="img"
+          src={hotel.image}
+          alt={hotel.name}
+          loading="lazy"
+          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+            e.currentTarget.style.background = C.lavender100
+            e.currentTarget.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+          }}
+          sx={{
+            width: '100%',
+            aspectRatio: '16/10',
+            objectFit: 'cover',
+            display: 'block',
+          }}
+        />
         <Box
           sx={{
             position: 'absolute',
@@ -228,7 +236,7 @@ function HotelCard({ hotel, index }: { hotel: typeof HOTELS[0]; index: number })
   )
 }
 
-function SightCard({ sight, index }: { sight: typeof SIGHTS[0]; index: number }) {
+function SightCard({ sight }: { sight: typeof SIGHTS[0] }) {
   return (
     <Box
       sx={{
@@ -247,7 +255,17 @@ function SightCard({ sight, index }: { sight: typeof SIGHTS[0]; index: number })
         },
       }}
     >
-      <ImgPlaceholder index={index + 2} aspect="4/3" />
+      <Box
+        component="img"
+        src={sight.image}
+        alt={sight.name}
+        loading="lazy"
+        onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+          e.currentTarget.style.background = C.lavender100
+          e.currentTarget.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+        }}
+        sx={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }}
+      />
       <Box sx={{ p: '22px', display: 'flex', flexDirection: 'column', gap: 1.25 }}>
         <Typography sx={{ fontSize: '0.68rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: C.gold700, fontWeight: 600 }}>
           {sight.cat}
@@ -440,8 +458,8 @@ export default function ExplorePage() {
               desc="A curated selection close to the venue and central Berlin — from quiet boutique retreats to convenient transit-friendly stays."
             />
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2,1fr)', md: 'repeat(3,1fr)' }, gap: { xs: 2.5, md: 2.75 } }}>
-              {HOTELS.map((hotel, i) => (
-                <HotelCard key={hotel.name} hotel={hotel} index={i} />
+              {HOTELS.map((hotel) => (
+                <HotelCard key={hotel.name} hotel={hotel} />
               ))}
             </Box>
             <TipCard
@@ -475,8 +493,8 @@ export default function ExplorePage() {
               desc="Take an afternoon to wander Berlin's most cherished landmarks — moments of quiet reflection between sessions."
             />
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2,1fr)', md: 'repeat(3,1fr)' }, gap: { xs: 2.5, md: 2.75 } }}>
-              {SIGHTS.map((sight, i) => (
-                <SightCard key={sight.name} sight={sight} index={i} />
+              {SIGHTS.map((sight) => (
+                <SightCard key={sight.name} sight={sight} />
               ))}
             </Box>
             <TipCard

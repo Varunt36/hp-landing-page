@@ -2,15 +2,28 @@ import { useState } from 'react'
 import {
   Typography, Box, Checkbox, FormControlLabel, Button, Alert,
 } from '@mui/material'
-import ShieldIcon from '@mui/icons-material/Shield'
 import { useRegistrationStore } from '../../store/registrationStore'
 import { step3Styles } from './Step3Terms.styles'
 import { sharedFormStyles } from './formShared.styles'
 import { C } from '../../theme/theme'
 
 const GDPR_POINTS = [
-  'By registering, you consent to the processing of your personal data under the EU GDPR (DSGVO) and German BDSG, solely for registration and event logistics.',
-  'You may access, correct, or request deletion of your data, or withdraw consent at any time, by contacting the organising team.',
+  {
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
+    text: 'By registering, you consent to the processing of your personal data under the EU GDPR (DSGVO) and German BDSG, solely for registration and event logistics.',
+  },
+  {
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" />
+      </svg>
+    ),
+    text: 'You may access, correct, or request deletion of your data, or withdraw consent at any time, by contacting the organising team.',
+  },
 ]
 
 export default function Step3Terms() {
@@ -26,42 +39,45 @@ export default function Step3Terms() {
 
   return (
     <Box>
-      <Typography variant="h5" color="primary" fontWeight={700} mb={0.5}>
-        Terms &amp; Conditions
-      </Typography>
-      <Typography color="text.secondary" fontSize={15} mb={2.5}>
-        Please review and agree to the following before proceeding.
-      </Typography>
+      {/* Step heading */}
+      <Box sx={{ mb: 3 }}>
+        <Typography
+          sx={{
+            fontFamily: '"Cormorant Garamond", serif',
+            fontSize: { xs: '1.55rem', sm: '1.75rem' },
+            fontWeight: 700,
+            fontStyle: 'italic',
+            color: C.purple800,
+            lineHeight: 1.2,
+            mb: 0.5,
+          }}
+        >
+          Data Protection
+        </Typography>
+        <Typography color="text.secondary" fontSize={14.5}>
+          Your data is handled with the same care we bring to our seva.
+        </Typography>
+      </Box>
 
+      {/* GDPR card */}
       <Box sx={step3Styles.termsBox}>
-        {/* Section header */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.75 }}>
-          <Box
-            sx={{
-              width: 32, height: 32, borderRadius: '8px',
-              background: `rgba(107,74,150,0.1)`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            }}
-          >
-            <ShieldIcon sx={{ fontSize: 18, color: C.purple700 }} />
-          </Box>
-          <Typography fontWeight={700} fontSize={14.5} color="text.primary">
-            Data Protection (Datenschutz)
-          </Typography>
-        </Box>
-
-        {/* Bullet points */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+        {/* Points */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.75 }}>
           {GDPR_POINTS.map((point, i) => (
-            <Box key={i} sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start' }}>
+            <Box key={i} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
               <Box
                 sx={{
-                  width: 6, height: 6, borderRadius: '50%', mt: '7px', flexShrink: 0,
-                  background: C.gold600,
+                  width: 30, height: 30, borderRadius: '8px', flexShrink: 0, mt: '1px',
+                  background: `rgba(200,135,42,0.10)`,
+                  border: `1px solid rgba(200,135,42,0.22)`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: C.gold700,
                 }}
-              />
+              >
+                {point.icon}
+              </Box>
               <Typography fontSize={13.5} color="text.secondary" lineHeight={1.7}>
-                {point}
+                {point.text}
               </Typography>
             </Box>
           ))}
