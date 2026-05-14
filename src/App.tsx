@@ -1,37 +1,50 @@
 import { Routes, Route } from 'react-router-dom'
+import { Box } from '@mui/material'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import HeroSection from './components/sections/HeroSection'
-import AboutSection from './components/sections/AboutSection'
-import VenueSection from './components/sections/VenueSection'
-import FaqSection from './components/sections/FaqSection'
-import RegisterSection from './components/sections/RegisterSection'
+import RegisterModal from './components/form/RegisterModal'
 import PaymentSuccess from './pages/PaymentSuccess'
 import PaymentCancel from './pages/PaymentCancel'
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminScan from './pages/admin/AdminScan'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import ProgramsPage from './pages/ProgramsPage'
+import VenuePage from './pages/VenuePage'
+import ExplorePage from './pages/ExplorePage'
+import ContactPage from './pages/ContactPage'
 
-function LandingPage() {
+// ── Shared page shell ──
+function PageShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <VenueSection />
-        <FaqSection />
-        <RegisterSection />
-      </main>
+      <Box component="main" sx={{ pt: { xs: '64px', md: '72px' } }}>
+        {children}
+      </Box>
       <Footer />
+      <RegisterModal />
     </>
+  )
+}
+
+// ── Landing page (Home) ──
+function LandingPage() {
+  return (
+    <PageShell>
+      <HeroSection />
+    </PageShell>
   )
 }
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/"                element={<LandingPage />} />
+      <Route path="/programs"        element={<ProgramsPage />} />
+      <Route path="/venue"           element={<VenuePage />} />
+      <Route path="/explore"         element={<ExplorePage />} />
+      <Route path="/contact"         element={<ContactPage />} />
       <Route path="/payment/success" element={<PaymentSuccess />} />
       <Route path="/payment/cancel"  element={<PaymentCancel />} />
       <Route path="/admin/login"     element={<AdminLogin />} />

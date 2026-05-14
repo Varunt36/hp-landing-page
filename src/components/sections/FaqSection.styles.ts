@@ -1,27 +1,34 @@
 import type { SxProps, Theme } from '@mui/material'
+import { C } from '../../theme/theme'
 
 export const faqStyles: Record<string, SxProps<Theme>> = {
   outerBox: {
-    bgcolor: 'primary.main',
-    py: { xs: 7, md: 10 },
+    background: `linear-gradient(180deg, ${C.lavender50} 0%, ${C.cream} 100%)`,
+    py: { xs: 10, md: 13 },
   },
   h2: {
-    color: 'white',
+    color: C.purple800,
   },
   accordion: {
-    bgcolor: 'rgba(255,255,255,0.1)',
+    bgcolor: C.cream,
     mb: 1.5,
-    borderRadius: 2,
-    '&:before': { display: 'none' },
+    borderRadius: '14px !important',
+    border: `1px solid ${C.lavender200}B3`,
     boxShadow: 'none',
+    '&:before': { display: 'none' },
+    '&.Mui-expanded': {
+      borderColor: `${C.gold500}60`,
+      boxShadow: `0 4px 14px rgba(60,30,90,0.06)`,
+    },
   },
   expandIcon: {
-    color: 'rgba(255,255,255,0.7)',
+    color: C.gold600,
   },
   summaryText: {
-    color: 'white',
+    color: C.purple800,
+    fontWeight: 600,
   },
   detailsText: {
-    color: 'rgba(255,255,255,0.8)',
+    color: C.muted,
   },
 }

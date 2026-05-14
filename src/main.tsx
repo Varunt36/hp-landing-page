@@ -8,6 +8,7 @@ import '@fontsource/cormorant-garamond/700-italic.css'
 import App from './App.tsx'
 import theme from './theme/theme.ts'
 import { AuthProvider } from './context/AuthContext.tsx'
+import ScrollToTop from './components/utils/ScrollToTop.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AuthProvider>
+          <ScrollToTop />
           <App />
         </AuthProvider>
       </ThemeProvider>
