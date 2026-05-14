@@ -1,95 +1,158 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  AppBar, Toolbar, Typography, Button, Box,
-  IconButton, Drawer, List, ListItem, ListItemButton, ListItemText,
-  useMediaQuery, useTheme,
-} from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
-import { NAV_LINKS } from '../../data/data'
-import { navbarStyles } from './Navbar.styles'
+  AppBar,
+  Toolbar,
+  Box,
+  Button,
+  Typography,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { NAV_LINKS } from '../../data/data';
+import { navbarStyles as s } from './Navbar.styles';
+import { useRegistrationStore } from '../../store/registrationStore';
+import { C } from '../../theme/theme';
+
+function BrandLogo() {
+  return (
+    <Box
+      component="img"
+      src="/images/Final%20Logo.png"
+      alt="Hari Prabodham Logo"
+      sx={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }}
+    />
+  );
+}
 
 export default function Navbar() {
-  const theme    = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const navigate = useNavigate()
+  const muiTheme = useTheme();
+  const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const openModal = useRegistrationStore((s) => s.openModal);
 
-  const scrollTo = (href: string) => {
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
-    setDrawerOpen(false)
-  }
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const isActive = (href: string) =>
+    href === '/' ? location.pathname === '/' : location.pathname === href;
+
+  const goTo = (href: string) => {
+    navigate(href);
+    setDrawerOpen(false);
+  };
 
   return (
-    <AppBar position="sticky" sx={navbarStyles.appBar}>
-      <Toolbar sx={navbarStyles.toolbar}>
-        <Typography variant="h6" fontWeight={700} letterSpacing={0.5} color="white">
-          HariPrabodham Germany
-        </Typography>
+    <AppBar
+      position="fixed"
+      elevation={0}
+      className={scrolled ? 'scrolled' : ''}
+      sx={s.appBar}
+    >
+      <Toolbar sx={s.toolbar} disableGutters>
+        {/* ── Brand ── */}
+        <Box sx={s.brandBox} onClick={() => navigate('/')}>
+          <BrandLogo />
+          <Typography sx={s.brandText}>
+            Hari Prabodham
+            <Typography component="small" sx={s.brandSub}>
+              Amrut Mahotsav
+            </Typography>
+          </Typography>
+        </Box>
 
         {isMobile ? (
+          /* ── Mobile ── */
           <>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton
-              color="inherit"
-              onClick={() => navigate('/admin/login')}
-              title="Admin"
-            >
-              <AdminPanelSettingsIcon />
-            </IconButton>
-            <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
-              <MenuIcon />
-            </IconButton>
+              <IconButton onClick={() => setDrawerOpen(true)} sx={s.iconColor}>
+                <MenuIcon />
+              </IconButton>
             </Box>
-            <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-              <Box sx={navbarStyles.drawerBox}>
+
+            <Drawer
+              anchor="right"
+              open={drawerOpen}
+              onClose={() => setDrawerOpen(false)}
+              slotProps={{ paper: { sx: s.drawerBox } }}
+            >
+              <Box sx={{ p: 2 }}>
                 <List>
                   {NAV_LINKS.map((link) => (
                     <ListItem key={link.href} disablePadding>
-                      <ListItemButton onClick={() => scrollTo(link.href)}>
+                      <ListItemButton
+                        onClick={() => goTo(link.href)}
+                        sx={[
+                          s.drawerLink,
+                          isActive(link.href) && { background: C.lavender50 },
+                        ] as SxProps<Theme>}
+                      >
                         <ListItemText primary={link.label} />
                       </ListItemButton>
                     </ListItem>
                   ))}
-                  <ListItem disablePadding>
-                    <ListItemButton onClick={() => scrollTo('#register')}>
-                      <ListItemText primary="Register" sx={{ color: 'secondary.main', fontWeight: 700 }} />
-                    </ListItemButton>
+                  <ListItem disablePadding sx={{ mt: 1.5 }}>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      onClick={() => {
+                        openModal();
+                        setDrawerOpen(false);
+                      }}
+                    >
+                      Register Now
+                    </Button>
                   </ListItem>
                 </List>
               </Box>
             </Drawer>
           </>
         ) : (
-          <Box sx={navbarStyles.desktopNav}>
+          /* ── Desktop ── */
+          <Box sx={s.desktopNav}>
             {NAV_LINKS.map((link) => (
               <Button
                 key={link.href}
-                onClick={() => scrollTo(link.href)}
-                sx={navbarStyles.navButton}
+                onClick={() => goTo(link.href)}
+                disableRipple
+                sx={[
+                  s.navButton,
+                  isActive(link.href) && {
+                    color: C.gold700,
+                    '&::after': { transform: 'scaleX(1)' },
+                  },
+                ] as SxProps<Theme>}
               >
                 {link.label}
               </Button>
             ))}
+
             <Button
               variant="contained"
-              color="secondary"
-              onClick={() => scrollTo('#register')}
-              sx={navbarStyles.registerButton}
+              size="large"
+              onClick={openModal}
+              sx={s.registerButton}
             >
-              Register
+              Register Now
             </Button>
-            <IconButton
-              onClick={() => navigate('/admin/login')}
-              sx={{ color: 'white', ml: 0.5 }}
-              title="Admin"
-            >
-              <AdminPanelSettingsIcon />
-            </IconButton>
+
           </Box>
         )}
       </Toolbar>
     </AppBar>
-  )
+  );
 }

@@ -17,6 +17,7 @@ interface RegistrationState {
   members:       MemberDetail[]
   termsAccepted: boolean
   confirmRef:    string
+  modalOpen:     boolean
 
   setStep:       (step: number) => void
   setGroupInfo:  (info: GroupInfo) => void
@@ -24,6 +25,8 @@ interface RegistrationState {
   setTerms:      (accepted: boolean) => void
   setConfirmRef: (ref: string) => void
   reset:         () => void
+  openModal:     () => void
+  closeModal:    () => void
 }
 
 const defaultGroupInfo: GroupInfo = {
@@ -38,6 +41,7 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
   members:       [],
   termsAccepted: false,
   confirmRef:    '',
+  modalOpen:     false,
 
   setStep:       (step) => set({ currentStep: step }),
   setGroupInfo:  (info) => set({ groupInfo: info }),
@@ -56,4 +60,6 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
     termsAccepted: false,
     confirmRef:    '',
   }),
+  openModal:     () => set({ modalOpen: true }),
+  closeModal:    () => set({ modalOpen: false }),
 }))

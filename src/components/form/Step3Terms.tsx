@@ -1,26 +1,36 @@
-// src/components/form/Step3Terms.tsx
-// Step 3 of the registration form.
-// Displays the event terms and conditions and requires the user to agree before payment.
-
 import { useState } from 'react'
 import {
   Typography, Box, Checkbox, FormControlLabel, Button, Alert,
 } from '@mui/material'
 import { useRegistrationStore } from '../../store/registrationStore'
-import { TERMS } from '../../data/data'
 import { step3Styles } from './Step3Terms.styles'
 import { sharedFormStyles } from './formShared.styles'
+import { C } from '../../theme/theme'
+
+const GDPR_POINTS = [
+  {
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
+    text: 'By registering, you consent to the processing of your personal data under the EU GDPR (DSGVO) and German BDSG, solely for registration and event logistics.',
+  },
+  {
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" />
+      </svg>
+    ),
+    text: 'You may access, correct, or request deletion of your data, or withdraw consent at any time, by contacting the organising team.',
+  },
+]
 
 export default function Step3Terms() {
   const { termsAccepted, setTerms, setStep } = useRegistrationStore()
-
-  // Local checkbox state — mirrors the store so the user's previous choice is preserved on back-nav
   const [checked, setChecked] = useState(termsAccepted)
-
-  // Controls the warning shown when the user tries to continue without ticking the box
   const [error, setError] = useState(false)
 
-  // Validates that the box is checked, then saves to store and advances to Step 4
   const handleNext = () => {
     if (!checked) { setError(true); return }
     setTerms(true)
@@ -29,18 +39,51 @@ export default function Step3Terms() {
 
   return (
     <Box>
-      <Typography variant="h5" color="primary" fontWeight={700} mb={0.5}>
-        In the Spirit of Seva
-      </Typography>
-      <Typography color="text.secondary" fontSize={15} mb={2}>
-        By registering for this event, you agree to the following:
-      </Typography>
-
-      <Box sx={step3Styles.termsBox}>
-        {TERMS}
+      {/* Step heading */}
+      <Box sx={{ mb: 3 }}>
+        <Typography
+          sx={{
+            fontFamily: '"Cormorant Garamond", serif',
+            fontSize: { xs: '1.55rem', sm: '1.75rem' },
+            fontWeight: 700,
+            fontStyle: 'italic',
+            color: C.purple800,
+            lineHeight: 1.2,
+            mb: 0.5,
+          }}
+        >
+          Data Protection
+        </Typography>
+        <Typography color="text.secondary" fontSize={14.5}>
+          Your data is handled with the same care we bring to our seva.
+        </Typography>
       </Box>
 
-      {/* Only shown after the user tries to proceed without accepting */}
+      {/* GDPR card */}
+      <Box sx={step3Styles.termsBox}>
+        {/* Points */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.75 }}>
+          {GDPR_POINTS.map((point, i) => (
+            <Box key={i} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+              <Box
+                sx={{
+                  width: 30, height: 30, borderRadius: '8px', flexShrink: 0, mt: '1px',
+                  background: `rgba(200,135,42,0.10)`,
+                  border: `1px solid rgba(200,135,42,0.22)`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: C.gold700,
+                }}
+              >
+                {point.icon}
+              </Box>
+              <Typography fontSize={13.5} color="text.secondary" lineHeight={1.7}>
+                {point.text}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+
       {error && (
         <Alert severity="warning" sx={step3Styles.alert}>
           Please agree to the terms and conditions to continue.
