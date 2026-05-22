@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   Dialog, DialogTitle, DialogContent,
   IconButton, Typography, Box,
@@ -17,8 +17,13 @@ import { C } from '../../theme/theme'
 export default function RegisterModal() {
   const theme    = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const { modalOpen, closeModal, currentStep } = useRegistrationStore()
+
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0, behavior: 'instant' })
+  }, [currentStep])
 
   const stepComponents: Record<number, React.ReactElement> = {
     1: <Step1GroupInfo />,
@@ -115,7 +120,7 @@ export default function RegisterModal() {
       </DialogTitle>
 
       {/* ── Content ── */}
-      <DialogContent sx={{ px: { xs: 2, md: 4 }, pb: 4, pt: 2 }}>
+      <DialogContent ref={contentRef} sx={{ px: { xs: 2, md: 4 }, pb: 4, pt: 2 }}>
         <Box sx={{ textAlign: 'center', mb: 3 }}>
           <Typography
             variant="h3"

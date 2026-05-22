@@ -10,6 +10,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import { useRegistrationStore } from '../../store/registrationStore'
 import { FOOTER, EVENT } from '../../data/data'
 import { step5Styles } from './Step5Confirmation.styles'
+import HotelRecommendation from './HotelRecommendation'
 
 export default function Step5Confirmation() {
   const { confirmRef, members, reset } = useRegistrationStore()
@@ -55,6 +56,8 @@ export default function Step5Confirmation() {
       <Button variant="outlined" onClick={reset}>
         Register Another Group
       </Button>
+
+      <HotelRecommendation />
     </Box>
   )
 }

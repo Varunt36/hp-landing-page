@@ -8,6 +8,8 @@ export const C = {
   lavender100:  '#EBE3F7',
   lavender200:  '#D4C3EA',
   lavender300:  '#B89DD2',
+  lavender400:  '#A8A4CC',
+  purple600:    '#7c669b',
   purple700:    '#6B4A96',
   purple800:    '#4B2D6E',
   purple900:    '#301850',
@@ -17,6 +19,7 @@ export const C = {
   gold700:      '#6B4E18',
   green600:     '#3A7058',
   green700:     '#2B5539',
+  green800:     '#1e5c3a',
   teal500:      '#78C4BF',
   teal600:      '#1E9D96',
   teal700:      '#148882',
@@ -26,7 +29,7 @@ export const C = {
 
 const FONT_SERIF = '"Cormorant Garamond", "Cormorant", Georgia, serif'
 const FONT_SANS  = '"Inter", system-ui, -apple-system, sans-serif'
-const FONT_DEVA  = '"Tiro Devanagari Sanskrit", "Noto Serif Devanagari", serif'
+
 
 const baseTheme = createTheme({
   palette: {
@@ -97,29 +100,11 @@ const baseTheme = createTheme({
 const theme = responsiveFontSizes(baseTheme, { factor: 1.5 })
 export default theme
 
-// Named exports for direct use in components
 export const PRIMARY   = C.purple700
 export const SECONDARY = C.gold500
-export const ACCENT    = C.gold500
-export const OFF_WHITE = C.cream
-export const MUTED     = C.muted
-export const DARK      = C.purple800
-export const INK       = C.ink
 
 export const HERO_GRADIENT = [
   `radial-gradient(900px 500px at 18% 30%, ${C.lavender100}CC, transparent 70%)`,
   `radial-gradient(700px 480px at 80% 60%, ${C.lavender50}CC, transparent 72%)`,
   `linear-gradient(180deg, ${C.cream} 0%, ${C.cream2} 100%)`,
 ].join(', ')
-
-export const HERO_IS_LIGHT       = true
-export const HERO_WAVE_COLOR     = C.lavender200
-export const HERO_CIRCLE_FRAME   = false
-export const KALASH_CIRCLE       = false
-export const CIRCLE_COLOR        = 'rgba(255,255,255,0.65)'
-export const NAV_BG              = 'transparent'
-export const FEATURE_BG          = `linear-gradient(135deg, ${C.purple800}, ${C.purple900})`
-export const FEATURE_TEXT        = C.cream
-
-export const FONT_SERIF_EXPORT   = FONT_SERIF
-export const FONT_DEVA_EXPORT    = FONT_DEVA

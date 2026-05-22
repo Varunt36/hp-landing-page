@@ -19,8 +19,8 @@ import type { SxProps, Theme } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { NAV_LINKS } from '../../data/data';
 import { navbarStyles as s } from './Navbar.styles';
-import { useRegistrationStore } from '../../store/registrationStore';
 import { C } from '../../theme/theme';
+import { useRegistrationStore } from '../../store/registrationStore';
 
 function BrandLogo() {
   return (
@@ -28,7 +28,13 @@ function BrandLogo() {
       component="img"
       src="/images/Final%20Logo.png"
       alt="Hari Prabodham Logo"
-      sx={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }}
+      fetchPriority="high"
+      sx={{
+        width: { xs: 72, md: 110 },
+        height: { xs: 72, md: 110 },
+        objectFit: 'contain',
+        flexShrink: 0,
+      }}
     />
   );
 }
@@ -65,11 +71,14 @@ export default function Navbar() {
     >
       <Toolbar sx={s.toolbar} disableGutters>
         {/* ── Brand ── */}
-        <Box sx={s.brandBox} onClick={() => navigate('/')}>
+        <Box sx={s.brandBox} onClick={() => navigate('/')} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && navigate('/')} aria-label="Go to home page">
           <BrandLogo />
           <Typography sx={s.brandText}>
             Hari Prabodham
-            <Typography component="small" sx={s.brandSub}>
+            <Typography
+              component="small"
+              sx={{ ...s.brandSub, color: C.purple600 }}
+            >
               Amrut Mahotsav
             </Typography>
           </Typography>
@@ -96,10 +105,12 @@ export default function Navbar() {
                     <ListItem key={link.href} disablePadding>
                       <ListItemButton
                         onClick={() => goTo(link.href)}
-                        sx={[
-                          s.drawerLink,
-                          isActive(link.href) && { background: C.lavender50 },
-                        ] as SxProps<Theme>}
+                        sx={
+                          [
+                            s.drawerLink,
+                            isActive(link.href) && { background: C.purple600 },
+                          ] as SxProps<Theme>
+                        }
                       >
                         <ListItemText primary={link.label} />
                       </ListItemButton>
@@ -129,13 +140,15 @@ export default function Navbar() {
                 key={link.href}
                 onClick={() => goTo(link.href)}
                 disableRipple
-                sx={[
-                  s.navButton,
-                  isActive(link.href) && {
-                    color: C.gold700,
-                    '&::after': { transform: 'scaleX(1)' },
-                  },
-                ] as SxProps<Theme>}
+                sx={
+                  [
+                    s.navButton,
+                    isActive(link.href) && {
+                      color: C.purple600,
+                      '&::after': { transform: 'scaleX(1)' },
+                    },
+                  ] as SxProps<Theme>
+                }
               >
                 {link.label}
               </Button>
@@ -149,7 +162,6 @@ export default function Navbar() {
             >
               Register Now
             </Button>
-
           </Box>
         )}
       </Toolbar>

@@ -11,7 +11,7 @@ import {
 import { useRegistrationStore } from '../../store/registrationStore'
 import { COUNTRIES, MAX_GROUP_SIZE } from '../../data/data'
 import { step1Styles } from './Step1GroupInfo.styles'
-import { sharedFormStyles } from './formShared.styles'
+import { sharedFormStyles } from './FormShared.styles'
 
 export default function Step1GroupInfo() {
   const { groupInfo, setGroupInfo, setStep } = useRegistrationStore()

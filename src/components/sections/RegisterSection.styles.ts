@@ -1,9 +1,9 @@
 import type { SxProps, Theme } from '@mui/material'
+import { C } from '../../theme/theme'
 
 export const registerStyles: Record<string, SxProps<Theme>> = {
-  // Outer section — radial gradient so the glass card has depth behind it
   outerBox: {
-    background: 'radial-gradient(ellipse at top, rgba(45,43,107,0.08) 0%, #FDF8F0 60%)',
+    background: `radial-gradient(ellipse at top, ${C.purple900}14 0%, ${C.cream} 60%)`,
     py: { xs: 7, md: 10 },
   },
 

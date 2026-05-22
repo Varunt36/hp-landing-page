@@ -4,7 +4,7 @@ import { Box, Typography, Button, Container, Stack } from '@mui/material';
 import { heroStyles as s } from './HeroSection.styles';
 import { useRegistrationStore } from '../../store/registrationStore';
 
-const EVENT_DATE = new Date('2026-08-15T00:00:00');
+const EVENT_DATE = new Date('2026-08-15T00:00:00+02:00'); // Berlin CEST
 
 function useCountdown() {
   const [t, setT] = useState({ d: 0, h: 0, m: 0, sec: 0 });
@@ -50,6 +50,7 @@ export default function HeroSection() {
           component="img"
           src="/images/DSC01446.png"
           alt="Pujya Swamiji"
+          fetchPriority="high"
           sx={s.portraitImg}
         />
       </Box>
@@ -81,6 +82,7 @@ export default function HeroSection() {
                 Register Now
                 <Box
                   component="svg"
+                  aria-hidden="true"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -107,6 +109,16 @@ export default function HeroSection() {
                   <Typography sx={s.cdLabel}>{label}</Typography>
                 </Box>
               ))}
+            </Box>
+
+            {/* Portrait — mobile only, shown below countdown */}
+            <Box sx={s.portraitMobileWrap}>
+              <Box
+                component="img"
+                src="/images/DSC01446.png"
+                alt="Pujya Swamiji"
+                sx={s.portraitMobileImg}
+              />
             </Box>
           </Box>
 

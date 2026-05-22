@@ -7,8 +7,10 @@ import { useSearchParams } from 'react-router-dom'
 import { Box, Typography, Button, Paper } from '@mui/material'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import { paymentCancelStyles as s } from './PaymentCancel.styles'
+import { usePageMeta } from '../hooks/usePageMeta'
 
 export default function PaymentCancel() {
+  usePageMeta('Payment Cancelled', 'Your payment was cancelled — no charge was made. Return to register for HP Amrut Mahotsav 2026.')
   const [params] = useSearchParams()
   // Prefer query param (set by backend in Stripe cancel_url); fall back to sessionStorage
   const ref = params.get('ref') || sessionStorage.getItem('hp_confirm_ref')

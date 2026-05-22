@@ -8,10 +8,12 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Box, Typography, Button, Paper } from '@mui/material'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import { paymentSuccessStyles as s } from './PaymentSuccess.styles'
+import { usePageMeta } from '../hooks/usePageMeta'
 
-const REDIRECT_SECONDS = 15
+const REDIRECT_SECONDS = 8
 
 export default function PaymentSuccess() {
+  usePageMeta('Registration Confirmed', 'Your registration for HP Amrut Mahotsav 2026 is confirmed. See you in Berlin!')
   const [params] = useSearchParams()
   const navigate = useNavigate()
   // Prefer query param (set by backend in Stripe success_url); fall back to sessionStorage
@@ -21,7 +23,7 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
     if (countdown <= 0) {
-      navigate('/')
+      navigate('/hotel-offer')
       return
     }
     const timer = setTimeout(() => setCountdown(c => c - 1), 1000)
@@ -49,11 +51,11 @@ export default function PaymentSuccess() {
         </Typography>
 
         <Typography variant="body2" color="text.secondary" mb={3}>
-          Redirecting to home in <strong>{countdown}</strong> second{countdown !== 1 ? 's' : ''}…
+          Redirecting in <strong>{countdown}</strong> second{countdown !== 1 ? 's' : ''}…
         </Typography>
 
-        <Button variant="contained" onClick={() => navigate('/')}>
-          Back to Home
+        <Button variant="contained" onClick={() => navigate('/hotel-offer')}>
+          Plan Your Stay →
         </Button>
       </Paper>
     </Box>

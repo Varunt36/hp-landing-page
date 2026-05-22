@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /payment/
+
+Sitemap: https://hariprabodham.de/sitemap.xml

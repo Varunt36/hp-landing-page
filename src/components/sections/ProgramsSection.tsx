@@ -52,11 +52,11 @@ export default function ProgramsSection() {
           <Typography
             component="span"
             sx={{
-              fontFamily: '"Inter", sans-serif',
-              fontSize: '0.7rem',
+              fontFamily: '"Blue Mirage", serif',
+              fontSize: '1rem',
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: C.green700,
+              color: C.purple600,
               fontWeight: 600,
             }}
           >
@@ -64,7 +64,11 @@ export default function ProgramsSection() {
           </Typography>
           <Typography
             variant="h2"
-            sx={{ mt: 1, fontSize: { xs: '1.7rem', md: 'clamp(1.7rem, 3.4vw, 2.75rem)' }, color: C.purple800 }}
+            sx={{
+              mt: 1,
+              fontSize: { xs: '1.7rem', md: 'clamp(1.7rem, 3.4vw, 2.75rem)' },
+              color: C.purple800,
+            }}
           >
             A divine celebration of awakening, unity &amp; selfless service.
           </Typography>
@@ -78,8 +82,9 @@ export default function ProgramsSection() {
               color: C.ink,
             }}
           >
-            A three-day gathering of discourses, devotional music, and sevā — honouring timeless
-            wisdom and rekindling the inner flame of love, compassion, and oneness.
+            A three-day gathering of discourses, devotional music, and sevā
+            honouring timeless wisdom and rekindling the inner flame of love,
+            compassion, and oneness.
           </Typography>
         </Box>
 
@@ -87,37 +92,98 @@ export default function ProgramsSection() {
         <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 5 } }}>
           <Typography
             component="span"
-            sx={{ fontSize: '0.7rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: C.green700, fontWeight: 600 }}
+            sx={{
+              fontFamily: '"Blue Mirage", serif',
+              fontSize: '1rem',
+              color: C.purple600,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              fontWeight: 600,
+            }}
           >
             Three Days · Three Journeys
           </Typography>
           <Typography variant="h2" sx={{ mt: 1, color: C.purple800 }}>
             The Programs
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.25, mt: 1.75, color: C.gold600, fontSize: 14 }}>
-            <Box sx={{ height: '1px', width: 40, background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)` }} />
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 1.25,
+              mt: 1.75,
+              color: C.gold600,
+              fontSize: 14,
+            }}
+          >
+            <Box
+              sx={{
+                height: '1px',
+                width: 40,
+                background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)`,
+              }}
+            />
             ✦
-            <Box sx={{ height: '1px', width: 40, background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)` }} />
+            <Box
+              sx={{
+                height: '1px',
+                width: 40,
+                background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)`,
+              }}
+            />
           </Box>
         </Box>
 
         {/* ── Day cards ── */}
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: { xs: 2.5, md: 2.75 } }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+            gap: { xs: 2.5, md: 2.75 },
+          }}
+        >
           {DAYS.map(({ num, title, date, desc }) => (
             <Box key={num} sx={card}>
-              <Typography sx={{ fontFamily: '"Cormorant Garamond", serif', fontStyle: 'italic', color: C.gold700, fontSize: 14, letterSpacing: '0.04em' }}>
+              <Typography
+                sx={{
+                  fontFamily: '"Cormorant Garamond", serif',
+                  fontStyle: 'italic',
+                  color: C.gold700,
+                  fontSize: 14,
+                  letterSpacing: '0.04em',
+                }}
+              >
                 {num}
               </Typography>
-              <Typography variant="h3" sx={{ fontSize: { xs: '1.5rem', md: '1.625rem' }, mt: 0.75, color: C.purple800 }}>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontSize: { xs: '1.5rem', md: '1.625rem' },
+                  mt: 0.75,
+                  color: C.purple800,
+                }}
+              >
                 {title}
               </Typography>
-              <Typography sx={{ color: C.green700, fontSize: 14, mt: 0.5, fontWeight: 500 }}>
+              <Typography
+                sx={{
+                  fontFamily: '"Blue Mirage", serif',
+                  color: C.purple600,
+                  fontSize: 15,
+                  mt: 0.5,
+                }}
+              >
                 {date}
               </Typography>
               <Typography
                 sx={{
-                  mt: 1.75, fontSize: { xs: 14, md: 14.5 }, lineHeight: 1.55,
-                  color: C.muted, fontFamily: '"Cormorant Garamond", serif', fontStyle: 'italic',
+                  mt: 1.75,
+                  fontSize: { xs: 14, md: 14.5 },
+                  lineHeight: 1.55,
+                  color: C.muted,
+                  fontFamily: '"Cormorant Garamond", serif',
+                  fontStyle: 'italic',
                   whiteSpace: 'pre-line',
                 }}
               >
@@ -128,5 +194,5 @@ export default function ProgramsSection() {
         </Box>
       </Container>
     </Box>
-  )
+  );
 }

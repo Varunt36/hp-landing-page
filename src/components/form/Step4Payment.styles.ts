@@ -1,5 +1,5 @@
 // src/components/form/Step4Payment.styles.ts
-// navBox/backButton come from formShared.styles.ts.
+// navBox/backButton come from FormShared.styles.ts.
 // The Pay button has its own sx on the component (shimmer + gradient) extending sharedFormStyles.nextButton.
 import type { SxProps, Theme } from '@mui/material'
 import { C } from '../../theme/theme'
