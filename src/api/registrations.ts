@@ -20,7 +20,6 @@ export interface RegistrationPayload {
   memberCount:   number
   members:       MemberDetail[]
   termsAccepted: boolean
-  paymentMethod: 'stripe' | 'paypal'
 }
 
 export interface RegistrationResult {
@@ -104,13 +103,12 @@ export async function submitRegistration(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        payment_method: payload.paymentMethod,
+        payment_method: 'stripe',
         country: payload.country,
         karyakarta: payload.karyakarta,
         terms_accepted: payload.termsAccepted,
         members: payload.members.map((m) => ({
           first_name: m.firstName,
-          middle_name: m.middleName || '',
           last_name: m.lastName,
           gender: m.gender,
           dob: m.dob,
