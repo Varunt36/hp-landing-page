@@ -29,6 +29,16 @@ const PRICING = {
   currency: (import.meta.env.VITE_CURRENCY as string) || '€',
 };
 
+const EVENT_DATE = new Date('2026-08-15')
+
+function ageAtEvent(dob: string): number {
+  const birth = new Date(dob)
+  let age = EVENT_DATE.getFullYear() - birth.getFullYear()
+  const m = EVENT_DATE.getMonth() - birth.getMonth()
+  if (m < 0 || (m === 0 && EVENT_DATE.getDate() < birth.getDate())) age--
+  return age
+}
+
 type PayMethod = 'card' | 'paypal';
 
 function CardBrands() {
@@ -124,11 +134,16 @@ function MethodTile({ method, selected, onSelect }: {
   );
 }
 
-// Reads pricing config from data.ts — change perPerson or serviceFeeRate there to update all totals
 function PaymentSummary() {
-  const { groupInfo } = useRegistrationStore();
-  const count = groupInfo.memberCount;
-  const grand = count * PRICING.perPerson;
+  const { groupInfo, members } = useRegistrationStore();
+  const total = groupInfo.memberCount;
+
+  const paidCount = members.filter(m => !m.dob || ageAtEvent(m.dob) >= 5).length
+  const freeCount = members.filter(m => m.dob && ageAtEvent(m.dob) < 5).length
+  // members not yet filled default to paid
+  const unpopulated = total - members.length
+  const effectivePaid = paidCount + unpopulated
+  const grand = effectivePaid * PRICING.perPerson;
 
   return (
     <Box sx={step4Styles.summaryBox}>
@@ -150,9 +165,11 @@ function PaymentSummary() {
       {/* Summary rows */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 1.5 }}>
         <Box sx={step4Styles.summaryRow}>
-          <Typography fontSize={13.5} color="text.secondary">Attendees</Typography>
+          <Typography fontSize={13.5} color="text.secondary">
+            {freeCount > 0 ? 'Attendees (age 5+)' : 'Attendees'}
+          </Typography>
           <Typography fontSize={13.5} fontWeight={600}>
-            {count} {count === 1 ? 'person' : 'persons'}
+            {effectivePaid} {effectivePaid === 1 ? 'person' : 'persons'}
           </Typography>
         </Box>
         <Box sx={step4Styles.summaryRow}>
@@ -161,6 +178,16 @@ function PaymentSummary() {
             {PRICING.currency}{PRICING.perPerson.toFixed(2)}
           </Typography>
         </Box>
+        {freeCount > 0 && (
+          <Box sx={step4Styles.summaryRow}>
+            <Typography fontSize={13.5} color="text.secondary">
+              Children under 5
+            </Typography>
+            <Typography fontSize={13.5} fontWeight={600} color="success.main">
+              {freeCount} {freeCount === 1 ? 'child' : 'children'} — Free
+            </Typography>
+          </Box>
+        )}
       </Box>
 
       <Divider sx={step4Styles.divider} />
@@ -172,6 +199,12 @@ function PaymentSummary() {
           {PRICING.currency}{grand.toFixed(2)}
         </Typography>
       </Box>
+
+      {freeCount > 0 && (
+        <Typography fontSize={12} color="text.secondary" textAlign="center" mt={1}>
+          Children under 5 attend free — registration is still required for all members.
+        </Typography>
+      )}
     </Box>
   );
 }

@@ -11,6 +11,7 @@ export interface MemberDetail {
   dob:        string
   email?:     string
   phone?:     string
+  dialCode?:  string
 }
 
 export interface RegistrationPayload {
@@ -114,7 +115,9 @@ export async function submitRegistration(
           gender: m.gender,
           dob: m.dob,
           email: m.email || null,
-          phone: m.phone ? m.phone.replace(/\+/g, '') : null,
+          phone: m.phone
+            ? `${(m.dialCode ?? '').replace(/\+/g, '')} ${m.phone}`.trim()
+            : null,
         })),
       }),
     });

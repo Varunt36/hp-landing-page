@@ -209,38 +209,6 @@ export default function VenueSection() {
               >
                 Get Directions
               </Button>
-              <Box
-                component="a"
-                href="https://www.radissonhotels.com/en-us/booking/room-display?hotelCode=DEBERAAA&checkInDate=2026-08-15&checkOutDate=2026-08-17&adults%5B%5D=1&children%5B%5D=0&aoc%5B%5D=&searchType=pac&promotionCode=YDSINDZE&voucher=&brands=&brandFirst=&so="
-                target="_blank"
-                rel="noopener"
-                sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 0.75,
-                  fontFamily: '"Cormorant Garamond", serif',
-                  fontStyle: 'italic',
-                  fontSize: '1.1rem',
-                  color: C.green700,
-                  borderBottom: `1px solid ${C.green700}66`,
-                  pb: '2px',
-                  transition: 'color .2s, border-color .2s',
-                  '&:hover': { color: C.gold700, borderBottomColor: C.gold700 },
-                }}
-              >
-                Book Now
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                >
-                  <path d="M7 17L17 7M9 7h8v8" />
-                </svg>
-              </Box>
             </Box>
           </Box>
 
