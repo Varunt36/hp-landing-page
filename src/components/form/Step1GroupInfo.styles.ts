@@ -1,6 +1,6 @@
 // src/components/form/Step1GroupInfo.styles.ts
 // Step 1 uses gap-based spacing (via the fieldStack wrapper in the component)
-// rather than per-field mt values. navBox/nextButton come from formShared.styles.ts.
+// rather than per-field mt values. navBox/nextButton come from FormShared.styles.ts.
 import type { SxProps, Theme } from '@mui/material'
 
 export const step1Styles: Record<string, SxProps<Theme>> = {

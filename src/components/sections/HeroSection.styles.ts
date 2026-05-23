@@ -78,9 +78,9 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     justifyContent: { xs: 'center', md: 'flex-start' },
     gap: '18px',
     mt: 2.5,
-    color: C.green700,
-    fontFamily: '"Cormorant Garamond", serif',
-    fontSize: { xs: '1.1rem', md: '1.25rem' },
+    color: C.purple600,
+    fontFamily: '"Blue Mirage", "Cormorant Garamond", serif',
+    fontSize: { xs: '1.2rem', md: '1.4rem' },
     '&::before, &::after': {
       content: '""',
       height: '1px',
@@ -113,6 +113,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     py: { xs: 1.25, md: 1.75 },
     textAlign: 'center',
     backdropFilter: 'blur(6px)',
+    WebkitBackdropFilter: 'blur(6px)',
   },
   cdNum: {
     fontFamily: '"Cormorant Garamond", serif',
@@ -151,6 +152,22 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
   portraitImg: {
     width: '100%',
     height: '100%',
+    objectFit: 'cover',
+    objectPosition: 'top center',
+    display: 'block',
+  },
+
+  portraitMobileWrap: {
+    display: { xs: 'block', md: 'none' },
+    width: '100%',
+    mt: 4,
+    borderRadius: '18px',
+    overflow: 'hidden',
+  },
+
+  portraitMobileImg: {
+    width: '100%',
+    height: 360,
     objectFit: 'cover',
     objectPosition: 'top center',
     display: 'block',

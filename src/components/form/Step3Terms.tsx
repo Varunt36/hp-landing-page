@@ -4,7 +4,7 @@ import {
 } from '@mui/material'
 import { useRegistrationStore } from '../../store/registrationStore'
 import { step3Styles } from './Step3Terms.styles'
-import { sharedFormStyles } from './formShared.styles'
+import { sharedFormStyles } from './FormShared.styles'
 import { C } from '../../theme/theme'
 
 const GDPR_POINTS = [

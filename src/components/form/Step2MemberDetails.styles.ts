@@ -1,5 +1,5 @@
 // src/components/form/Step2MemberDetails.styles.ts
-// navBox/nextButton/backButton come from formShared.styles.ts.
+// navBox/nextButton/backButton come from FormShared.styles.ts.
 import type { SxProps, Theme } from '@mui/material'
 
 export const step2Styles: Record<string, SxProps<Theme>> = {

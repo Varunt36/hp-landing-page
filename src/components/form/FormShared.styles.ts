@@ -1,4 +1,4 @@
-// src/components/form/formShared.styles.ts
+// src/components/form/FormShared.styles.ts
 // Shared navigation button and layout styles used by all registration form steps.
 // Import sharedFormStyles here instead of duplicating navBox/nextButton per-step.
 

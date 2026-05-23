@@ -6,6 +6,16 @@ export default defineConfig({
   plugins: [react()],
   build: {
     chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react':    ['react', 'react-dom', 'react-router-dom'],
+          'vendor-mui':      ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled'],
+          'vendor-supabase': ['@supabase/supabase-js'],
+          'vendor-qrcode':   ['html5-qrcode'],
+        },
+      },
+    },
   },
   server: {
     proxy: {

@@ -11,7 +11,7 @@ import {
 import { useRegistrationStore } from '../../store/registrationStore'
 import { type MemberDetail } from '../../api/registrations'
 import { step2Styles } from './Step2MemberDetails.styles'
-import { sharedFormStyles } from './formShared.styles'
+import { sharedFormStyles } from './FormShared.styles'
 
 // Default blank member used when a member slot hasn't been filled yet
 const EMPTY_MEMBER: MemberDetail = {
@@ -31,6 +31,7 @@ function validate(form: MemberDetail): Errors {
   if (!form.email?.trim())          errors.email     = 'Email is required.'
   else if (!/\S+@\S+\.\S+/.test(form.email)) errors.email = 'Enter a valid email address.'
   if (!form.phone?.trim())          errors.phone     = 'Mobile number is required.'
+  else if (/[^\d\s\-()+]/.test(form.phone)) errors.phone = 'Only digits, spaces, dashes, and parentheses are allowed.'
   return errors
 }
 
@@ -145,8 +146,8 @@ export default function Step2MemberDetails() {
 
         <TextField fullWidth label="Mobile number *" type="tel"
           value={form.phone ?? ''} onChange={(e) => updateField('phone', e.target.value)}
-          placeholder="+49 123 456789"
-          error={!!errors.phone} helperText={errors.phone}
+          placeholder="49 123 456789"
+          error={!!errors.phone} helperText={errors.phone ?? 'Digits, spaces, dashes, and parentheses only — no + sign'}
         />
       </Box>
 

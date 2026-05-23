@@ -3,6 +3,7 @@
 // Shows numbered circles (pending), filled circles (active/complete), and connecting lines.
 
 import { Box, Typography } from '@mui/material'
+import { C } from '../../theme/theme'
 import CheckIcon from '@mui/icons-material/Check'
 import { useRegistrationStore } from '../../store/registrationStore'
 import { progressStyles } from './ProgressStepper.styles'
@@ -10,8 +11,7 @@ import { PRIMARY, SECONDARY } from '../../theme/theme'
 
 const STEPS = ['Group', 'Members', 'Terms', 'Payment', 'Done']
 
-// Muted color for inactive step circles — intentionally dimmer than theme.MUTED
-const STEP_MUTED = '#A8A4CC'
+const STEP_MUTED = C.lavender400
 
 type CircleProps = { index: number; activeStep: number }
 

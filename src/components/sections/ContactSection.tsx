@@ -40,24 +40,61 @@ const CONTACTS = [
 
 export default function ContactSection() {
   return (
-    <Box
-      id="contact"
-      sx={{ background: C.cream, py: { xs: 10, md: 13 } }}
-    >
+    <Box id="contact" sx={{ background: C.cream, py: { xs: 10, md: 13 } }}>
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 6 } }}>
-          <Typography component="span" sx={{ fontSize: '0.7rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: C.green700, fontWeight: 600 }}>
+          <Typography
+            component="span"
+            sx={{
+              fontFamily: '"Blue Mirage", serif',
+              fontSize: '1rem',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: C.purple600,
+              fontWeight: 600,
+            }}
+          >
             Reach Out
           </Typography>
-          <Typography variant="h2" sx={{ mt: 1, color: C.purple800 }}>Contact</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.25, mt: 1.75, color: C.gold600, fontSize: 14 }}>
-            <Box sx={{ height: '1px', width: 40, background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)` }} />
+          <Typography variant="h2" sx={{ mt: 1, color: C.purple800 }}>
+            Contact
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 1.25,
+              mt: 1.75,
+              color: C.gold600,
+              fontSize: 14,
+            }}
+          >
+            <Box
+              sx={{
+                height: '1px',
+                width: 40,
+                background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)`,
+              }}
+            />
             ✦
-            <Box sx={{ height: '1px', width: 40, background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)` }} />
+            <Box
+              sx={{
+                height: '1px',
+                width: 40,
+                background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)`,
+              }}
+            />
           </Box>
         </Box>
 
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: { xs: 2.5, md: 2.75 } }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
+            gap: { xs: 2.5, md: 2.75 },
+          }}
+        >
           {CONTACTS.map(({ icon, title, sub, link, linkText }) => (
             <Box
               key={title}
@@ -67,38 +104,64 @@ export default function ContactSection() {
                 borderRadius: '18px',
                 p: { xs: 3.5, md: 4 },
                 textAlign: 'center',
-                transition: 'transform .25s ease, border-color .25s ease, box-shadow .25s ease',
+                transition:
+                  'transform .25s ease, border-color .25s ease, box-shadow .25s ease',
                 '&:hover': {
                   transform: 'translateY(-3px)',
-                  borderColor: `${C.gold500}80`,
-                  boxShadow: '0 1px 2px rgba(60,30,90,0.06), 0 4px 14px rgba(60,30,90,0.06)',
+                  borderColor: `${C.purple600}80`,
+                  boxShadow:
+                    '0 1px 2px rgba(60,30,90,0.06), 0 4px 14px rgba(60,30,90,0.06)',
                 },
               }}
             >
               <Box
                 sx={{
-                  width: 56, height: 56, borderRadius: '50%',
+                  width: 56,
+                  height: 56,
+                  borderRadius: '50%',
                   background: C.lavender50,
                   border: `1px solid ${C.gold500}80`,
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  color: C.purple700, mb: 1.75,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: C.purple700,
+                  mb: 1.75,
                 }}
               >
                 {icon}
               </Box>
-              <Typography variant="h3" sx={{ fontSize: '1.375rem', fontStyle: 'italic', color: C.purple700 }}>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontSize: '1.375rem',
+                  fontStyle: 'italic',
+                  fontFamily: '"Blue Mirage", serif',
+                  color: C.purple700,
+                }}
+              >
                 {title}
               </Typography>
-              <Typography sx={{ fontSize: 14.5, mt: 0.75, color: C.muted }}>
+              <Typography
+                sx={{
+                  fontSize: '1rem',
+                  mt: 0.75,
+                  fontFamily: '"Blue Mirage", serif',
+                  color: C.purple600,
+                }}
+              >
                 {sub}
               </Typography>
               <Box
                 component="a"
                 href={link}
                 sx={{
-                  display: 'block', mt: 1, color: C.green700,
-                  fontWeight: 500, fontSize: 15,
-                  '&:hover': { color: C.gold600 },
+                  display: 'block',
+                  mt: 1,
+                  color: C.purple600,
+                  fontFamily: '"Blue Mirage", serif',
+                  fontWeight: 500,
+                  fontSize: 20,
+                  '&:hover': { color: C.purple600 },
                 }}
               >
                 {linkText}
@@ -108,5 +171,5 @@ export default function ContactSection() {
         </Box>
       </Container>
     </Box>
-  )
+  );
 }

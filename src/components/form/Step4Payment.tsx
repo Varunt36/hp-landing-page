@@ -2,7 +2,7 @@
 // Shows a cost breakdown for all members, then submits the full registration payload
 // to the backend. On success, the user is redirected to Stripe's hosted checkout page.
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Typography,
   Box,
@@ -16,14 +16,18 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 import CheckIcon from '@mui/icons-material/Check';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import { useRegistrationStore } from '../../store/registrationStore';
-import { PRICING } from '../../data/data';
 import {
   submitRegistration,
   type RegistrationPayload,
 } from '../../api/registrations';
 import { step4Styles } from './Step4Payment.styles';
-import { sharedFormStyles } from './formShared.styles';
+import { sharedFormStyles } from './FormShared.styles';
 import { C } from '../../theme/theme';
+
+const PRICING = {
+  perPerson: Number(import.meta.env.VITE_PRICE_PER_PERSON) || 290,
+  currency: (import.meta.env.VITE_CURRENCY as string) || '€',
+};
 
 type PayMethod = 'card' | 'paypal';
 
@@ -174,8 +178,15 @@ function PaymentSummary() {
 
 export default function Step4Payment() {
   const [loading, setLoading] = useState(false);
+  const [slowRequest, setSlowRequest] = useState(false);
   const [error, setError] = useState('');
   const [payMethod, setPayMethod] = useState<PayMethod>('card');
+
+  useEffect(() => {
+    if (!loading) { setSlowRequest(false); return }
+    const t = setTimeout(() => setSlowRequest(true), 6_000)
+    return () => clearTimeout(t)
+  }, [loading]);
   const { groupInfo, members, termsAccepted, setStep, setConfirmRef } =
     useRegistrationStore();
 
@@ -241,8 +252,24 @@ export default function Step4Payment() {
         </Typography>
       </Box>
 
+      {slowRequest && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Taking longer than usual — our server may be waking up. Please wait a moment.
+        </Alert>
+      )}
+
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert
+          severity="error"
+          sx={{ mb: 2, whiteSpace: 'pre-line' }}
+          action={
+            error.includes('Member') ? (
+              <Button color="inherit" size="small" onClick={() => setStep(2)}>
+                Fix Details
+              </Button>
+            ) : undefined
+          }
+        >
           {error}
         </Alert>
       )}

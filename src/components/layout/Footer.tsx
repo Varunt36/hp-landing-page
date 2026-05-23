@@ -61,7 +61,10 @@ export default function Footer() {
               <Box
                 key={link.href}
                 component="li"
+                role="button"
+                tabIndex={0}
                 onClick={() => navigate(link.href)}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && navigate(link.href)}
                 sx={{
                   fontSize: 14.5, color: `${C.cream}CC`, cursor: 'pointer',
                   '&:hover': { color: C.gold300 },
@@ -73,7 +76,10 @@ export default function Footer() {
             ))}
             <Box
               component="li"
+              role="button"
+              tabIndex={0}
               onClick={openModal}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && openModal()}
               sx={{
                 fontSize: 14.5, color: `${C.cream}CC`, cursor: 'pointer',
                 '&:hover': { color: C.gold300 },
@@ -100,8 +106,20 @@ export default function Footer() {
           }}
         >
           <Typography sx={{ fontSize: 'inherit', color: 'inherit' }}>{FOOTER.legal}</Typography>
-          <Box component="a" href={`mailto:${FOOTER.email}`} sx={{ color: `${C.cream}99`, '&:hover': { color: C.gold300 }, transition: 'color .2s', fontSize: 13 }}>
-            {FOOTER.email}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5, flexWrap: 'wrap' }}>
+            <Box
+              component="span"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate('/impressum')}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && navigate('/impressum')}
+              sx={{ color: `${C.cream}99`, cursor: 'pointer', fontSize: 13, '&:hover': { color: C.gold300 }, transition: 'color .2s' }}
+            >
+              Impressum
+            </Box>
+            <Box component="a" href={`mailto:${FOOTER.email}`} sx={{ color: `${C.cream}99`, '&:hover': { color: C.gold300 }, transition: 'color .2s', fontSize: 13 }}>
+              {FOOTER.email}
+            </Box>
           </Box>
         </Box>
       </Container>
