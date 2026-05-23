@@ -204,7 +204,7 @@ export default function Step4Payment() {
         memberCount: groupInfo.memberCount,
         members,
         termsAccepted,
-        paymentMethod: payMethod === 'card' ? 'stripe' : 'paypal',
+        amount: groupInfo.memberCount * PRICING.perPerson,
       };
       const result = await submitRegistration(payload);
 
