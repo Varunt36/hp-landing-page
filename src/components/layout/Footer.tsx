@@ -22,14 +22,22 @@ export default function Footer() {
           <Typography
             sx={{
               fontFamily: '"Cormorant Garamond", serif',
-              fontStyle: 'italic',
               fontSize: { xs: '1.25rem', md: 'clamp(1.25rem, 2.4vw, 1.75rem)' },
               color: C.cream,
               lineHeight: 1.4,
             }}
           >
-            Na Mein Rahoon Na Meri Aarzoo Rahe | May neither I nor my desires
-            remain.
+            Na Mein Rahoon Na Meri Aarzoo Rahe
+          </Typography>
+                 <Typography
+            sx={{
+              fontFamily: '"Cormorant Garamond", serif',
+              fontSize: { xs: '1.25rem', md: 'clamp(1.25rem, 2.4vw, 1.75rem)' },
+              color: C.cream,
+              lineHeight: 1.4,
+            }}
+          >
+            May neither I nor my desires remain.
           </Typography>
           <Typography
             sx={{
