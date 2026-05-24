@@ -53,7 +53,9 @@ export default function RegisterModal() {
             '&::before': {
               content: '""',
               position: 'absolute',
-              top: 0, left: 0, right: 0,
+              top: 0,
+              left: 0,
+              right: 0,
               height: '4px',
               background: `linear-gradient(90deg, ${C.gold500}, ${C.lavender300}, ${C.gold500})`,
               zIndex: 1,
@@ -87,7 +89,7 @@ export default function RegisterModal() {
             fontSize: '0.68rem',
             letterSpacing: '0.18em',
             textTransform: 'uppercase',
-            color: C.green700,
+            color: C.purple600,
             fontWeight: 600,
             mb: 1,
           }}
@@ -113,14 +115,34 @@ export default function RegisterModal() {
             mt: 1.5,
           }}
         >
-          <Box sx={{ height: '1px', width: 36, background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)` }} />
-          <Typography component="span" sx={{ color: C.gold600, fontSize: 12, lineHeight: 1 }}>✦</Typography>
-          <Box sx={{ height: '1px', width: 36, background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)` }} />
+          <Box
+            sx={{
+              height: '1px',
+              width: 36,
+              background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)`,
+            }}
+          />
+          <Typography
+            component="span"
+            sx={{ color: C.gold600, fontSize: 12, lineHeight: 1 }}
+          >
+            ✦
+          </Typography>
+          <Box
+            sx={{
+              height: '1px',
+              width: 36,
+              background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)`,
+            }}
+          />
         </Box>
       </DialogTitle>
 
       {/* ── Content ── */}
-      <DialogContent ref={contentRef} sx={{ px: { xs: 2, md: 4 }, pb: 4, pt: 2 }}>
+      <DialogContent
+        ref={contentRef}
+        sx={{ px: { xs: 2, md: 4 }, pb: 4, pt: 2 }}
+      >
         <Box sx={{ textAlign: 'center', mb: 3 }}>
           <Typography
             variant="h3"
@@ -128,8 +150,13 @@ export default function RegisterModal() {
           >
             Begin your divine journey
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.9rem' }}>
-            Please share a few details. A confirmation will be sent to your email.
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontSize: '0.9rem' }}
+          >
+            Please share a few details. A confirmation will be sent to your
+            email.
           </Typography>
         </Box>
 
@@ -140,5 +167,5 @@ export default function RegisterModal() {
         </Box>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

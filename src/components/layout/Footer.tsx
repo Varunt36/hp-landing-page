@@ -1,12 +1,10 @@
 import { Box, Container, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { FOOTER, NAV_LINKS } from '../../data/data'
+import { FOOTER } from '../../data/data'
 import { C } from '../../theme/theme'
-import { useRegistrationStore } from '../../store/registrationStore'
 
 export default function Footer() {
   const navigate = useNavigate()
-  const openModal = useRegistrationStore((s) => s.openModal)
 
   return (
     <Box
@@ -24,13 +22,22 @@ export default function Footer() {
           <Typography
             sx={{
               fontFamily: '"Cormorant Garamond", serif',
-              fontStyle: 'italic',
               fontSize: { xs: '1.25rem', md: 'clamp(1.25rem, 2.4vw, 1.75rem)' },
               color: C.cream,
               lineHeight: 1.4,
             }}
           >
-            Let us come together to celebrate devotion, wisdom and love.
+            Na Mein Rahoon Na Meri Aarzoo Rahe
+          </Typography>
+                 <Typography
+            sx={{
+              fontFamily: '"Cormorant Garamond", serif',
+              fontSize: { xs: '1.25rem', md: 'clamp(1.25rem, 2.4vw, 1.75rem)' },
+              color: C.cream,
+              lineHeight: 1.4,
+            }}
+          >
+            May neither I nor my desires remain.
           </Typography>
           <Typography
             sx={{
@@ -48,49 +55,6 @@ export default function Footer() {
           </Typography>
         </Box>
 
-        {/* Links */}
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography sx={{ color: C.gold300, fontSize: '0.7rem', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600 }}>
-            Explore &amp; Get Involved
-          </Typography>
-          <Box
-            component="ul"
-            sx={{ listStyle: 'none', p: 0, mt: 2, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px 28px' }}
-          >
-            {NAV_LINKS.map((link) => (
-              <Box
-                key={link.href}
-                component="li"
-                role="button"
-                tabIndex={0}
-                onClick={() => navigate(link.href)}
-                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && navigate(link.href)}
-                sx={{
-                  fontSize: 14.5, color: `${C.cream}CC`, cursor: 'pointer',
-                  '&:hover': { color: C.gold300 },
-                  transition: 'color .2s',
-                }}
-              >
-                {link.label}
-              </Box>
-            ))}
-            <Box
-              component="li"
-              role="button"
-              tabIndex={0}
-              onClick={openModal}
-              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && openModal()}
-              sx={{
-                fontSize: 14.5, color: `${C.cream}CC`, cursor: 'pointer',
-                '&:hover': { color: C.gold300 },
-                transition: 'color .2s',
-              }}
-            >
-              Register Now
-            </Box>
-          </Box>
-        </Box>
-
         {/* Bottom bar */}
         <Box
           sx={{
@@ -98,31 +62,60 @@ export default function Footer() {
             pt: { xs: 2.5, md: 3 },
             borderTop: `1px solid ${C.cream}2E`,
             display: 'flex',
-            justifyContent: 'space-between',
-            gap: 2,
-            flexWrap: 'wrap',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: { xs: 'center', sm: 'space-between' },
+            alignItems: 'center',
+            gap: { xs: 1.5, sm: 2 },
             fontSize: 13,
             color: `${C.cream}99`,
+            textAlign: { xs: 'center', sm: 'left' },
           }}
         >
-          <Typography sx={{ fontSize: 'inherit', color: 'inherit' }}>{FOOTER.legal}</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5, flexWrap: 'wrap' }}>
+          <Typography sx={{ fontSize: 'inherit', color: 'inherit' }}>
+            {FOOTER.legal}
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2.5,
+              flexWrap: 'wrap',
+              justifyContent: { xs: 'center', sm: 'flex-end' },
+            }}
+          >
             <Box
               component="span"
               role="button"
               tabIndex={0}
               onClick={() => navigate('/impressum')}
-              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && navigate('/impressum')}
-              sx={{ color: `${C.cream}99`, cursor: 'pointer', fontSize: 13, '&:hover': { color: C.gold300 }, transition: 'color .2s' }}
+              onKeyDown={(e) =>
+                (e.key === 'Enter' || e.key === ' ') && navigate('/impressum')
+              }
+              sx={{
+                color: `${C.cream}99`,
+                cursor: 'pointer',
+                fontSize: 13,
+                '&:hover': { color: C.gold300 },
+                transition: 'color .2s',
+              }}
             >
               Impressum
             </Box>
-            <Box component="a" href={`mailto:${FOOTER.email}`} sx={{ color: `${C.cream}99`, '&:hover': { color: C.gold300 }, transition: 'color .2s', fontSize: 13 }}>
+            <Box
+              component="a"
+              href={`mailto:${FOOTER.email}`}
+              sx={{
+                color: `${C.cream}99`,
+                '&:hover': { color: C.gold300 },
+                transition: 'color .2s',
+                fontSize: 13,
+              }}
+            >
               {FOOTER.email}
             </Box>
           </Box>
         </Box>
       </Container>
     </Box>
-  )
+  );
 }

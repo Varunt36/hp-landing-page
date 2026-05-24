@@ -36,7 +36,6 @@ Register a group with one or more members. Generates QR codes and sends 3 emails
     {
       "first_name": "Jane",
       "last_name": "Doe",
-      "middle_name": "",
       "gender": "female",
       "dob": "1992-08-20"
     },

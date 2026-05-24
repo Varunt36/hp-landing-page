@@ -11,6 +11,7 @@ export interface MemberDetail {
   dob:        string
   email?:     string
   phone?:     string
+  dialCode?:  string
 }
 
 export interface RegistrationPayload {
@@ -19,12 +20,17 @@ export interface RegistrationPayload {
   memberCount:   number
   members:       MemberDetail[]
   termsAccepted: boolean
-  paymentMethod: 'stripe' | 'paypal'
 }
 
 export interface RegistrationResult {
   reference:   string
   payment_url: string
+}
+
+export interface PaymentStatusResponse {
+  status: 'pending' | 'paid' | 'consumed' | 'failed' | 'expired' | 'not_found'
+  reference: string | null
+  failure_reason: string | null
 }
 
 const API_URL = import.meta.env.VITE_API_URL as string;
@@ -86,6 +92,32 @@ function parseApiError(body: Record<string, unknown>): string {
   return 'Registration failed. Please check your details and try again.';
 }
 
+const TERMINAL = new Set(['paid', 'consumed', 'failed', 'expired', 'not_found'])
+const POLL_INTERVAL = 1_500
+const POLL_TIMEOUT  = 30_000
+
+export async function pollPaymentStatus(intentId: string): Promise<PaymentStatusResponse> {
+  if (!API_URL) throw new Error('Configuration error: API URL is not set.')
+
+  const deadline = Date.now() + POLL_TIMEOUT
+
+  while (Date.now() < deadline) {
+    const res = await fetch(`${API_URL}/payment/status/${intentId}`)
+    if (!res.ok) throw new Error(`Payment status check failed (HTTP ${res.status}).`)
+
+    const data = (await res.json()) as PaymentStatusResponse
+    if (TERMINAL.has(data.status)) return data
+
+    const remaining = deadline - Date.now()
+    if (remaining <= 0) break
+    await new Promise<void>(resolve => setTimeout(resolve, Math.min(POLL_INTERVAL, remaining)))
+  }
+
+  throw new Error(
+    'Payment confirmation timed out. If you were charged, please contact support with your payment details.',
+  )
+}
+
 export async function submitRegistration(
   payload: RegistrationPayload,
 ): Promise<RegistrationResult> {
@@ -103,18 +135,19 @@ export async function submitRegistration(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        payment_method: payload.paymentMethod,
+        payment_method: 'stripe',
         country: payload.country,
         karyakarta: payload.karyakarta,
         terms_accepted: payload.termsAccepted,
         members: payload.members.map((m) => ({
           first_name: m.firstName,
-          middle_name: m.middleName || '',
           last_name: m.lastName,
           gender: m.gender,
           dob: m.dob,
           email: m.email || null,
-          phone: m.phone ? m.phone.replace(/\+/g, '') : null,
+          phone: m.phone
+            ? `${(m.dialCode ?? '').replace(/\+/g, '')} ${m.phone}`.trim()
+            : null,
         })),
       }),
     });

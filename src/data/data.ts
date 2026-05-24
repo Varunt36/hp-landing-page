@@ -49,15 +49,14 @@ export const FAQS = [
 export const MAX_GROUP_SIZE = 4;
 
 export const COUNTRIES = [
-  { code: 'AU', label: 'Australia' },
-  { code: 'AT', label: 'Austria' },
-  { code: 'CA', label: 'Canada' },
-  { code: 'DE', label: 'Germany' },
-  { code: 'IN', label: 'India' },
-  { code: 'NZ', label: 'New Zealand' },
-  { code: 'CH', label: 'Switzerland' },
-  { code: 'GB', label: 'United Kingdom' },
-  { code: 'US', label: 'United States' },
+  { code: 'AU', label: 'Australia',      flag: '🇦🇺', dialCode: '+61' },
+  { code: 'AT', label: 'Austria',        flag: '🇦🇹', dialCode: '+43' },
+  { code: 'CA', label: 'Canada',         flag: '🇨🇦', dialCode: '+1'  },
+  { code: 'DE', label: 'Germany',        flag: '🇩🇪', dialCode: '+49' },
+  { code: 'IN', label: 'India',          flag: '🇮🇳', dialCode: '+91' },
+  { code: 'NZ', label: 'New Zealand',    flag: '🇳🇿', dialCode: '+64' },
+  { code: 'GB', label: 'United Kingdom', flag: '🇬🇧', dialCode: '+44' },
+  { code: 'US', label: 'United States',  flag: '🇺🇸', dialCode: '+1'  },
 ];
 
 export const FOOTER = {
