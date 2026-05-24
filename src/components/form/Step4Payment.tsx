@@ -123,7 +123,7 @@ function PaymentSummary() {
 
       {freeCount > 0 && (
         <Typography fontSize={12} color="text.secondary" textAlign="center" mt={1}>
-          Children under 5 attend free — registration is still required for all members.
+          Children under 5 attend free registration is still required for all members.
         </Typography>
       )}
     </Box>

@@ -1,24 +1,26 @@
 import { Box, Container, Typography } from '@mui/material'
 import { C } from '../../theme/theme'
 
-const DAYS = [
+const DAYS: { date: string; sessions: { name: string; time: string }[] }[] = [
   {
-    num: 'Day One',
-    title: 'Awakening',
-    date: 'Friday, 15 August 2026',
-    desc: 'Inaugural arati & lamp lighting.\nWelcome discourse and opening kirtan.',
+    date: 'Saturday, 15 August',
+    sessions: [
+      { name: 'Session 1', time: 'Afternoon' },
+    ],
   },
   {
-    num: 'Day Two',
-    title: 'Devotion',
-    date: 'Saturday, 16 August 2026',
-    desc: 'Yoga, discourse and sevā workshops.\nMahā-kirtan with classical artists.',
+    date: 'Sunday, 16 August',
+    sessions: [
+      { name: 'Session 2', time: 'Morning' },
+      { name: 'Session 3', time: 'Afternoon' },
+      { name: 'Cultural Program', time: 'Evening' },
+    ],
   },
   {
-    num: 'Day Three',
-    title: 'Unity',
-    date: 'Sunday, 17 August 2026',
-    desc: 'Group satsaṅg and youth dialogue.\nClosing blessings and mahā-prasād.',
+    date: 'Monday, 17 August',
+    sessions: [
+      { name: "Session 4: Guruhari's Jubilee Celebration", time: 'Morning' },
+    ],
   },
 ]
 
@@ -143,52 +145,53 @@ export default function ProgramsSection() {
             gap: { xs: 2.5, md: 2.75 },
           }}
         >
-          {DAYS.map(({ num, title, date, desc }) => (
-            <Box key={num} sx={card}>
+          {DAYS.map(({ date, sessions }) => (
+            <Box key={date} sx={card}>
               <Typography
                 sx={{
                   fontFamily: '"Cormorant Garamond", serif',
                   fontStyle: 'italic',
-                  color: C.gold700,
-                  fontSize: 14,
-                  letterSpacing: '0.04em',
-                }}
-              >
-                {num}
-              </Typography>
-              <Typography
-                variant="h3"
-                sx={{
-                  fontSize: { xs: '1.5rem', md: '1.625rem' },
-                  mt: 0.75,
                   color: C.purple800,
-                }}
-              >
-                {title}
-              </Typography>
-              <Typography
-                sx={{
-                  fontFamily: '"Blue Mirage", serif',
-                  color: C.purple600,
-                  fontSize: 15,
-                  mt: 0.5,
+                  fontSize: { xs: '1.3rem', md: '1.4rem' },
+                  fontWeight: 600,
+                  mb: 1.75,
                 }}
               >
                 {date}
               </Typography>
-              <Typography
-                sx={{
-                  mt: 1.75,
-                  fontSize: { xs: 14, md: 14.5 },
-                  lineHeight: 1.55,
-                  color: C.muted,
-                  fontFamily: '"Cormorant Garamond", serif',
-                  fontStyle: 'italic',
-                  whiteSpace: 'pre-line',
-                }}
-              >
-                {desc}
-              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {sessions.map(({ name, time }) => (
+                  <Box
+                    key={name}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 1,
+                      pt: 1,
+                      borderTop: `1px dashed ${C.lavender200}`,
+                      '&:first-of-type': { borderTop: 'none', pt: 0 },
+                    }}
+                  >
+                    <Typography sx={{ fontSize: { xs: 13.5, md: 14 }, color: C.ink, lineHeight: 1.4 }}>
+                      {name}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: 11,
+                        fontWeight: 600,
+                        letterSpacing: '0.1em',
+                        textTransform: 'uppercase',
+                        color: C.gold700,
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {time}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
             </Box>
           ))}
         </Box>

@@ -255,7 +255,8 @@ export default function Step2MemberDetails() {
                   ml: 0.25,
                 }}
               >
-                Children under age of 5 years can attend for free.
+                Children under the age of 5 can attend the Shibir free of
+                charge, however registration is mandatory.
               </Typography>
             )}
         </Box>

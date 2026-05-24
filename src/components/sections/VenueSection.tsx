@@ -1,41 +1,130 @@
-import { Box, Container, Typography, Button } from '@mui/material'
-import { C } from '../../theme/theme'
+import { type ReactNode } from 'react';
+import { Box, Container, Typography, Button } from '@mui/material';
+import { C } from '../../theme/theme';
 
-const REACH = [
+const subLabelSx = {
+  fontSize: 11,
+  fontWeight: 700,
+  letterSpacing: '0.12em',
+  textTransform: 'uppercase' as const,
+  color: C.gold700,
+  mb: 0.5,
+};
+
+const bodyTextSx = {
+  fontSize: { xs: 14, md: 14.5 },
+  lineHeight: 1.6,
+  color: C.ink,
+};
+
+function Ornament() {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 1.25,
+        mt: 1.75,
+        color: C.gold600,
+        fontSize: 14,
+      }}
+    >
+      <Box sx={{ height: '1px', width: 40, background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)` }} />
+      ✦
+      <Box sx={{ height: '1px', width: 40, background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)` }} />
+    </Box>
+  );
+}
+
+const CAR_RENTALS = [
+  { label: 'Sixt', href: 'https://www.sixt.com' },
+  { label: 'Hertz', href: 'https://www.hertz.com' },
+  { label: 'Europcar', href: 'https://www.europcar.com' },
+];
+
+const REACH: { icon: ReactNode; title: string; detail: ReactNode; time: string }[] = [
   {
     icon: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M2 16l9-3 9-3 1 1-9 3-9 3z"/><path d="M11 13l3 5"/><path d="M11 13L8 7"/>
+        <path d="M2 16l9-3 9-3 1 1-9 3-9 3z" />
+        <path d="M11 13l3 5" />
+        <path d="M11 13L8 7" />
       </svg>
     ),
     title: 'From BER Airport',
-    detail: 'Take train RE7 or RB14 to Zoologischer Garten, then bus 100 to Lützowplatz directly in front of the hotel.',
-    time: '~ 1 hour',
+    detail: (
+      <>
+        <Box sx={{ mb: 1.5 }}>
+          <Typography sx={subLabelSx}>By Car · ~ 26 min</Typography>
+          <Typography sx={bodyTextSx}>
+            From A100, take exit Kurfürstendamm → An der Urania, turn left.
+            Underground parking on site.
+          </Typography>
+          <Typography sx={{ fontSize: 13, color: C.muted, mt: 1, mb: 0.75 }}>
+            You can rent a car from the platforms below — each link opens their booking page:
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            {CAR_RENTALS.map(({ label, href }) => (
+              <Box
+                key={label}
+                component="a"
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  color: C.purple700,
+                  border: `1px solid ${C.lavender300}`,
+                  borderRadius: '999px',
+                  px: 1.25,
+                  py: 0.35,
+                  textDecoration: 'none',
+                  transition: 'background .2s, border-color .2s',
+                  '&:hover': { background: C.lavender100, borderColor: C.purple700 },
+                }}
+              >
+                {label}
+              </Box>
+            ))}
+          </Box>
+          <Typography sx={{ fontSize: 13, color: C.purple800, fontWeight: 700, mt: 1 }}>
+            Paid parking on site — approx. €20–€25 per day.
+          </Typography>
+        </Box>
+
+        <Box sx={{ borderTop: `1px dashed ${C.lavender200}`, my: 1.5 }} />
+
+        <Box>
+          <Typography sx={subLabelSx}>By Train · ~ 1 hour</Typography>
+          <Typography sx={bodyTextSx}>
+            Take train RE7 or RB14 to Zoologischer Garten, then bus 100 to
+            Lützowplatz directly in front of the hotel.
+          </Typography>
+        </Box>
+      </>
+    ),
+    time: '',
   },
   {
     icon: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16"/>
-        <circle cx="8" cy="14" r="1.2" fill="currentColor"/><circle cx="16" cy="14" r="1.2" fill="currentColor"/>
-        <path d="M7 21l2-3M17 21l-2-3"/>
+        <rect x="2" y="7" width="20" height="10" rx="2" />
+        <path d="M2 11h20" />
+        <path d="M7 7V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2" />
+        <path d="M6 21l2-4M18 21l-2-4" />
       </svg>
     ),
-    title: 'By U-Bahn (Metro)',
-    detail: 'Lines U1, U2 or U3 to U-Nollendorfplatz. Exit toward Karl-Heinrich-Ulrichs-Straße leads directly to the hotel.',
-    time: '~ 5 min walk',
+    title: 'From Berlin Hauptbahnhof',
+    detail:
+      'Take S-Bahn S5, S7 or S75 two stops to Zoologischer Garten, then ride bus 100 or 200 to Lützowplatz — the stop is directly in front of the hotel.',
+    time: '~ 25 min',
   },
-  {
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 17h14M5 17l1-5h12l1 5M6 12l1-3a2 2 0 0 1 2-1h6a2 2 0 0 1 2 1l1 3"/>
-        <circle cx="8" cy="17" r="1.5"/><circle cx="16" cy="17" r="1.5"/>
-      </svg>
-    ),
-    title: 'By Car',
-    detail: 'From A100, take exit Kurfürstendamm → An der Urania, turn left. Underground parking on site.',
-    time: '200+ parking spots',
-  },
-]
+];
 
 export default function VenueSection() {
   const reachCard = {
@@ -50,7 +139,7 @@ export default function VenueSection() {
       borderColor: `${C.gold500}80`,
       boxShadow: '0 4px 14px rgba(60,30,90,0.08)',
     },
-  }
+  };
 
   return (
     <Box
@@ -79,36 +168,10 @@ export default function VenueSection() {
           <Typography variant="h2" sx={{ mt: 1, color: C.purple800 }}>
             The Venue
           </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 1.25,
-              mt: 1.75,
-              color: C.gold600,
-              fontSize: 14,
-            }}
-          >
-            <Box
-              sx={{
-                height: '1px',
-                width: 40,
-                background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)`,
-              }}
-            />
-            ✦
-            <Box
-              sx={{
-                height: '1px',
-                width: 40,
-                background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)`,
-              }}
-            />
-          </Box>
+          <Ornament />
         </Box>
 
-        {/* ── Venue card (2-col) ── */}
+        {/* ── Venue card ── */}
         <Box
           sx={{
             display: 'grid',
@@ -117,8 +180,7 @@ export default function VenueSection() {
             border: `1px solid ${C.lavender200}B3`,
             borderRadius: '22px',
             overflow: 'hidden',
-            boxShadow:
-              '0 4px 14px rgba(60,30,90,0.08), 0 12px 40px rgba(60,30,90,0.06)',
+            boxShadow: '0 4px 14px rgba(60,30,90,0.08), 0 12px 40px rgba(60,30,90,0.06)',
             mb: { xs: 8, md: 10 },
           }}
         >
@@ -126,13 +188,7 @@ export default function VenueSection() {
           <Box sx={{ p: { xs: 3.5, md: 6 } }}>
             <Typography
               variant="h2"
-              sx={{
-                fontSize: {
-                  xs: '1.75rem',
-                  md: 'clamp(1.9rem, 3.4vw, 2.75rem)',
-                },
-                color: C.purple800,
-              }}
+              sx={{ fontSize: { xs: '1.75rem', md: 'clamp(1.9rem, 3.4vw, 2.75rem)' }, color: C.purple800 }}
             >
               Hotel Berlin, Berlin
             </Typography>
@@ -177,15 +233,7 @@ export default function VenueSection() {
               ))}
             </Box>
 
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2.5,
-                mt: 3.5,
-                flexWrap: 'wrap',
-              }}
-            >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5, mt: 3.5, flexWrap: 'wrap' }}>
               <Button
                 variant="contained"
                 href="https://www.google.com/maps/dir/?api=1&destination=Hotel+Berlin+Berlin+L%C3%BCtzowplatz+17+10785+Berlin"
@@ -193,16 +241,7 @@ export default function VenueSection() {
                 rel="noopener"
                 component="a"
                 startIcon={
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
                   </svg>
                 }
@@ -246,8 +285,8 @@ export default function VenueSection() {
             <Typography
               component="span"
               sx={{
-                 fontFamily: '"Blue Mirage", serif',
-              fontSize: '1rem',
+                fontFamily: '"Blue Mirage", serif',
+                fontSize: '1rem',
                 letterSpacing: '0.18em',
                 textTransform: 'uppercase',
                 color: C.purple600,
@@ -259,39 +298,13 @@ export default function VenueSection() {
             <Typography variant="h2" sx={{ mt: 1, color: C.purple800 }}>
               How to reach the venue
             </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 1.25,
-                mt: 1.75,
-                color: C.gold600,
-                fontSize: 14,
-              }}
-            >
-              <Box
-                sx={{
-                  height: '1px',
-                  width: 40,
-                  background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)`,
-                }}
-              />
-              ✦
-              <Box
-                sx={{
-                  height: '1px',
-                  width: 40,
-                  background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)`,
-                }}
-              />
-            </Box>
+            <Ornament />
           </Box>
 
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
               gap: { xs: 2.5, md: 2.75 },
             }}
           >
@@ -315,38 +328,30 @@ export default function VenueSection() {
                 </Box>
                 <Typography
                   variant="h3"
-                  sx={{
-                    fontSize: { xs: '1.3rem', md: '1.375rem' },
-                    color: C.purple800,
-                  }}
+                  sx={{ fontSize: { xs: '1.3rem', md: '1.375rem' }, color: C.purple800 }}
                 >
                   {title}
                 </Typography>
-                <Typography
-                  sx={{
-                    mt: 1.25,
-                    fontSize: { xs: 14, md: 14.5 },
-                    lineHeight: 1.6,
-                    color: C.ink,
-                  }}
-                >
+                <Box sx={{ mt: 1.25, fontSize: { xs: 14, md: 14.5 }, lineHeight: 1.6, color: C.ink }}>
                   {detail}
-                </Typography>
-                <Typography
-                  sx={{
-                    display: 'block',
-                    mt: 1.75,
-                    fontSize: '0.65rem',
-                    letterSpacing: '0.16em',
-                    textTransform: 'uppercase',
-                    color: C.gold700,
-                    fontWeight: 600,
-                    pt: 1.5,
-                    borderTop: `1px dashed ${C.lavender200}`,
-                  }}
-                >
-                  {time}
-                </Typography>
+                </Box>
+                {time && (
+                  <Typography
+                    sx={{
+                      display: 'block',
+                      mt: 1.75,
+                      fontSize: '0.65rem',
+                      letterSpacing: '0.16em',
+                      textTransform: 'uppercase',
+                      color: C.gold700,
+                      fontWeight: 600,
+                      pt: 1.5,
+                      borderTop: `1px dashed ${C.lavender200}`,
+                    }}
+                  >
+                    {time}
+                  </Typography>
+                )}
               </Box>
             ))}
           </Box>

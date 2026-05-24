@@ -10,7 +10,7 @@ import { C } from '../theme/theme'
 
 function InfoCard({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) {
   return (
-    <Box sx={{ borderRadius: '14px', border: `1px solid ${C.lavender200}B3`, background: C.cream, p: 2.5 }}>
+    <Box sx={{ borderRadius: '14px', border: `1px solid ${C.lavender200}B3`, background: C.cream, p: { xs: 2, sm: 2.5 } }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.25 }}>
         {icon}
         <Typography sx={{ fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: C.gold700, fontWeight: 600 }}>
@@ -72,7 +72,7 @@ export default function HotelOfferPage() {
           </Box>
 
           {/* ── 2-column layout ── */}
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr' }, gap: { xs: 2.5, lg: 3 }, alignItems: 'stretch' }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: { xs: 2.5, md: 3 }, alignItems: 'start' }}>
 
             {/* ── LEFT: Hotel card + pricing ── */}
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
@@ -81,18 +81,18 @@ export default function HotelOfferPage() {
               {/* Pricing table */}
               <Box sx={{ borderRadius: '18px', overflow: 'hidden', border: `1px solid ${C.lavender200}B3`, background: C.cream }}>
                 {/* Header */}
-                <Box sx={{ px: 3, py: 2, borderBottom: `1px solid ${C.lavender200}B3`, display: 'flex', alignItems: 'center', gap: 1.25, background: `${C.lavender50}80` }}>
+                <Box sx={{ px: { xs: 2, sm: 3 }, py: 2, borderBottom: `1px solid ${C.lavender200}B3`, display: 'flex', alignItems: 'center', gap: 1.25, background: `${C.lavender50}80` }}>
                   <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={C.gold700} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
                   </svg>
-                  <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: '0.95rem', color: C.purple800, fontWeight: 600 }}>
+                  <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: { xs: '0.85rem', sm: '0.95rem' }, color: C.purple800, fontWeight: 600, lineHeight: 1.4 }}>
                     2-Night Stay · Check-in 15 Aug · Check-out 17 Aug
                   </Typography>
                 </Box>
 
                 {/* Column headers */}
-                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 100px 100px', px: 3, py: 1.25, borderBottom: `1px solid ${C.lavender200}60` }}>
-                  {[['Option', 'left'], ['Total', 'right'], ['Per Person', 'right']].map(([h, align]) => (
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr auto auto', sm: '1fr 100px 100px' }, px: { xs: 2, sm: 3 }, py: 1.25, borderBottom: `1px solid ${C.lavender200}60`, gap: { xs: 1, sm: 0 } }}>
+                  {[['Option', 'left'], ['Total', 'right'], ['Per Night', 'right']].map(([h, align]) => (
                     <Typography key={h} sx={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: C.muted, fontWeight: 600, textAlign: align as 'left' | 'right' }}>
                       {h}
                     </Typography>
@@ -100,26 +100,26 @@ export default function HotelOfferPage() {
                 </Box>
 
                 {/* Single occupancy */}
-                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 100px 100px', px: 3, py: 2, borderBottom: `1px dashed ${C.lavender200}B3`, alignItems: 'center' }}>
-                  <Typography sx={{ fontSize: 14.5, color: C.ink }}>Single occupancy</Typography>
-                  <Typography sx={{ fontSize: 14.5, color: C.ink, textAlign: 'right' }}>€170.00</Typography>
-                  <Typography sx={{ fontSize: 14.5, color: C.ink, textAlign: 'right' }}>€170.00</Typography>
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr auto auto', sm: '1fr 100px 100px' }, px: { xs: 2, sm: 3 }, py: 2, borderBottom: `1px dashed ${C.lavender200}B3`, alignItems: 'center', gap: { xs: 1, sm: 0 } }}>
+                  <Typography sx={{ fontSize: { xs: 13.5, sm: 14.5 }, color: C.ink }}>Single occupancy</Typography>
+                  <Typography sx={{ fontSize: { xs: 13.5, sm: 14.5 }, color: C.ink, textAlign: 'right' }}>€170.00</Typography>
+                  <Typography sx={{ fontSize: { xs: 13.5, sm: 14.5 }, color: C.ink, textAlign: 'right' }}>€170.00</Typography>
                 </Box>
 
                 {/* Double occupancy */}
-                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 100px 100px', px: 3, py: 2, alignItems: 'center' }}>
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr auto auto', sm: '1fr 100px 100px' }, px: { xs: 2, sm: 3 }, py: 2, alignItems: 'center', gap: { xs: 1, sm: 0 } }}>
                   <Box>
-                    <Typography sx={{ fontSize: 14.5, color: C.ink }}>Double occupancy</Typography>
+                    <Typography sx={{ fontSize: { xs: 13.5, sm: 14.5 }, color: C.ink }}>Double occupancy</Typography>
                     <Typography sx={{ fontSize: 12, color: C.muted }}>sharing</Typography>
                   </Box>
-                  <Typography sx={{ fontSize: 14.5, color: C.ink, textAlign: 'right' }}>€216.00</Typography>
-                  <Typography sx={{ fontSize: 14.5, color: C.green700, fontWeight: 700, textAlign: 'right' }}>€108.00</Typography>
+                  <Typography sx={{ fontSize: { xs: 13.5, sm: 14.5 }, color: C.ink, textAlign: 'right' }}>€216.00</Typography>
+                  <Typography sx={{ fontSize: { xs: 13.5, sm: 14.5 }, color: C.green700, fontWeight: 700, textAlign: 'right' }}>€108.00</Typography>
                 </Box>
               </Box>
             </Box>
 
             {/* ── RIGHT: Info cards + CTA ── */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 
               {/* Meal plan */}
               <InfoCard
@@ -144,11 +144,11 @@ export default function HotelOfferPage() {
                   </svg>
                 }
               >
-                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5, mb: 1.25 }}>
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: { xs: 1, sm: 1.5 }, mb: 1.25 }}>
                   {[['Check-in', '15 Aug 2026', '15:00'], ['Check-out', '17 Aug 2026', '12:00']].map(([label, date, time]) => (
-                    <Box key={label} sx={{ background: `${C.lavender50}CC`, borderRadius: '10px', p: 1.5, textAlign: 'center' }}>
-                      <Typography sx={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: C.muted, fontWeight: 600 }}>{label}</Typography>
-                      <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: '1rem', color: C.purple800, mt: 0.25, lineHeight: 1.2 }}>{date}</Typography>
+                    <Box key={label} sx={{ background: `${C.lavender50}CC`, borderRadius: '10px', p: { xs: 1.25, sm: 1.5 }, textAlign: 'center' }}>
+                      <Typography sx={{ fontSize: { xs: '0.6rem', sm: '0.65rem' }, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.muted, fontWeight: 600 }}>{label}</Typography>
+                      <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: { xs: '0.875rem', sm: '1rem' }, color: C.purple800, mt: 0.25, lineHeight: 1.2 }}>{date}</Typography>
                       <Typography sx={{ fontSize: '0.75rem', color: C.muted, mt: 0.25 }}>{time}</Typography>
                     </Box>
                   ))}
@@ -167,9 +167,9 @@ export default function HotelOfferPage() {
                   </svg>
                 }
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', background: C.green700, flexShrink: 0 }} />
-                  <Typography sx={{ fontSize: 14, color: C.purple800, fontWeight: 600 }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1 }}>
+                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', background: C.green700, flexShrink: 0, mt: '4px' }} />
+                  <Typography sx={{ fontSize: { xs: 13, sm: 14 }, color: C.purple800, fontWeight: 600, lineHeight: 1.5 }}>
                     Free cancellation until 18:00 · 1 August 2026
                   </Typography>
                 </Box>
@@ -179,7 +179,7 @@ export default function HotelOfferPage() {
               </InfoCard>
 
               {/* CTA buttons */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mt: 0.5 }}>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1.5, mt: 0.5 }}>
                 <Button
                   variant="contained"
                   size="large"

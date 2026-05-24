@@ -57,7 +57,7 @@ export default function Step5Confirmation() {
         Register Another Group
       </Button>
 
-      <HotelRecommendation />
+      <Box sx={{ mt: 3.5 }}><HotelRecommendation /></Box>
     </Box>
   )
 }

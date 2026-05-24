@@ -17,7 +17,6 @@ export default function HotelRecommendation({ imageSrc, gallery, active, onSelec
   return (
     <Box
       sx={{
-        mt: 3.5,
         borderRadius: '18px',
         overflow: 'hidden',
         border: `1px solid ${C.gold500}60`,
@@ -53,7 +52,7 @@ export default function HotelRecommendation({ imageSrc, gallery, active, onSelec
         sx={{
           background: C.cream,
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', sm: '200px 1fr' },
+          gridTemplateColumns: { xs: '1fr', sm: '180px 1fr', md: '200px 1fr' },
           gap: 0,
         }}
       >

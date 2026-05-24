@@ -297,7 +297,7 @@ function RestaurantCard({
             sx={{
               fontSize: 13,
               fontWeight: 600,
-              color: C.green700,
+              color: C.purple800,
               display: 'inline-flex',
               alignItems: 'center',
               gap: 0.75,

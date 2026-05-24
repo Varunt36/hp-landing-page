@@ -17,6 +17,7 @@ export const C = {
   gold500:      '#A07828',
   gold600:      '#856020',
   gold700:      '#6B4E18',
+  teal300:      '#9fced4',
   green600:     '#3A7058',
   green700:     '#2B5539',
   green800:     '#1e5c3a',

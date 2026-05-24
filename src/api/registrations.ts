@@ -27,6 +27,12 @@ export interface RegistrationResult {
   payment_url: string
 }
 
+export interface PaymentStatusResponse {
+  status: 'pending' | 'paid' | 'consumed' | 'failed' | 'expired' | 'not_found'
+  reference: string | null
+  failure_reason: string | null
+}
+
 const API_URL = import.meta.env.VITE_API_URL as string;
 
 // Maps backend field paths like "members → 0 → phone" to a human label.
@@ -84,6 +90,32 @@ function parseApiError(body: Record<string, unknown>): string {
     if (msgs.length > 0) return msgs.join('\n');
   }
   return 'Registration failed. Please check your details and try again.';
+}
+
+const TERMINAL = new Set(['paid', 'consumed', 'failed', 'expired', 'not_found'])
+const POLL_INTERVAL = 1_500
+const POLL_TIMEOUT  = 30_000
+
+export async function pollPaymentStatus(intentId: string): Promise<PaymentStatusResponse> {
+  if (!API_URL) throw new Error('Configuration error: API URL is not set.')
+
+  const deadline = Date.now() + POLL_TIMEOUT
+
+  while (Date.now() < deadline) {
+    const res = await fetch(`${API_URL}/payment/status/${intentId}`)
+    if (!res.ok) throw new Error(`Payment status check failed (HTTP ${res.status}).`)
+
+    const data = (await res.json()) as PaymentStatusResponse
+    if (TERMINAL.has(data.status)) return data
+
+    const remaining = deadline - Date.now()
+    if (remaining <= 0) break
+    await new Promise<void>(resolve => setTimeout(resolve, Math.min(POLL_INTERVAL, remaining)))
+  }
+
+  throw new Error(
+    'Payment confirmation timed out. If you were charged, please contact support with your payment details.',
+  )
 }
 
 export async function submitRegistration(

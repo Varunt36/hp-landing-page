@@ -22,6 +22,7 @@ const CONTACTS = [
     ),
     title: 'Phone',
     sub: 'Mon – Sat · 09:00 to 18:00 CET',
+    name: 'Varun Thaker',
     link: 'tel:+4930123456',
     linkText: '+49 176 85645884',
   },
@@ -95,7 +96,7 @@ export default function ContactSection() {
             gap: { xs: 2.5, md: 2.75 },
           }}
         >
-          {CONTACTS.map(({ icon, title, sub, link, linkText }) => (
+          {CONTACTS.map(({ icon, title, sub, name, link, linkText }) => (
             <Box
               key={title}
               sx={{
@@ -151,6 +152,18 @@ export default function ContactSection() {
               >
                 {sub}
               </Typography>
+              {name && (
+                <Typography
+                  sx={{
+                    fontSize: '0.95rem',
+                    mt: 0.5,
+                    color: C.ink,
+                    fontWeight: 600,
+                  }}
+                >
+                  {name}
+                </Typography>
+              )}
               <Box
                 component="a"
                 href={link}

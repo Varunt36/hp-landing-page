@@ -5,6 +5,7 @@ import { C } from './theme/theme'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import HeroSection from './components/sections/HeroSection'
+import EventInfoSection from './components/sections/EventInfoSection'
 import RegisterModal from './components/form/RegisterModal'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 
@@ -46,6 +47,7 @@ function LandingPage() {
   return (
     <PageShell>
       <HeroSection />
+      <EventInfoSection />
     </PageShell>
   )
 }

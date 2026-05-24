@@ -28,7 +28,7 @@ export default function Footer() {
               lineHeight: 1.4,
             }}
           >
-            Na mein rahu na meri aarzoo rahe | May neither I nor my desires
+            Na Mein Rahoon Na Meri Aarzoo Rahe | May neither I nor my desires
             remain.
           </Typography>
           <Typography
@@ -54,11 +54,13 @@ export default function Footer() {
             pt: { xs: 2.5, md: 3 },
             borderTop: `1px solid ${C.cream}2E`,
             display: 'flex',
-            justifyContent: 'space-between',
-            gap: 2,
-            flexWrap: 'wrap',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: { xs: 'center', sm: 'space-between' },
+            alignItems: 'center',
+            gap: { xs: 1.5, sm: 2 },
             fontSize: 13,
             color: `${C.cream}99`,
+            textAlign: { xs: 'center', sm: 'left' },
           }}
         >
           <Typography sx={{ fontSize: 'inherit', color: 'inherit' }}>
@@ -70,6 +72,7 @@ export default function Footer() {
               alignItems: 'center',
               gap: 2.5,
               flexWrap: 'wrap',
+              justifyContent: { xs: 'center', sm: 'flex-end' },
             }}
           >
             <Box
