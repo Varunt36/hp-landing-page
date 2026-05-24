@@ -188,9 +188,10 @@ export default function Step4Payment() {
       {/* Reassurance message */}
       <Box sx={step4Styles.stripeNotice}>
         <LockIcon fontSize="small" />
-        <Typography variant="body2">
+        <Typography variant="body2" sx={{ flex: 1 }}>
           You will be redirected to Stripe's secure checkout to complete payment by credit or debit card.
         </Typography>
+        <CardBrands />
       </Box>
 
       {slowRequest && (
