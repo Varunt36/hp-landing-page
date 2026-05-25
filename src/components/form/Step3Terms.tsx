@@ -67,12 +67,15 @@ export default function Step3Terms() {
       )}
 
       <FormControlLabel
-        sx={{ mb: 1 }}
+        sx={{ mb: 1, '& .MuiFormControlLabel-label': { color: C.purple600 } }}
         control={
           <Checkbox
             checked={checked}
             onChange={(e) => { setChecked(e.target.checked); setError(false) }}
-            color="secondary"
+            sx={{
+              color: C.purple600,
+              '&.Mui-checked': { color: C.purple600 },
+            }}
           />
         }
         label="I have read and agree to the above terms and conditions."

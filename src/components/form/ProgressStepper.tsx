@@ -1,13 +1,8 @@
-// src/components/form/ProgressStepper.tsx
-// Custom branded step indicator — replaces the default MUI Stepper.
-// Shows numbered circles (pending), filled circles (active/complete), and connecting lines.
-
 import { Box, Typography } from '@mui/material'
-import { C } from '../../theme/theme'
+import { C, PRIMARY } from '../../theme/theme'
 import CheckIcon from '@mui/icons-material/Check'
 import { useRegistrationStore } from '../../store/registrationStore'
 import { progressStyles } from './ProgressStepper.styles'
-import { PRIMARY, SECONDARY } from '../../theme/theme'
 
 const STEPS = ['Group', 'Members', 'Terms', 'Payment', 'Done']
 
@@ -19,7 +14,7 @@ function StepCircle({ index, activeStep }: CircleProps) {
   const isComplete = index < activeStep
   const isActive   = index === activeStep
 
-  const bg     = isComplete ? SECONDARY : isActive ? PRIMARY : 'transparent'
+  const bg     = isComplete ? C.purple600 : isActive ? PRIMARY : 'transparent'
   const border = isComplete || isActive ? 'none' : `2px solid ${STEP_MUTED}`
   const color  = isComplete || isActive ? 'white' : STEP_MUTED
   const shadow = isActive ? `0 0 0 4px rgba(43,38,112,0.28)` : 'none'
@@ -91,7 +86,7 @@ export default function ProgressStepper() {
               <Box
                 sx={{
                   ...progressStyles.connector,
-                  background: i < activeStep ? SECONDARY : STEP_MUTED,
+                  background: i < activeStep ? C.purple600 : STEP_MUTED,
                   transition: 'background 300ms ease',
                   alignSelf: 'flex-start',
                   mt: '20px', // vertically center with circle (40px / 2 = 20px)
