@@ -6,7 +6,7 @@ export default function AboutSection() {
   return (
     <Box id="about" sx={aboutStyles.outerBox}>
       <Container maxWidth="md">
-        <Typography variant="h2" color="primary" textAlign="center" mb={3}>
+        <Typography variant="h2" color="primary" textAlign="center" mb={3} sx={{ fontFamily: '"Blue Mirage", serif' }}>
           About the Event
         </Typography>
 

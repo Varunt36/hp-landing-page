@@ -1,7 +1,7 @@
 /* Blue Mirage font */
 @font-face {
   font-family: 'Blue Mirage';
-  src: url('/fonts/Blue Mirage.woff') format('woff');
+  src: url('/fonts/blue_mirage-webfont.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9,7 +9,7 @@
 
 @font-face {
   font-family: 'Blue Mirage';
-  src: url('/fonts/Blue Mirage Italic.woff') format('woff');
+  src: url('/fonts/blue_mirage-webfont.woff2') format('woff2');
   font-weight: normal;
   font-style: italic;
   font-display: swap;

@@ -75,7 +75,7 @@ export default function HeroSection() {
             </Box>
 
             <Stack direction="row" spacing={1.5} sx={s.ctaRow}>
-              <Button variant="contained" size="large" onClick={openModal}>
+              <Button variant="contained" size="large" onClick={openModal} sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17 }}>
                 Register Now
                 <Box
                   component="svg"
@@ -94,6 +94,7 @@ export default function HeroSection() {
                 variant="outlined"
                 size="large"
                 onClick={() => navigate('/venue')}
+                sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17 }}
               >
                 Learn More
               </Button>

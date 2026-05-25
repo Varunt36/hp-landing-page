@@ -21,7 +21,7 @@ export default function Footer() {
         <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 5 } }}>
           <Typography
             sx={{
-              fontFamily: '"Cormorant Garamond", serif',
+              fontFamily: '"Blue Mirage", serif',
               fontSize: { xs: '1.25rem', md: 'clamp(1.25rem, 2.4vw, 1.75rem)' },
               color: C.cream,
               lineHeight: 1.4,
@@ -29,9 +29,9 @@ export default function Footer() {
           >
             Na Mein Rahoon Na Meri Aarzoo Rahe
           </Typography>
-                 <Typography
+          <Typography
             sx={{
-              fontFamily: '"Cormorant Garamond", serif',
+              fontFamily: '"Blue Mirage", serif',
               fontSize: { xs: '1.25rem', md: 'clamp(1.25rem, 2.4vw, 1.75rem)' },
               color: C.cream,
               lineHeight: 1.4,
@@ -43,7 +43,7 @@ export default function Footer() {
             sx={{
               display: 'block',
               mt: 1,
-              fontFamily: '"Inter", sans-serif',
+              fontFamily: '"Blue Mirage", serif',
               fontSize: { xs: '0.7rem', md: '0.75rem' },
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
@@ -107,7 +107,8 @@ export default function Footer() {
               tabIndex={0}
               onClick={() => navigate('/data-privacy')}
               onKeyDown={(e) =>
-                (e.key === 'Enter' || e.key === ' ') && navigate('/data-privacy')
+                (e.key === 'Enter' || e.key === ' ') &&
+                navigate('/data-privacy')
               }
               sx={{
                 color: `${C.cream}99`,

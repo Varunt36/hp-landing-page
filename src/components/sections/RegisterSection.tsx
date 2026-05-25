@@ -24,7 +24,7 @@ export default function RegisterSection() {
   return (
     <Box id="register" sx={registerStyles.outerBox}>
       <Container maxWidth="md">
-        <Typography variant="h2" color="primary" textAlign="center">
+        <Typography variant="h2" color="primary" textAlign="center" sx={{ fontFamily: '"Blue Mirage", serif' }}>
           Register for the Event
         </Typography>
         <Typography color="text.secondary" textAlign="center" mt={1}>

@@ -179,8 +179,8 @@ const REACH: {
           <Typography sx={subLabelSx}>By Train · ~ 1 hour</Typography>
           <Typography sx={bodyTextSx}>
             From the airport take the train RE7 or RB14 to Zoologischer Garten,
-            then the bus 100 to Lützowplatz, which stops directly in front of the
-            hotel.
+            then the bus 100 to Lützowplatz, which stops directly in front of
+            the hotel.
           </Typography>
         </Box>
       </>
@@ -252,7 +252,14 @@ export default function VenueSection() {
           >
             Where it happens
           </Typography>
-          <Typography variant="h2" sx={{ mt: 1, color: C.purple800 }}>
+          <Typography
+            variant="h2"
+            sx={{
+              mt: 1,
+              color: C.purple800,
+              fontFamily: '"Blue Mirage", serif',
+            }}
+          >
             The Venue
           </Typography>
           <Ornament />
@@ -407,7 +414,14 @@ export default function VenueSection() {
             >
               Getting here
             </Typography>
-            <Typography variant="h2" sx={{ mt: 1, color: C.purple800 }}>
+            <Typography
+              variant="h2"
+              sx={{
+                mt: 1,
+                color: C.purple800,
+                fontFamily: '"Blue Mirage", serif',
+              }}
+            >
               How to reach the venue
             </Typography>
             <Ornament />
@@ -443,6 +457,7 @@ export default function VenueSection() {
                   sx={{
                     fontSize: { xs: '1.3rem', md: '1.375rem' },
                     color: C.purple800,
+                    fontFamily: '"Blue Mirage", serif',
                   }}
                 >
                   {title}

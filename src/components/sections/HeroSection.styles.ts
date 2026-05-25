@@ -8,7 +8,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     position: 'relative',
     isolation: 'isolate',
     pt: { xs: '90px', md: '130px' },
-    pb: { xs: '120px', md: '120px' },
+    pb: '120px',
   },
 
   waveBottom: {
@@ -19,7 +19,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     pointerEvents: 'none',
   },
 
-  // 3-column grid: swamiji | title+cta | portrait
+  // 3-column grid: swamiji | content | portrait
   grid: {
     display: 'grid',
     gridTemplateColumns: { xs: '1fr', md: '1fr 360px', lg: '420px 1fr 420px' },
@@ -29,6 +29,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     zIndex: 2,
   },
 
+  // Col 0: Swamiji cutout (lg+)
   swamijiCol: {
     display: { xs: 'none', md: 'none', lg: 'flex' },
     alignItems: 'flex-start',
@@ -43,22 +44,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     filter: 'drop-shadow(0 8px 32px rgba(107,74,150,0.22)) drop-shadow(0 2px 8px rgba(107,74,150,0.12))',
   },
 
-  // Col 1 — logo, centred vertically
-  logoCol: {
-    display: { xs: 'none', md: 'flex' },
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  heroLogoImg: {
-    width: '100%',
-    maxWidth: 270,
-    height: 'auto',
-    display: 'block',
-    filter: 'drop-shadow(0 6px 24px rgba(107,74,150,0.28))',
-  },
-
-  // Col 2 — center: title · sutra · cta · countdown
+  // Col 1: title · sutra · cta · countdown
   centerCol: {
     display: 'flex',
     flexDirection: 'column',
@@ -66,7 +52,6 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     textAlign: 'center',
   },
 
-  // Title image — full center column width, dominant
   titleImg: {
     width: '100%',
     height: 'auto',
@@ -75,7 +60,6 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     filter: 'drop-shadow(0 2px 12px rgba(107,74,150,0.20))',
   },
 
-  // Sutra image — 70% width, clearly secondary
   sutraImg: {
     width: '70%',
     height: 'auto',
@@ -111,7 +95,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     flexWrap: 'wrap',
   },
 
-  // ── Countdown ──
+  // Countdown
   countdown: {
     mt: 4.5,
     display: 'grid',
@@ -119,6 +103,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     gap: 1.5,
     maxWidth: { xs: '100%', md: 420 },
   },
+
   cdCell: {
     background: `color-mix(in srgb, ${C.cream} 70%, transparent)`,
     border: `1px solid ${C.lavender200}CC`,
@@ -129,6 +114,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     backdropFilter: 'blur(6px)',
     WebkitBackdropFilter: 'blur(6px)',
   },
+
   cdNum: {
     fontFamily: '"Cormorant Garamond", serif',
     fontSize: { xs: '1.6rem', md: '2rem' },
@@ -138,6 +124,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     letterSpacing: '-0.02em',
     fontWeight: 500,
   },
+
   cdLabel: {
     fontSize: { xs: '0.6rem', md: '0.65rem' },
     letterSpacing: '0.16em',
@@ -147,7 +134,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     fontWeight: 600,
   },
 
-  // ── Right portrait column ──
+  // Col 2: right portrait (md+)
   rightImgCol: {
     display: { xs: 'none', md: 'block' },
     overflow: 'hidden',
@@ -166,6 +153,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     maskComposite: 'intersect',
   },
 
+  // Mobile portrait shown below countdown
   portraitMobileWrap: {
     display: { xs: 'block', md: 'none' },
     width: '100%',
