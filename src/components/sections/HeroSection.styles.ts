@@ -75,11 +75,12 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
   metaRow: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: { xs: 'center', md: 'flex-start' },
+    justifyContent: 'center',
+    alignSelf: 'center',
     gap: '18px',
     mt: 2.5,
     color: C.purple600,
-    fontFamily: '"Blue Mirage", "Cormorant Garamond", serif',
+    fontFamily: '"Blue Mirage", serif',
     fontSize: { xs: '1.2rem', md: '1.4rem' },
     '&::before, &::after': {
       content: '""',

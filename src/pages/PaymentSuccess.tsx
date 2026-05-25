@@ -53,7 +53,7 @@ export default function PaymentSuccess() {
   // Countdown starts only after a confirmed reference
   useEffect(() => {
     if (phase !== 'success') return
-    if (countdown <= 0) { navigate('/hotel-offer'); return }
+    if (countdown <= 0) { navigate('/'); return }
     const t = setTimeout(() => setCountdown(c => c - 1), 1000)
     return () => clearTimeout(t)
   }, [phase, countdown, navigate])
@@ -116,8 +116,8 @@ export default function PaymentSuccess() {
           Redirecting in <strong>{countdown}</strong> second{countdown !== 1 ? 's' : ''}…
         </Typography>
 
-        <Button variant="contained" onClick={() => navigate('/hotel-offer')}>
-          Plan Your Stay →
+        <Button variant="contained" onClick={() => navigate('/')}>
+          Back to Home →
         </Button>
       </Paper>
     </Box>

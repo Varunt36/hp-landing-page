@@ -30,9 +30,21 @@ function Ornament() {
         fontSize: 14,
       }}
     >
-      <Box sx={{ height: '1px', width: 40, background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)` }} />
+      <Box
+        sx={{
+          height: '1px',
+          width: 40,
+          background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)`,
+        }}
+      />
       ✦
-      <Box sx={{ height: '1px', width: 40, background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)` }} />
+      <Box
+        sx={{
+          height: '1px',
+          width: 40,
+          background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)`,
+        }}
+      />
     </Box>
   );
 }
@@ -43,10 +55,24 @@ const CAR_RENTALS = [
   { label: 'Europcar', href: 'https://www.europcar.com' },
 ];
 
-const REACH: { icon: ReactNode; title: string; detail: ReactNode; time: string }[] = [
+const REACH: {
+  icon: ReactNode;
+  title: string;
+  detail: ReactNode;
+  time: string;
+}[] = [
   {
     icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M2 16l9-3 9-3 1 1-9 3-9 3z" />
         <path d="M11 13l3 5" />
         <path d="M11 13L8 7" />
@@ -57,12 +83,57 @@ const REACH: { icon: ReactNode; title: string; detail: ReactNode; time: string }
       <>
         <Box sx={{ mb: 1.5 }}>
           <Typography sx={subLabelSx}>By Car · ~ 26 min</Typography>
-          <Typography sx={bodyTextSx}>
-            From A100, take exit Kurfürstendamm → An der Urania, turn left.
-            Underground parking on site.
-          </Typography>
-          <Typography sx={{ fontSize: 13, color: C.muted, mt: 1, mb: 0.75 }}>
-            You can rent a car from the platforms below — each link opens their booking page:
+          <Box
+            component="a"
+            href="https://www.google.com/maps/dir/Berlin+Brandenburg+Airport+(BER)/Hotel+Berlin+Berlin,+L%C3%BCtzowplatz+17,+10785+Berlin"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 0.75,
+              mt: 0.5,
+              mb: 1,
+              fontSize: 13,
+              fontWeight: 600,
+              color: C.purple700,
+              textDecoration: 'none',
+              border: `1px solid ${C.lavender300}`,
+              borderRadius: '999px',
+              px: 1.5,
+              py: 0.5,
+              transition: 'background .2s, border-color .2s',
+              '&:hover': {
+                background: C.lavender100,
+                borderColor: C.purple700,
+              },
+            }}
+          >
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+              <circle cx="12" cy="9" r="2.5" />
+            </svg>
+            Navigate from Airport
+          </Box>
+          <Typography
+            sx={{
+              fontSize: { xs: 14, md: 15 },
+              fontWeight: 700,
+              color: C.purple800,
+              mb: 0.75,
+            }}
+          >
+            You can rent a car from the platforms below — each link opens their
+            booking page:
           </Typography>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             {CAR_RENTALS.map(({ label, href }) => (
@@ -85,14 +156,19 @@ const REACH: { icon: ReactNode; title: string; detail: ReactNode; time: string }
                   py: 0.35,
                   textDecoration: 'none',
                   transition: 'background .2s, border-color .2s',
-                  '&:hover': { background: C.lavender100, borderColor: C.purple700 },
+                  '&:hover': {
+                    background: C.lavender100,
+                    borderColor: C.purple700,
+                  },
                 }}
               >
                 {label}
               </Box>
             ))}
           </Box>
-          <Typography sx={{ fontSize: 13, color: C.purple800, fontWeight: 700, mt: 1 }}>
+          <Typography
+            sx={{ fontSize: 14, color: C.purple800, fontWeight: 700, mt: 1 }}
+          >
             Paid parking on site — approx. €20–€25 per day.
           </Typography>
         </Box>
@@ -102,8 +178,9 @@ const REACH: { icon: ReactNode; title: string; detail: ReactNode; time: string }
         <Box>
           <Typography sx={subLabelSx}>By Train · ~ 1 hour</Typography>
           <Typography sx={bodyTextSx}>
-            Take train RE7 or RB14 to Zoologischer Garten, then bus 100 to
-            Lützowplatz directly in front of the hotel.
+            From the airport take the train RE7 or RB14 to Zoologischer Garten,
+            then the bus 100 to Lützowplatz, which stops directly in front of the
+            hotel.
           </Typography>
         </Box>
       </>
@@ -112,7 +189,16 @@ const REACH: { icon: ReactNode; title: string; detail: ReactNode; time: string }
   },
   {
     icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <rect x="2" y="7" width="20" height="10" rx="2" />
         <path d="M2 11h20" />
         <path d="M7 7V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2" />
@@ -133,7 +219,8 @@ export default function VenueSection() {
     borderRadius: '18px',
     p: { xs: 3, md: 3.5 },
     boxShadow: '0 1px 2px rgba(60,30,90,0.06)',
-    transition: 'transform .25s ease, border-color .25s ease, box-shadow .25s ease',
+    transition:
+      'transform .25s ease, border-color .25s ease, box-shadow .25s ease',
     '&:hover': {
       transform: 'translateY(-3px)',
       borderColor: `${C.gold500}80`,
@@ -180,7 +267,8 @@ export default function VenueSection() {
             border: `1px solid ${C.lavender200}B3`,
             borderRadius: '22px',
             overflow: 'hidden',
-            boxShadow: '0 4px 14px rgba(60,30,90,0.08), 0 12px 40px rgba(60,30,90,0.06)',
+            boxShadow:
+              '0 4px 14px rgba(60,30,90,0.08), 0 12px 40px rgba(60,30,90,0.06)',
             mb: { xs: 8, md: 10 },
           }}
         >
@@ -188,7 +276,14 @@ export default function VenueSection() {
           <Box sx={{ p: { xs: 3.5, md: 6 } }}>
             <Typography
               variant="h2"
-              sx={{ fontSize: { xs: '1.75rem', md: 'clamp(1.9rem, 3.4vw, 2.75rem)' }, color: C.purple800 }}
+              sx={{
+                fontFamily: '"Blue Mirage", serif',
+                fontSize: {
+                  xs: '1.75rem',
+                  md: 'clamp(1.9rem, 3.4vw, 2.75rem)',
+                },
+                color: C.purple800,
+              }}
             >
               Hotel Berlin, Berlin
             </Typography>
@@ -233,7 +328,15 @@ export default function VenueSection() {
               ))}
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5, mt: 3.5, flexWrap: 'wrap' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2.5,
+                mt: 3.5,
+                flexWrap: 'wrap',
+              }}
+            >
               <Button
                 variant="contained"
                 href="https://www.google.com/maps/dir/?api=1&destination=Hotel+Berlin+Berlin+L%C3%BCtzowplatz+17+10785+Berlin"
@@ -241,7 +344,16 @@ export default function VenueSection() {
                 rel="noopener"
                 component="a"
                 startIcon={
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
                   </svg>
                 }
@@ -328,11 +440,21 @@ export default function VenueSection() {
                 </Box>
                 <Typography
                   variant="h3"
-                  sx={{ fontSize: { xs: '1.3rem', md: '1.375rem' }, color: C.purple800 }}
+                  sx={{
+                    fontSize: { xs: '1.3rem', md: '1.375rem' },
+                    color: C.purple800,
+                  }}
                 >
                   {title}
                 </Typography>
-                <Box sx={{ mt: 1.25, fontSize: { xs: 14, md: 14.5 }, lineHeight: 1.6, color: C.ink }}>
+                <Box
+                  sx={{
+                    mt: 1.25,
+                    fontSize: { xs: 14, md: 14.5 },
+                    lineHeight: 1.6,
+                    color: C.ink,
+                  }}
+                >
                   {detail}
                 </Box>
                 {time && (

@@ -69,7 +69,7 @@ export const navbarStyles: Record<string, SxProps<Theme>> = {
       position: 'absolute',
       left: 12, right: 12, bottom: 4,
       height: '1px',
-      background: C.gold500,
+      background: `${C.lavender300}88`,
       transform: 'scaleX(0)',
       transformOrigin: 'left',
       transition: 'transform .25s ease',
