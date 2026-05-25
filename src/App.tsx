@@ -16,7 +16,7 @@ const ContactPage    = lazy(() => import('./pages/ContactPage'))
 const ImpressumPage  = lazy(() => import('./pages/ImpressumPage'))
 const PaymentSuccess  = lazy(() => import('./pages/PaymentSuccess'))
 const PaymentCancel   = lazy(() => import('./pages/PaymentCancel'))
-const HotelOfferPage  = lazy(() => import('./pages/HotelOfferPage'))
+const DataPrivacyPage = lazy(() => import('./pages/DataPrivacyPage'))
 const AdminLogin     = lazy(() => import('./pages/admin/AdminLogin'))
 const AdminScan      = lazy(() => import('./pages/admin/AdminScan'))
 
@@ -85,9 +85,9 @@ export default function App() {
         <Route path="/explore"         element={<ExplorePage />} />
         <Route path="/contact"         element={<ContactPage />} />
         <Route path="/impressum"       element={<ImpressumPage />} />
+        <Route path="/data-privacy"    element={<DataPrivacyPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/cancel"  element={<PaymentCancel />} />
-        <Route path="/hotel-offer"     element={<HotelOfferPage />} />
         <Route path="/admin/login"     element={<AdminLogin />} />
         <Route path="/admin/scan"      element={<ProtectedRoute><AdminScan /></ProtectedRoute>} />
         <Route path="*"               element={<NotFoundPage />} />

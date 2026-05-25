@@ -102,6 +102,24 @@ export default function Footer() {
               Impressum
             </Box>
             <Box
+              component="span"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate('/data-privacy')}
+              onKeyDown={(e) =>
+                (e.key === 'Enter' || e.key === ' ') && navigate('/data-privacy')
+              }
+              sx={{
+                color: `${C.cream}99`,
+                cursor: 'pointer',
+                fontSize: 13,
+                '&:hover': { color: C.gold300 },
+                transition: 'color .2s',
+              }}
+            >
+              Data Privacy
+            </Box>
+            <Box
               component="a"
               href={`mailto:${FOOTER.email}`}
               sx={{

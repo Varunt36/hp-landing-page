@@ -48,7 +48,7 @@ export default function RegisterModal() {
             bgcolor: C.cream,
             border: `1px solid ${C.lavender200}`,
             boxShadow: '0 8px 40px rgba(48, 24, 80, 0.18)',
-            overflow: 'hidden',
+            overflow: 'clip',
             position: 'relative',
             '&::before': {
               content: '""',

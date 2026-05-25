@@ -134,6 +134,9 @@ export default function Step2MemberDetails() {
         setTouched(true);
         return;
       }
+      if (currentMember === 1 && form.dob && ageAtEvent(form.dob) < 5) {
+        return;
+      }
       // On the last member, ensure at least one adult (18+) in the group
       if (currentMember === groupInfo.memberCount) {
         const allMembers = [
@@ -243,22 +246,25 @@ export default function Step2MemberDetails() {
             error={!!errors.dob}
             helperText={errors.dob}
           />
-          {!errors.dob &&
-            form.dob &&
-            new Date(form.dob) > new Date('2021-08-15') && (
+          {!errors.dob && form.dob && ageAtEvent(form.dob) < 5 && (
+            isPrimary ? (
+              <Alert severity="warning" sx={{ mt: 1 }}>
+                Kindly ensure that first member must be an adult.
+              </Alert>
+            ) : (
               <Typography
                 sx={{
                   fontSize: 14,
-                  color: 'error.main',
+                  color: 'warning.main',
                   fontWeight: 600,
                   mt: 0.75,
                   ml: 0.25,
                 }}
               >
-                Children under the age of 5 can attend the Shibir free of
-                charge, however registration is mandatory.
+                Children under the age of 5 may join the Shibir free of cost, however registration is mandatory for all.
               </Typography>
-            )}
+            )
+          )}
         </Box>
 
         <TextField

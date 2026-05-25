@@ -43,7 +43,6 @@ export default function HeroSection() {
 
   return (
     <Box id="hero" sx={s.outerBox}>
-
       {/* Portrait — absolutely fills the full right side of the hero */}
       <Box sx={s.portraitWrap}>
         <Box
@@ -57,7 +56,6 @@ export default function HeroSection() {
 
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
         <Box sx={s.grid}>
-
           {/* ── Col 1: Title · Sutra · CTA · Countdown ── */}
           <Box sx={s.centerCol}>
             <Box
@@ -124,7 +122,6 @@ export default function HeroSection() {
 
           {/* ── Col 2: spacer to keep text from overlapping portrait ── */}
           <Box sx={s.portraitCol} />
-
         </Box>
       </Container>
 

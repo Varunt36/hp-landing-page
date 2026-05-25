@@ -19,7 +19,7 @@ const DAYS: { date: string; sessions: { name: string; time: string }[] }[] = [
   {
     date: 'Monday, 17 August',
     sessions: [
-      { name: "Session 4: Guruhari's Jubilee Celebration", time: 'Morning' },
+      { name: "Session 4: Guruhari Pragatya Din Celebration", time: 'Morning' },
     ],
   },
 ]

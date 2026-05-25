@@ -61,8 +61,8 @@ export const COUNTRIES = [
 
 export const FOOTER = {
   brand: 'HariPrabodham Germany',
-  legal: '© 2026 HariPrabodham Germany. All rights reserved.',
-  email: 'info@yds-germany.de',
+  legal: `© ${new Date().getFullYear()} Yogi Divine Society e.V. Germany. All rights reserved.`,
+  email: 'hpam@yds-germany.de',
   closing: 'Jai Swaminarayan 🙏',
 };
 
