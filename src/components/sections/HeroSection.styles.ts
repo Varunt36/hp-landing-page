@@ -8,7 +8,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     position: 'relative',
     isolation: 'isolate',
     pt: { xs: '90px', md: '130px' },
-    pb: { xs: 8, md: 12 },
+    pb: { xs: '120px', md: '120px' },
   },
 
   waveBottom: {
@@ -17,17 +17,30 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     right: 0,
     bottom: -1,
     pointerEvents: 'none',
-    color: `${C.lavender200}99`,
   },
 
-  // 3-column grid: logo | title+cta | portrait
+  // 3-column grid: swamiji | title+cta | portrait
   grid: {
     display: 'grid',
-    gridTemplateColumns: { xs: '1fr', md: '1fr 660px' },
-    gap: { xs: 4, md: 4 },
+    gridTemplateColumns: { xs: '1fr', md: '1fr 360px', lg: '420px 1fr 420px' },
+    gap: { xs: 4, md: 3 },
     alignItems: 'stretch',
     position: 'relative',
     zIndex: 2,
+  },
+
+  swamijiCol: {
+    display: { xs: 'none', md: 'none', lg: 'flex' },
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+
+  swamijiImg: {
+    width: '100%',
+    maxWidth: 420,
+    height: 'auto',
+    display: 'block',
+    filter: 'drop-shadow(0 8px 32px rgba(107,74,150,0.22)) drop-shadow(0 2px 8px rgba(107,74,150,0.12))',
   },
 
   // Col 1 — logo, centred vertically
@@ -49,8 +62,8 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
   centerCol: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: { xs: 'center', md: 'flex-start' },
-    textAlign: { xs: 'center', md: 'left' },
+    alignItems: 'center',
+    textAlign: 'center',
   },
 
   // Title image — full center column width, dominant
@@ -134,28 +147,23 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     fontWeight: 600,
   },
 
-  // ── Right portrait column — empty spacer keeps text from overlapping ──
-  portraitCol: {
+  // ── Right portrait column ──
+  rightImgCol: {
     display: { xs: 'none', md: 'block' },
+    overflow: 'hidden',
+    borderRadius: '18px',
   },
 
-  // Absolutely fills the full right side of the hero from top to bottom
-  portraitWrap: {
-    display: { xs: 'none', md: 'block' },
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    width: '48%',
-    zIndex: 1,
-  },
-
-  portraitImg: {
+  rightImg: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    objectPosition: 'top center',
+    objectPosition: 'top left',
     display: 'block',
+    WebkitMaskImage: 'linear-gradient(to bottom, black 55%, transparent 100%), linear-gradient(to right, black 70%, transparent 100%)',
+    maskImage: 'linear-gradient(to bottom, black 55%, transparent 100%), linear-gradient(to right, black 70%, transparent 100%)',
+    WebkitMaskComposite: 'source-in',
+    maskComposite: 'intersect',
   },
 
   portraitMobileWrap: {

@@ -30,8 +30,8 @@ function BrandLogo() {
       alt="Hari Prabodham Logo"
       fetchPriority="high"
       sx={{
-        width: { xs: 72, md: 110 },
-        height: { xs: 72, md: 110 },
+        width: { xs: 72, md: 80 },
+        height: { xs: 72, md: 80 },
         objectFit: 'contain',
         flexShrink: 0,
       }}

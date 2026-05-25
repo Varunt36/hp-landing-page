@@ -8,22 +8,8 @@ import { sharedFormStyles } from './FormShared.styles'
 import { C } from '../../theme/theme'
 
 const GDPR_POINTS = [
-  {
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
-    text: 'By registering, you consent to the processing of your personal data under the EU GDPR (DSGVO) and German BDSG, solely for registration and event logistics.',
-  },
-  {
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" />
-      </svg>
-    ),
-    text: 'You may access, correct, or request deletion of your data, or withdraw consent at any time, by contacting the organising team.',
-  },
+  'By registering, you consent to the processing of your personal data under the EU GDPR (DSGVO) and German BDSG, solely for registration and event logistics.',
+  'You may access, correct, or request deletion of your data, or withdraw consent at any time, by contacting the organising team.',
 ]
 
 export default function Step3Terms() {
@@ -65,19 +51,9 @@ export default function Step3Terms() {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.75 }}>
           {GDPR_POINTS.map((point, i) => (
             <Box key={i} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
-              <Box
-                sx={{
-                  width: 30, height: 30, borderRadius: '8px', flexShrink: 0, mt: '1px',
-                  background: `rgba(200,135,42,0.10)`,
-                  border: `1px solid rgba(200,135,42,0.22)`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: C.gold700,
-                }}
-              >
-                {point.icon}
-              </Box>
+              <Box component="span" sx={{ mt: '6px', width: 6, height: 6, borderRadius: '50%', background: C.gold700, flexShrink: 0 }} />
               <Typography fontSize={13.5} color="text.secondary" lineHeight={1.7}>
-                {point.text}
+                {point}
               </Typography>
             </Box>
           ))}

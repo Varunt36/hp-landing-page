@@ -43,19 +43,18 @@ export default function HeroSection() {
 
   return (
     <Box id="hero" sx={s.outerBox}>
-      {/* Portrait — absolutely fills the full right side of the hero */}
-      <Box sx={s.portraitWrap}>
-        <Box
-          component="img"
-          src="/images/DSC01446.png"
-          alt="Pujya Swamiji"
-          fetchPriority="high"
-          sx={s.portraitImg}
-        />
-      </Box>
-
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
         <Box sx={s.grid}>
+          {/* ── Col 0: Swamiji portrait (lg+) ── */}
+          <Box sx={s.swamijiCol}>
+            <Box
+              component="img"
+              src="/images/Swamiji.png"
+              alt="Pujya Swamiji"
+              sx={s.swamijiImg}
+            />
+          </Box>
+
           {/* ── Col 1: Title · Sutra · CTA · Countdown ── */}
           <Box sx={s.centerCol}>
             <Box
@@ -120,22 +119,38 @@ export default function HeroSection() {
             </Box>
           </Box>
 
-          {/* ── Col 2: spacer to keep text from overlapping portrait ── */}
-          <Box sx={s.portraitCol} />
+          {/* ── Col 2: Right portrait (md+) ── */}
+          <Box sx={s.rightImgCol}>
+            <Box
+              component="img"
+              src="/images/DSC01446.png"
+              alt="Pujya Swamiji"
+              fetchPriority="high"
+              sx={s.rightImg}
+            />
+          </Box>
         </Box>
       </Container>
 
       {/* Wave decoration */}
       <Box
         component="svg"
-        viewBox="0 0 1440 120"
+        viewBox="0 0 1440 160"
         preserveAspectRatio="none"
         aria-hidden="true"
-        sx={{ ...s.waveBottom, width: '100%', height: 80, display: 'block' }}
+        sx={{ ...s.waveBottom, width: '100%', height: 110, display: 'block' }}
       >
+        {/* Back wave — softer purple */}
         <path
-          d="M0,80 C240,30 480,110 720,70 C960,30 1200,100 1440,60 L1440,120 L0,120 Z"
-          fill="currentColor"
+          d="M0,80 C360,20 720,130 1080,60 C1260,25 1380,90 1440,60 L1440,160 L0,160 Z"
+          fill="#B89DD2"
+          fillOpacity="0.35"
+        />
+        {/* Front wave — deeper purple */}
+        <path
+          d="M0,110 C240,60 480,140 720,100 C960,55 1200,130 1440,90 L1440,160 L0,160 Z"
+          fill="#7c669b"
+          fillOpacity="0.25"
         />
       </Box>
     </Box>

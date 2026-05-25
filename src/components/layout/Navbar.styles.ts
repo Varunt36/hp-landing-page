@@ -3,23 +3,18 @@ import { C } from '../../theme/theme'
 
 export const navbarStyles: Record<string, SxProps<Theme>> = {
   appBar: {
-    bgcolor: 'transparent',
-    boxShadow: 'none',
-    borderBottom: '1px solid transparent',
-    transition: 'background-color .35s ease, box-shadow .35s ease, backdrop-filter .35s ease, border-color .35s ease',
-    '&.scrolled': {
-      bgcolor: `${C.cream}E0`,
-      backdropFilter: 'saturate(140%) blur(12px)',
-      WebkitBackdropFilter: 'saturate(140%) blur(12px)',
-      borderBottomColor: `${C.lavender200}80`,
-      boxShadow: '0 1px 0 rgba(255,255,255,0.6) inset',
-    },
+    bgcolor: `${C.cream}E0`,
+    backdropFilter: 'saturate(140%) blur(12px)',
+    WebkitBackdropFilter: 'saturate(140%) blur(12px)',
+    borderBottom: `1px solid ${C.lavender200}80`,
+    boxShadow: '0 1px 0 rgba(255,255,255,0.6) inset',
   },
   toolbar: {
     maxWidth: 1570,
     width: '100%',
     mx: 'auto',
     px: { xs: 2, sm: 3 },
+    py: '5px',
     justifyContent: 'space-between',
     minHeight: { xs: 64, md: 72 },
   },
@@ -33,7 +28,7 @@ export const navbarStyles: Record<string, SxProps<Theme>> = {
     overflow: 'hidden',
   },
   brandText: {
-    fontFamily: '"Cormorant Garamond", serif',
+    fontFamily: '"Blue Mirage", serif',
     fontStyle: 'italic',
     fontSize: { xs: 17, md: 19 },
     lineHeight: 1.05,
