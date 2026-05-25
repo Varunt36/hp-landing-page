@@ -86,6 +86,7 @@ export default function RegisterModal() {
           component="span"
           sx={{
             display: 'block',
+            textAlign: 'center',
             fontSize: '0.68rem',
             letterSpacing: '0.18em',
             textTransform: 'uppercase',
@@ -100,7 +101,7 @@ export default function RegisterModal() {
         <Typography
           variant="h2"
           component="p"
-          sx={{ fontSize: { xs: '1.6rem', md: '2rem' }, lineHeight: 1.2 }}
+          sx={{ fontSize: { xs: '1.6rem', md: '2rem' }, lineHeight: 1.2, fontFamily: '"Blue Mirage", serif', textAlign: 'center', mb: 0 }}
         >
           Registration
         </Typography>
@@ -112,7 +113,8 @@ export default function RegisterModal() {
             alignItems: 'center',
             justifyContent: 'center',
             gap: 1.25,
-            mt: 1.5,
+            mt: 2,
+            mb: 2,
           }}
         >
           <Box
@@ -136,30 +138,27 @@ export default function RegisterModal() {
             }}
           />
         </Box>
+
+        <Typography
+          variant="h3"
+          sx={{ fontSize: { xs: '1.1rem', md: '1.35rem' }, mb: 0.5, fontFamily: '"Blue Mirage", serif', textAlign: 'center' }}
+        >
+          Begin your divine journey
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ fontSize: '0.9rem', textAlign: 'center' }}
+        >
+          Please share a few details. A confirmation will be sent to your email.
+        </Typography>
       </DialogTitle>
 
       {/* ── Content ── */}
       <DialogContent
         ref={contentRef}
-        sx={{ px: { xs: 2, md: 4 }, pb: 4, pt: 2 }}
+        sx={{ px: { xs: 2, md: 4 }, pb: 4, pt: 2.5 }}
       >
-        <Box sx={{ textAlign: 'center', mb: 3 }}>
-          <Typography
-            variant="h3"
-            sx={{ fontSize: { xs: '1.1rem', md: '1.35rem' }, mb: 0.75 }}
-          >
-            Begin your divine journey
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontSize: '0.9rem' }}
-          >
-            Please share a few details. A confirmation will be sent to your
-            email.
-          </Typography>
-        </Box>
-
         <ProgressStepper />
 
         <Box key={currentStep} sx={{ animation: 'slideIn 300ms ease both' }}>

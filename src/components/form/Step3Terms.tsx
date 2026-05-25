@@ -29,10 +29,8 @@ export default function Step3Terms() {
       <Box sx={{ mb: 3 }}>
         <Typography
           sx={{
-            fontFamily: '"Cormorant Garamond", serif',
-            fontSize: { xs: '1.55rem', sm: '1.75rem' },
-            fontWeight: 700,
-            fontStyle: 'italic',
+            fontFamily: '"Blue Mirage", serif',
+            fontSize: { xs: '1.75rem', sm: '2rem' },
             color: C.purple800,
             lineHeight: 1.2,
             mb: 0.5,
@@ -50,9 +48,26 @@ export default function Step3Terms() {
         {/* Points */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.75 }}>
           {GDPR_POINTS.map((point, i) => (
-            <Box key={i} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
-              <Box component="span" sx={{ mt: '6px', width: 6, height: 6, borderRadius: '50%', background: C.gold700, flexShrink: 0 }} />
-              <Typography fontSize={13.5} color="text.secondary" lineHeight={1.7}>
+            <Box
+              key={i}
+              sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}
+            >
+              <Box
+                component="span"
+                sx={{
+                  mt: '6px',
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  background: C.gold700,
+                  flexShrink: 0,
+                }}
+              />
+              <Typography
+                fontSize={13.5}
+                color="text.secondary"
+                lineHeight={1.7}
+              >
                 {point}
               </Typography>
             </Box>
@@ -71,7 +86,10 @@ export default function Step3Terms() {
         control={
           <Checkbox
             checked={checked}
-            onChange={(e) => { setChecked(e.target.checked); setError(false) }}
+            onChange={(e) => {
+              setChecked(e.target.checked);
+              setError(false);
+            }}
             sx={{
               color: C.purple600,
               '&.Mui-checked': { color: C.purple600 },
@@ -82,13 +100,22 @@ export default function Step3Terms() {
       />
 
       <Box sx={sharedFormStyles.navBox}>
-        <Button variant="outlined" onClick={() => setStep(2)} sx={sharedFormStyles.backButton}>
+        <Button
+          variant="outlined"
+          onClick={() => setStep(2)}
+          sx={sharedFormStyles.backButton}
+        >
           ← Back
         </Button>
-        <Button variant="contained" color="inherit" onClick={handleNext} sx={sharedFormStyles.nextButton}>
+        <Button
+          variant="contained"
+          color="inherit"
+          onClick={handleNext}
+          sx={sharedFormStyles.nextButton}
+        >
           Next →
         </Button>
       </Box>
     </Box>
-  )
+  );
 }

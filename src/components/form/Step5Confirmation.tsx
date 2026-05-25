@@ -8,6 +8,7 @@
 import { Box, Typography, Button } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import { useRegistrationStore } from '../../store/registrationStore'
+import { C } from '../../theme/theme'
 import { FOOTER, EVENT } from '../../data/data'
 import { step5Styles } from './Step5Confirmation.styles'
 import HotelRecommendation from './HotelRecommendation'
@@ -25,7 +26,7 @@ export default function Step5Confirmation() {
         <CheckIcon sx={step5Styles.checkIcon} />
       </Box>
 
-      <Typography variant="h4" color="primary" fontWeight={700} mb={1.5}>
+      <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: { xs: '1.75rem', sm: '2rem' }, color: C.purple800, lineHeight: 1.2, mb: 1.5 }}>
         Registration Received!
       </Typography>
 

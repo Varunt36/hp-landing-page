@@ -13,6 +13,7 @@ import { COUNTRIES, MAX_GROUP_SIZE } from '../../data/data'
 import { fetchCountryQuota, fetchAvailableCountryCodes, type CountryQuota } from '../../api/quotas'
 import { step1Styles } from './Step1GroupInfo.styles'
 import { sharedFormStyles } from './FormShared.styles'
+import { C } from '../../theme/theme'
 
 export default function Step1GroupInfo() {
   const { groupInfo, setGroupInfo, setStep } = useRegistrationStore()
@@ -65,7 +66,7 @@ export default function Step1GroupInfo() {
 
   return (
     <Box>
-      <Typography variant="h5" color="primary" fontWeight={700} mb={0.5}>
+      <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: { xs: '1.75rem', sm: '2rem' }, color: C.purple800, lineHeight: 1.2, mb: 0.5 }}>
         Group Information
       </Typography>
 

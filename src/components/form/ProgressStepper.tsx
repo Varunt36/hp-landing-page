@@ -14,7 +14,7 @@ function StepCircle({ index, activeStep }: CircleProps) {
   const isComplete = index < activeStep
   const isActive   = index === activeStep
 
-  const bg     = isComplete ? C.purple600 : isActive ? PRIMARY : 'transparent'
+  const bg     = isComplete ? C.teal400 : isActive ? PRIMARY : 'transparent'
   const border = isComplete || isActive ? 'none' : `2px solid ${STEP_MUTED}`
   const color  = isComplete || isActive ? 'white' : STEP_MUTED
   const shadow = isActive ? `0 0 0 4px rgba(43,38,112,0.28)` : 'none'
@@ -63,16 +63,25 @@ export default function ProgressStepper() {
             }}
           >
             {/* Step column: circle above label */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
               <StepCircle index={i} activeStep={activeStep} />
               <Typography
                 variant="caption"
                 sx={{
                   mt: 0.5,
                   textAlign: 'center',
-                  color: i === activeStep ? PRIMARY : STEP_MUTED,
+                  color: i < activeStep ? C.teal400 : i === activeStep ? PRIMARY : STEP_MUTED,
                   fontWeight: i === activeStep ? 700 : 400,
-                  display: { xs: i === activeStep ? 'block' : 'none', sm: 'block' },
+                  display: {
+                    xs: i === activeStep ? 'block' : 'none',
+                    sm: 'block',
+                  },
                   transition: 'color 300ms ease',
                   whiteSpace: 'nowrap',
                 }}
@@ -86,7 +95,7 @@ export default function ProgressStepper() {
               <Box
                 sx={{
                   ...progressStyles.connector,
-                  background: i < activeStep ? C.purple600 : STEP_MUTED,
+                  background: i < activeStep ? C.teal400 : STEP_MUTED,
                   transition: 'background 300ms ease',
                   alignSelf: 'flex-start',
                   mt: '20px', // vertically center with circle (40px / 2 = 20px)
@@ -97,5 +106,5 @@ export default function ProgressStepper() {
         ))}
       </Box>
     </Box>
-  )
+  );
 }
