@@ -54,7 +54,7 @@ export default function DataPrivacyPage() {
             </Typography>
             <Typography
               variant="h1"
-              sx={{ mt: 0.75, fontSize: { xs: '2.25rem', md: 'clamp(2rem, 4vw, 3rem)' }, color: C.purple800, fontStyle: 'italic' }}
+              sx={{ mt: 0.75, fontSize: { xs: '2.25rem', md: 'clamp(2rem, 4vw, 3rem)' }, color: C.purple800, fontFamily: '"Blue Mirage", serif' }}
             >
               Data Privacy
             </Typography>

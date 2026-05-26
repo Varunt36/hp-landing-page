@@ -28,8 +28,7 @@ export const step4Styles: Record<string, SxProps<Theme>> = {
   },
 
   eventName: {
-    fontFamily: '"Cormorant Garamond", serif',
-    fontWeight: 700,
+    fontFamily: '"Blue Mirage", serif',
     fontSize: { xs: '1.05rem', sm: '1.15rem' },
     color: C.purple800,
     lineHeight: 1.3,

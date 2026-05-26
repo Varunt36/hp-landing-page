@@ -70,6 +70,7 @@ export default function ProgramsSection() {
               mt: 1,
               fontSize: { xs: '1.7rem', md: 'clamp(1.7rem, 3.4vw, 2.75rem)' },
               color: C.purple800,
+              fontFamily: '"Blue Mirage", serif',
             }}
           >
             A divine celebration of awakening, unity &amp; selfless service.
@@ -81,7 +82,7 @@ export default function ProgramsSection() {
               maxWidth: 920,
               fontSize: { xs: 15, md: 17 },
               lineHeight: 1.75,
-              color: C.ink,
+              color: C.purple600,
             }}
           >
             A three-day gathering of discourses, devotional music, and sevā
@@ -105,7 +106,14 @@ export default function ProgramsSection() {
           >
             Three Days · Three Journeys
           </Typography>
-          <Typography variant="h2" sx={{ mt: 1, color: C.purple800 }}>
+          <Typography
+            variant="h2"
+            sx={{
+              mt: 1,
+              color: C.purple800,
+              fontFamily: '"Blue Mirage", serif',
+            }}
+          >
             The Programs
           </Typography>
           <Box
@@ -149,8 +157,7 @@ export default function ProgramsSection() {
             <Box key={date} sx={card}>
               <Typography
                 sx={{
-                  fontFamily: '"Cormorant Garamond", serif',
-                  fontStyle: 'italic',
+                  fontFamily: '"Blue Mirage", serif',
                   color: C.purple800,
                   fontSize: { xs: '1.3rem', md: '1.4rem' },
                   fontWeight: 600,
@@ -173,7 +180,13 @@ export default function ProgramsSection() {
                       '&:first-of-type': { borderTop: 'none', pt: 0 },
                     }}
                   >
-                    <Typography sx={{ fontSize: { xs: 13.5, md: 14 }, color: C.ink, lineHeight: 1.4 }}>
+                    <Typography
+                      sx={{
+                        fontSize: { xs: 13.5, md: 14 },
+                        color: C.ink,
+                        lineHeight: 1.4,
+                      }}
+                    >
                       {name}
                     </Typography>
                     <Typography

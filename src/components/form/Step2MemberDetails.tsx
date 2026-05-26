@@ -26,6 +26,7 @@ import { type MemberDetail } from '../../api/registrations';
 import { COUNTRIES } from '../../data/data';
 import { step2Styles } from './Step2MemberDetails.styles';
 import { sharedFormStyles } from './FormShared.styles';
+import { C } from '../../theme/theme'
 
 const EVENT_DATE = new Date('2026-08-15');
 function ageAtEvent(dob: string): number {
@@ -179,7 +180,7 @@ export default function Step2MemberDetails() {
 
   return (
     <Box>
-      <Typography variant="h5" color="primary" fontWeight={700} mb={1}>
+      <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: { xs: '1.75rem', sm: '2rem' }, color: C.purple800, lineHeight: 1.2, mb: 1 }}>
         Member Details
       </Typography>
 

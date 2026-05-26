@@ -40,39 +40,118 @@ export default function ContactSection() {
   return (
     <Box id="contact" sx={{ background: C.cream, py: { xs: 10, md: 13 } }}>
       <Container maxWidth="lg">
-
         {/* Heading */}
         <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 6 } }}>
-          <Typography component="span" sx={{ fontFamily: '"Blue Mirage", serif', fontSize: '1rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: C.purple600, fontWeight: 600 }}>
+          <Typography
+            component="span"
+            sx={{
+              fontFamily: '"Blue Mirage", serif',
+              fontSize: '1rem',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: C.purple600,
+              fontWeight: 600,
+            }}
+          >
             Reach Out
           </Typography>
-          <Typography variant="h2" sx={{ mt: 1, color: C.purple800 }}>Contact</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.25, mt: 1.75, color: C.gold600, fontSize: 14 }}>
-            <Box sx={{ height: '1px', width: 40, background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)` }} />
+          <Typography
+            variant="h2"
+            sx={{
+              mt: 1,
+              color: C.purple800,
+              fontFamily: '"Blue Mirage", serif',
+            }}
+          >
+            Contact
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 1.25,
+              mt: 1.75,
+              color: C.gold600,
+              fontSize: 14,
+            }}
+          >
+            <Box
+              sx={{
+                height: '1px',
+                width: 40,
+                background: `linear-gradient(to right, transparent, ${C.gold500}, transparent)`,
+              }}
+            />
             ✦
-            <Box sx={{ height: '1px', width: 40, background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)` }} />
+            <Box
+              sx={{
+                height: '1px',
+                width: 40,
+                background: `linear-gradient(to left, transparent, ${C.gold500}, transparent)`,
+              }}
+            />
           </Box>
         </Box>
 
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: { xs: 2.5, md: 2.75 } }}>
-
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+            gap: { xs: 2.5, md: 2.75 },
+          }}
+        >
           {/* Email card */}
           <Box sx={cardSx}>
             <Box sx={iconCircleSx}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 6h16v12H4z"/><path d="M4 6l8 7 8-7"/>
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 6h16v12H4z" />
+                <path d="M4 6l8 7 8-7" />
               </svg>
             </Box>
-            <Typography variant="h3" sx={{ fontSize: '1.375rem', fontStyle: 'italic', fontFamily: '"Blue Mirage", serif', color: C.purple700 }}>
+            <Typography
+              variant="h3"
+              sx={{
+                fontSize: '1.375rem',
+                fontStyle: 'italic',
+                fontFamily: '"Blue Mirage", serif',
+                color: C.purple700,
+              }}
+            >
               Email
             </Typography>
-            <Typography sx={{ fontSize: '1rem', mt: 0.75, fontFamily: '"Blue Mirage", serif', color: C.purple600 }}>
+            <Typography
+              sx={{
+                fontSize: '1rem',
+                mt: 0.75,
+                fontFamily: '"Blue Mirage", serif',
+                color: C.purple600,
+              }}
+            >
               For general queries
             </Typography>
             <Box
               component="a"
               href={`mailto:${FOOTER.email}`}
-              sx={{ display: 'block', mt: 1.5, color: C.muted, fontSize: '1.05rem', lineHeight: 1.75, textDecoration: 'none', '&:hover': { color: C.purple800 }, transition: 'color .2s' }}
+              sx={{
+                display: 'block',
+                mt: 1.5,
+                color: C.muted,
+                fontSize: '1.05rem',
+                lineHeight: 1.75,
+                textDecoration: 'none',
+                '&:hover': { color: C.purple800 },
+                transition: 'color .2s',
+              }}
             >
               {FOOTER.email}
             </Box>
@@ -81,27 +160,73 @@ export default function ContactSection() {
           {/* Contact card */}
           <Box sx={cardSx}>
             <Box sx={iconCircleSx}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
               </svg>
             </Box>
-            <Typography variant="h3" sx={{ fontSize: '1.375rem', fontStyle: 'italic', fontFamily: '"Blue Mirage", serif', color: C.purple700 }}>
+            <Typography
+              variant="h3"
+              sx={{
+                fontSize: '1.375rem',
+                fontStyle: 'italic',
+                fontFamily: '"Blue Mirage", serif',
+                color: C.purple700,
+              }}
+            >
               Phone / WhatsApp
             </Typography>
-            <Typography sx={{ fontSize: '1rem', mt: 0.75, fontFamily: '"Blue Mirage", serif', color: C.purple600 }}>
+            <Typography
+              sx={{
+                fontSize: '1rem',
+                mt: 0.75,
+                fontFamily: '"Blue Mirage", serif',
+                color: C.purple600,
+              }}
+            >
               Get in touch
             </Typography>
 
-            <Box sx={{ mt: 1.75, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+            <Box
+              sx={{
+                mt: 1.75,
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: 2,
+              }}
+            >
               {PEOPLE.map((person) => (
                 <Box key={person.name}>
-                  <Typography sx={{ fontSize: '0.95rem', fontWeight: 700, color: C.purple800 }}>
+                  <Typography
+                    sx={{
+                      fontSize: '0.95rem',
+                      fontWeight: 700,
+                      color: C.purple800,
+                    }}
+                  >
                     {person.name}
                   </Typography>
                   <Box
                     component="a"
                     href={person.phone}
-                    sx={{ display: 'block', mt: 0.25, fontSize: '1.05rem', color: C.muted, textDecoration: 'none', lineHeight: 1.75, '&:hover': { color: C.purple800 }, transition: 'color .2s' }}
+                    sx={{
+                      display: 'block',
+                      mt: 0.25,
+                      fontSize: '1.05rem',
+                      color: C.muted,
+                      textDecoration: 'none',
+                      lineHeight: 1.75,
+                      '&:hover': { color: C.purple800 },
+                      transition: 'color .2s',
+                    }}
                   >
                     {person.phone.replace('tel:', '')}
                   </Box>
@@ -109,9 +234,8 @@ export default function ContactSection() {
               ))}
             </Box>
           </Box>
-
         </Box>
       </Container>
     </Box>
-  )
+  );
 }

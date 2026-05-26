@@ -149,6 +149,7 @@ export default function EventInfoSection() {
                   {item.icon}
                   <Typography
                     sx={{
+                      fontFamily: '"Blue Mirage", serif',
                       fontWeight: 700,
                       fontSize: '0.78rem',
                       letterSpacing: '0.1em',
@@ -207,6 +208,7 @@ export default function EventInfoSection() {
                   {item.icon}
                   <Typography
                     sx={{
+                      fontFamily: '"Blue Mirage", serif',
                       fontWeight: 700,
                       fontSize: '0.72rem',
                       letterSpacing: '0.08em',

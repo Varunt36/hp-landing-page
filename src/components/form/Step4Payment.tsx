@@ -179,7 +179,7 @@ export default function Step4Payment() {
 
   return (
     <Box>
-      <Typography variant="h5" color="primary" fontWeight={700} mb={3}>
+      <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: { xs: '1.75rem', sm: '2rem' }, color: C.purple800, lineHeight: 1.2, mb: 3 }}>
         Mahotsav Registration
       </Typography>
 

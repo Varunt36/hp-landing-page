@@ -71,7 +71,14 @@ export default function Navbar() {
     >
       <Toolbar sx={s.toolbar} disableGutters>
         {/* ── Brand ── */}
-        <Box sx={s.brandBox} onClick={() => navigate('/')} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && navigate('/')} aria-label="Go to home page">
+        <Box
+          sx={s.brandBox}
+          onClick={() => navigate('/')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && navigate('/')}
+          aria-label="Go to home page"
+        >
           <BrandLogo />
           <Typography sx={s.brandText}>
             Hari Prabodham
@@ -158,7 +165,11 @@ export default function Navbar() {
               variant="contained"
               size="large"
               onClick={openModal}
-              sx={s.registerButton}
+              sx={{
+                ...s.registerButton,
+                fontFamily: '"Blue Mirage", serif',
+                fontSize: 17,
+              }}
             >
               Register Now
             </Button>

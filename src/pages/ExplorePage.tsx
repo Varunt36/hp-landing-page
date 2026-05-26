@@ -438,6 +438,7 @@ function SectionHead({ eyebrow, title, desc }: { eyebrow: string; title: string;
           mt: 1,
           color: C.purple800,
           fontSize: { xs: '1.8rem', md: 'clamp(1.8rem, 4vw, 3.25rem)' },
+          fontFamily: '"Blue Mirage", serif',
         }}
       >
         {title}
@@ -543,6 +544,7 @@ export default function ExplorePage() {
                 },
                 color: C.purple800,
                 fontStyle: 'italic',
+                fontFamily: '"Blue Mirage", serif',
               }}
             >
               Explore Berlin
@@ -593,7 +595,7 @@ export default function ExplorePage() {
                 px: 2.5,
                 py: 1.25,
                 borderRadius: '999px',
-                fontSize: 14,
+                fontSize: 18,
                 fontWeight: 600,
                 letterSpacing: '0.02em',
                 cursor: 'pointer',
@@ -602,7 +604,7 @@ export default function ExplorePage() {
                   activeSection === id ? C.purple800 : `${C.lavender100}80`,
                 color: activeSection === id ? C.cream : C.purple800,
                 transition: 'all .2s ease',
-                fontFamily: '"Inter", sans-serif',
+                fontFamily: '"Blue Mirage", serif',
                 '&:hover': {
                   background:
                     activeSection === id ? C.purple800 : C.lavender100,

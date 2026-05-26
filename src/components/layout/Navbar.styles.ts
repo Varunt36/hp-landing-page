@@ -29,8 +29,7 @@ export const navbarStyles: Record<string, SxProps<Theme>> = {
   },
   brandText: {
     fontFamily: '"Blue Mirage", serif',
-    fontStyle: 'italic',
-    fontSize: { xs: 17, md: 19 },
+    fontSize: { xs: 20, md: 24 },
     lineHeight: 1.05,
     color: C.purple800,
     fontWeight: 500,
@@ -40,8 +39,8 @@ export const navbarStyles: Record<string, SxProps<Theme>> = {
   },
   brandSub: {
     display: 'block',
-    fontSize: 13,
-    color: C.gold700,
+    fontSize: 18,
+    color: C.purple800,
     fontStyle: 'normal',
     letterSpacing: '0.02em',
     fontFamily: '"Blue Mirage", "Inter", sans-serif',
@@ -52,8 +51,9 @@ export const navbarStyles: Record<string, SxProps<Theme>> = {
     alignItems: 'center',
   },
   navButton: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 500,
+    fontFamily: '"Blue Mirage", serif',
     color: C.purple800,
     px: 1.5,
     py: 0.75,
@@ -62,7 +62,9 @@ export const navbarStyles: Record<string, SxProps<Theme>> = {
     '&::after': {
       content: '""',
       position: 'absolute',
-      left: 12, right: 12, bottom: 4,
+      left: 12,
+      right: 12,
+      bottom: 4,
       height: '1px',
       background: `${C.lavender300}88`,
       transform: 'scaleX(0)',
@@ -76,7 +78,10 @@ export const navbarStyles: Record<string, SxProps<Theme>> = {
     ml: 1.5,
     fontWeight: 600,
     boxShadow: `0 4px 14px rgba(42,85,66,0.28)`,
-    '&:hover': { transform: 'translateY(-1px)', boxShadow: `0 8px 22px rgba(42,85,66,0.36)` },
+    '&:hover': {
+      transform: 'translateY(-1px)',
+      boxShadow: `0 8px 22px rgba(42,85,66,0.36)`,
+    },
   },
   drawerBox: {
     width: 'min(360px, 86vw)',
@@ -95,4 +100,4 @@ export const navbarStyles: Record<string, SxProps<Theme>> = {
   iconColor: {
     color: C.purple800,
   },
-}
+};
