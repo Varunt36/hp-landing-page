@@ -71,7 +71,7 @@ export default function HeroSection() {
             />
 
             <Box sx={s.metaRow}>
-              15&nbsp;–&nbsp;16&nbsp;–&nbsp;17 August 2026
+              15&nbsp;·&nbsp;16&nbsp;·&nbsp;17 August 2026
             </Box>
 
             <Stack direction="row" spacing={1.5} sx={s.ctaRow}>

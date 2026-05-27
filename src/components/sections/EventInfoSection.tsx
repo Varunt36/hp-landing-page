@@ -266,10 +266,11 @@ export default function EventInfoSection() {
               mx: 'auto',
             }}
           >
-            It is our humble request that all devotees kindly be considerate and
-            avoid visiting Guru Hari's accommodation without prior notice.
-            Should darshan be arranged, devotees will be notified in a timely
-            manner through WhatsApp, Telegram, or a personal invitation.
+            We humbly request all devotees to kindly be considerate and refrain
+            from visiting Guru Hari’s accommodation independently. We will make
+            every effort to arrange daily darshan opportunities for all
+            devotees. Information regarding darshan will be shared in a timely
+            manner through WhatsApp and Telegram.
           </Typography>
         </Box>
       </Container>
