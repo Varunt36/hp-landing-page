@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Container, Stack } from '@mui/material';
 import { heroStyles as s } from './HeroSection.styles';
 import { useRegistrationStore } from '../../store/registrationStore';
+import ParticleCanvas from './ParticleCanvas';
 
 const EVENT_DATE = new Date('2026-08-15T00:00:00+02:00'); // Berlin CEST
 
@@ -43,6 +44,7 @@ export default function HeroSection() {
 
   return (
     <Box id="hero" sx={s.outerBox}>
+      <ParticleCanvas />
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
         <Box sx={s.grid}>
           {/* ── Col 0: Swamiji portrait (lg+) ── */}
