@@ -199,8 +199,8 @@ export default function ContactSection() {
               sx={{
                 mt: 1.75,
                 display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: 2,
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                gap: { xs: 1.5, sm: 2 },
               }}
             >
               {PEOPLE.map((person) => (
@@ -224,6 +224,7 @@ export default function ContactSection() {
                       color: C.muted,
                       textDecoration: 'none',
                       lineHeight: 1.75,
+                      overflowWrap: 'break-word',
                       '&:hover': { color: C.purple800 },
                       transition: 'color .2s',
                     }}

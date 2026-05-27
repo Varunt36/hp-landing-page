@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Container, Stack } from '@mui/material';
 import { heroStyles as s } from './HeroSection.styles';
 import { useRegistrationStore } from '../../store/registrationStore';
+import ParticleCanvas from './ParticleCanvas';
 
 const EVENT_DATE = new Date('2026-08-15T00:00:00+02:00'); // Berlin CEST
 
@@ -43,6 +44,8 @@ export default function HeroSection() {
 
   return (
     <Box id="hero" sx={s.outerBox}>
+      {/* if we need it then enable below component style */}
+      {/* <ParticleCanvas /> */}
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
         <Box sx={s.grid}>
           {/* ── Col 0: Swamiji portrait (lg+) ── */}
@@ -71,11 +74,16 @@ export default function HeroSection() {
             />
 
             <Box sx={s.metaRow}>
-              15&nbsp;–&nbsp;16&nbsp;–&nbsp;17 August 2026
+              15&nbsp;·&nbsp;16&nbsp;·&nbsp;17 August 2026
             </Box>
 
             <Stack direction="row" spacing={1.5} sx={s.ctaRow}>
-              <Button variant="contained" size="large" onClick={openModal} sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17 }}>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={openModal}
+                sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17 }}
+              >
                 Register Now
                 <Box
                   component="svg"
