@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, Container, Stack } from '@mui/material';
-import { heroStyles as s } from './HeroSection.styles';
-import { useRegistrationStore } from '../../store/registrationStore';
-import ParticleCanvas from './ParticleCanvas';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Box, Typography, Button, Container, Stack } from "@mui/material";
+import { heroStyles as s } from "./HeroSection.styles";
+import { useRegistrationStore } from "../../store/registrationStore";
 
-const EVENT_DATE = new Date('2026-08-15T00:00:00+02:00'); // Berlin CEST
+const EVENT_DATE = new Date("2026-08-15T00:00:00+02:00"); // Berlin CEST
 
 function useCountdown() {
   const [t, setT] = useState({ d: 0, h: 0, m: 0, sec: 0 });
@@ -36,17 +35,17 @@ export default function HeroSection() {
   const { d, h, m, sec } = useCountdown();
 
   const cd = [
-    { num: String(d).padStart(3, '0'), label: 'Days' },
-    { num: String(h).padStart(2, '0'), label: 'Hours' },
-    { num: String(m).padStart(2, '0'), label: 'Mins' },
-    { num: String(sec).padStart(2, '0'), label: 'Secs' },
+    { num: String(d).padStart(3, "0"), label: "Days" },
+    { num: String(h).padStart(2, "0"), label: "Hours" },
+    { num: String(m).padStart(2, "0"), label: "Mins" },
+    { num: String(sec).padStart(2, "0"), label: "Secs" },
   ];
 
   return (
     <Box id="hero" sx={s.outerBox}>
       {/* if we need it then enable below component style */}
       {/* <ParticleCanvas /> */}
-      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
+      <Container maxWidth="xl" sx={{ position: "relative", zIndex: 2 }}>
         <Box sx={s.grid}>
           {/* ── Col 0: Swamiji portrait (lg+) ── */}
           <Box sx={s.swamijiCol}>
@@ -101,7 +100,7 @@ export default function HeroSection() {
               <Button
                 variant="outlined"
                 size="large"
-                onClick={() => navigate('/venue')}
+                onClick={() => navigate("/venue")}
                 sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17 }}
               >
                 Learn More
@@ -147,7 +146,7 @@ export default function HeroSection() {
         viewBox="0 0 1440 160"
         preserveAspectRatio="none"
         aria-hidden="true"
-        sx={{ ...s.waveBottom, width: '100%', height: 110, display: 'block' }}
+        sx={{ ...s.waveBottom, width: "100%", height: 110, display: "block" }}
       >
         {/* Back wave — softer purple */}
         <path
