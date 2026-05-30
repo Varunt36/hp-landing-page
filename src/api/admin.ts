@@ -16,7 +16,7 @@ export async function fetchAllMembers(): Promise<Member[]> {
   const { data: members, error } = await supabase
     .from('members')
     .select('id, first_name, last_name, ticket_number, checked_in, registration_id, gender, dob')
-    .order('last_name', { ascending: true })
+    .order('first_name', { ascending: true })
 
   if (error) throw new Error(error.message)
   if (!members?.length) return []
