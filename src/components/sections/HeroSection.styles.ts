@@ -7,7 +7,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     overflow: 'hidden',
     position: 'relative',
     isolation: 'isolate',
-    pt: { xs: '10px', md: '10px' },
+    pt: { xs: '24px', md: '20px' },
     pb: '120px',
   },
 
@@ -97,7 +97,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
 
   // Countdown
   countdown: {
-    mt: 4.5,
+    mt: 2,
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)',
     gap: 1.5,
