@@ -8,63 +8,107 @@ export type Member = {
   checked_in: boolean
   country: string
   group_reference: string
-}
-
-const MEMBER_SELECT = 'id, first_name, last_name, ticket_number, checked_in, registrations(country, reference)'
-
-type RegRow = { country: string; reference: string } | null
-
-function extractReg(registrations: unknown): RegRow {
-  if (Array.isArray(registrations)) return registrations[0] ?? null
-  return (registrations as RegRow) ?? null
-}
-
-function buildMember(row: {
-  id: string
-  first_name: string
-  last_name: string
-  ticket_number: string | null
-  checked_in: boolean
-  registrations: unknown
-}): Member {
-  const reg = extractReg(row.registrations)
-  return {
-    id:              row.id,
-    first_name:      row.first_name,
-    last_name:       row.last_name,
-    ticket_number:   row.ticket_number,
-    checked_in:      row.checked_in,
-    country:         reg?.country ?? '—',
-    group_reference: reg?.reference ?? '—',
-  }
+  gender: string
+  dob: string
 }
 
 export async function fetchAllMembers(): Promise<Member[]> {
-  const { data, error } = await supabase
+  const { data: members, error } = await supabase
     .from('members')
-    .select(MEMBER_SELECT)
-    .order('last_name', { ascending: true })
+    .select('id, first_name, last_name, ticket_number, checked_in, registration_id, gender, dob')
+    .order('first_name', { ascending: true })
 
   if (error) throw new Error(error.message)
-  return (data ?? []).map(buildMember)
+  if (!members?.length) return []
+
+  // Fetch only the registrations we need, keyed by UUID
+  const regIds = [...new Set(members.map(m => m.registration_id as string))]
+  const { data: regs } = await supabase
+    .from('registrations')
+    .select('id, reference, country')
+    .in('id', regIds)
+
+  const regMap = new Map((regs ?? []).map(r => [r.id as string, r]))
+
+  return members.map(row => {
+    const reg = regMap.get(row.registration_id as string)
+    return {
+      id:              row.id,
+      first_name:      row.first_name,
+      last_name:       row.last_name,
+      ticket_number:   row.ticket_number ?? null,
+      checked_in:      row.checked_in,
+      country:         reg?.country   ?? '—',
+      group_reference: reg?.reference ?? '—',
+      gender:          row.gender  as string,
+      dob:             row.dob     as string,
+    }
+  })
+}
+
+export interface CountryRegistrationStat {
+  country:       string
+  registrations: number   // number of registration groups
+  members:       number   // sum of member_count across those groups
+}
+
+export async function fetchRegistrationStats(): Promise<CountryRegistrationStat[]> {
+  const { data, error } = await supabase
+    .from('registrations')
+    .select('country, member_count')
+
+  if (error || !data) return []
+
+  const map: Record<string, { registrations: number; members: number }> = {}
+  for (const row of data) {
+    const c = row.country as string
+    if (!map[c]) map[c] = { registrations: 0, members: 0 }
+    map[c].registrations += 1
+    map[c].members       += (row.member_count as number)
+  }
+
+  return Object.entries(map).map(([country, s]) => ({
+    country,
+    registrations: s.registrations,
+    members:       s.members,
+  }))
 }
 
 export async function checkInByTicket(ticketNumber: string): Promise<Member> {
+  const ticket = ticketNumber.trim().toUpperCase()
+
   const { data: found, error } = await supabase
     .from('members')
-    .select(MEMBER_SELECT)
-    .eq('ticket_number', ticketNumber.trim().toUpperCase())
+    .select('id, first_name, last_name, ticket_number, checked_in, registration_id, gender, dob')
+    .eq('ticket_number', ticket)
     .limit(1)
     .single()
 
   if (error || !found) throw new Error('Ticket not found: ' + ticketNumber)
-  if (found.checked_in) return buildMember(found)
 
-  const { error: updateErr } = await supabase
-    .from('members')
-    .update({ checked_in: true })
-    .eq('id', found.id)
+  if (!found.checked_in) {
+    const { error: updateErr } = await supabase
+      .from('members')
+      .update({ checked_in: true })
+      .eq('id', found.id)
+    if (updateErr) throw new Error('Check-in update failed: ' + updateErr.message)
+  }
 
-  if (updateErr) throw new Error('Check-in update failed: ' + updateErr.message)
-  return buildMember({ ...found, checked_in: true })
+  const { data: reg } = await supabase
+    .from('registrations')
+    .select('id, reference, country')
+    .eq('id', found.registration_id)
+    .single()
+
+  return {
+    id:              found.id,
+    first_name:      found.first_name,
+    last_name:       found.last_name,
+    ticket_number:   found.ticket_number ?? null,
+    checked_in:      true,
+    country:         reg?.country   ?? '—',
+    group_reference: reg?.reference ?? '—',
+    gender:          found.gender  as string,
+    dob:             found.dob     as string,
+  }
 }
