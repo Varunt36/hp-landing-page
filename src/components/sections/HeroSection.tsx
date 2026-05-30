@@ -47,6 +47,20 @@ export default function HeroSection() {
       {/* if we need it then enable below component style */}
       {/* <ParticleCanvas /> */}
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
+ {/* Top-centre portrait group */}
+        <Box
+          component="img"
+          src="/images/AP_SM_YM.png"
+          alt="Acharya Swamiji, Swamiji and Yuvak Mandal"
+          sx={{
+            display: 'block',
+            mx: 'auto',
+            width: { xs: '80%', sm: '60%', md: '45%', lg: '36%' },
+            maxWidth: 520,
+            objectFit: 'contain',
+            mb: { xs: 2, md: 3 },
+          }}
+        />
         <Box sx={s.grid}>
           {/* ── Col 0: Swamiji portrait (lg+) ── */}
           <Box sx={s.swamijiCol}>
