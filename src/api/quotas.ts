@@ -6,6 +6,22 @@ export interface CountryQuota {
   remaining:  number
 }
 
+export interface CountryQuotaRow {
+  countryCode: string
+  maxMembers:  number
+}
+
+export async function fetchAllQuotas(): Promise<CountryQuotaRow[]> {
+  const { data, error } = await supabase
+    .from('country_quotas')
+    .select('country_code, max_members')
+  if (error || !data) return []
+  return data.map(r => ({
+    countryCode: r.country_code as string,
+    maxMembers:  r.max_members  as number,
+  }))
+}
+
 export async function fetchAvailableCountryCodes(): Promise<string[]> {
   const { data, error } = await supabase
     .from('country_quotas')

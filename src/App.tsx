@@ -17,8 +17,8 @@ const ImpressumPage  = lazy(() => import('./pages/ImpressumPage'))
 const PaymentSuccess  = lazy(() => import('./pages/PaymentSuccess'))
 const PaymentCancel   = lazy(() => import('./pages/PaymentCancel'))
 const DataPrivacyPage = lazy(() => import('./pages/DataPrivacyPage'))
-const AdminLogin     = lazy(() => import('./pages/admin/AdminLogin'))
-const AdminScan      = lazy(() => import('./pages/admin/AdminScan'))
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
+const AdminScan  = lazy(() => import('./pages/admin/AdminScan'))
 
 function PageLoader() {
   return (

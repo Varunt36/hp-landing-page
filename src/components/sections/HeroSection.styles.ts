@@ -7,7 +7,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     overflow: 'hidden',
     position: 'relative',
     isolation: 'isolate',
-    pt: { xs: '90px', md: '130px' },
+    pt: { xs: '10px', md: '10px' },
     pb: '120px',
   },
 

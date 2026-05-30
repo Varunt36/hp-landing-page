@@ -6,16 +6,64 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, Alert, Snackbar, InputAdornment, useTheme, useMediaQuery, Switch,
   Dialog, DialogTitle, DialogContent, DialogActions,
+  Tabs, Tab, LinearProgress,
 } from '@mui/material'
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
-import LogoutIcon from '@mui/icons-material/Logout'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import WarningAmberIcon from '@mui/icons-material/WarningAmber'
-import SearchIcon from '@mui/icons-material/Search'
-import RefreshIcon from '@mui/icons-material/Refresh'
+import LogoutIcon        from '@mui/icons-material/Logout'
+import CheckCircleIcon   from '@mui/icons-material/CheckCircle'
+import WarningAmberIcon  from '@mui/icons-material/WarningAmber'
+import SearchIcon        from '@mui/icons-material/Search'
+import RefreshIcon       from '@mui/icons-material/Refresh'
+import BarChartIcon      from '@mui/icons-material/BarChart'
+import PeopleIcon        from '@mui/icons-material/People'
+import HowToRegIcon      from '@mui/icons-material/HowToReg'
+import PublicIcon        from '@mui/icons-material/Public'
+import EventSeatIcon     from '@mui/icons-material/EventSeat'
 import { Html5Qrcode } from 'html5-qrcode'
-import { useAuth } from '../../context/AuthContext'
-import { fetchAllMembers, checkInByTicket, type Member } from '../../api/admin'
+import { useAuth }       from '../../context/AuthContext'
+import { fetchAllMembers, checkInByTicket, fetchRegistrationStats, type Member, type CountryRegistrationStat } from '../../api/admin'
+import { fetchAllQuotas, type CountryQuotaRow } from '../../api/quotas'
+import { COUNTRIES } from '../../data/data'
+
+// ── Dashboard helpers ─────────────────────────────────────
+const countryMeta = (code: string) =>
+  COUNTRIES.find(c => c.code === code) ?? { label: code, flag: '🌐' }
+
+function quotaFillColor(pct: number) {
+  if (pct >= 90) return '#d32f2f'
+  if (pct >= 70) return '#f57c00'
+  return '#2e7d32'
+}
+
+const EVENT_AGE_DATE = new Date('2026-08-15')
+function ageAtEvent(dob: string): number {
+  const b = new Date(dob)
+  let age = EVENT_AGE_DATE.getFullYear() - b.getFullYear()
+  const dm = EVENT_AGE_DATE.getMonth() - b.getMonth()
+  if (dm < 0 || (dm === 0 && EVENT_AGE_DATE.getDate() < b.getDate())) age--
+  return age
+}
+
+interface StatCardProps { icon: React.ReactNode; label: string; value: number | string; sub?: string; accent?: string }
+function StatCard({ icon, label, value, sub, accent = '#6B4A96' }: StatCardProps) {
+  return (
+    <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '16px', height: '100%', position: 'relative', overflow: 'hidden',
+      '&::before': { content: '""', position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: accent },
+    }}>
+      <CardContent sx={{ pt: 2.5, pb: '16px !important' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+          <Box sx={{ width: 40, height: 40, borderRadius: '10px', bgcolor: `${accent}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: accent }}>
+            {icon}
+          </Box>
+          <Typography variant="body2" color="text.secondary" fontWeight={500} fontSize={13}>{label}</Typography>
+        </Box>
+        <Typography fontWeight={700} fontSize={32} lineHeight={1} color="text.primary">{value}</Typography>
+        {sub && <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>{sub}</Typography>}
+      </CardContent>
+    </Card>
+  )
+}
+
 
 type CheckStatus = 'idle' | 'loading' | 'success' | 'duplicate' | 'error'
 
@@ -41,6 +89,11 @@ export default function AdminScan() {
   // Row toggle loading
   const [togglingId, setTogglingId] = useState<string | null>(null)
 
+  // Tabs + dashboard data
+  const [activeTab, setActiveTab] = useState(0)
+  const [quotas, setQuotas] = useState<CountryQuotaRow[]>([])
+  const [regStats, setRegStats] = useState<CountryRegistrationStat[]>([])
+
   // Logout confirmation
   const [logoutOpen, setLogoutOpen] = useState(false)
 
@@ -65,8 +118,10 @@ export default function AdminScan() {
   const loadMembers = async () => {
     setTableLoading(true)
     try {
-      const data = await fetchAllMembers()
+      const [data, q, rs] = await Promise.all([fetchAllMembers(), fetchAllQuotas(), fetchRegistrationStats()])
       setMembers(data)
+      setQuotas(q)
+      setRegStats(rs)
     } catch {
       // silently ignore — table just stays empty
     } finally {
@@ -181,42 +236,248 @@ export default function AdminScan() {
       {/* AppBar */}
       <AppBar position="sticky" sx={{ bgcolor: 'primary.main' }}>
         <Toolbar sx={{ minHeight: { xs: 52, sm: 64 } }}>
-          <QrCodeScannerIcon sx={{ mr: 1, fontSize: { xs: 20, sm: 24 } }} />
-          <Typography
-            fontWeight={700}
-            sx={{ flexGrow: 1, fontSize: { xs: '0.95rem', sm: '1.25rem' } }}
-          >
-            {isMobile ? 'Check-in' : 'Check-in Scanner'}
+          <Typography fontWeight={700} sx={{ flexGrow: 1, fontSize: { xs: '0.95rem', sm: '1.25rem' } }}>
+            HP Admin Panel
           </Typography>
           {isMobile ? (
-            <IconButton
-              color="inherit"
-              onClick={() => setLogoutOpen(true)}
-              size="small"
-              sx={{ bgcolor: 'rgba(255,255,255,0.1)', '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
-            >
+            <IconButton color="inherit" onClick={() => setLogoutOpen(true)} size="small"
+              sx={{ bgcolor: 'rgba(255,255,255,0.1)', '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}>
               <LogoutIcon fontSize="small" />
             </IconButton>
           ) : (
-            <Button
-              onClick={() => setLogoutOpen(true)}
-              startIcon={<LogoutIcon />}
-              sx={{
-                color: 'white',
-                fontWeight: 600,
-                bgcolor: 'rgba(255,255,255,0.1)',
-                borderRadius: 2,
-                px: 2,
-                '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' },
-              }}
-            >
+            <Button onClick={() => setLogoutOpen(true)} startIcon={<LogoutIcon />}
+              sx={{ color: 'white', fontWeight: 600, bgcolor: 'rgba(255,255,255,0.1)', borderRadius: 2, px: 2, '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}>
               Logout
             </Button>
           )}
         </Toolbar>
+        <Tabs
+          value={activeTab}
+          onChange={(_, v) => setActiveTab(v)}
+          textColor="inherit"
+          slotProps={{ indicator: { style: { background: 'white', height: 3, borderRadius: 2 } } }}
+          sx={{
+            minHeight: 44,
+            px: 1,
+            '& .MuiTab-root': {
+              color: 'rgba(255,255,255,0.65)',
+              minHeight: 44,
+              fontWeight: 600,
+              fontSize: { xs: '0.8rem', sm: '0.875rem' },
+              '&.Mui-selected': { color: 'white' },
+            },
+          }}
+        >
+          <Tab icon={<QrCodeScannerIcon fontSize="small" />} iconPosition="start" label="Scanner" />
+          <Tab icon={<BarChartIcon fontSize="small" />} iconPosition="start" label="Dashboard" />
+        </Tabs>
       </AppBar>
 
-      <Box sx={{
+      {/* ── Dashboard tab ── */}
+      {activeTab === 1 && (() => {
+        // per-country registered: prefer regStats (direct from registrations), fall back to members array
+        const regByCountry: Record<string, number> = {}
+        if (regStats.length > 0) {
+          for (const rs of regStats) regByCountry[rs.country] = rs.members
+        } else {
+          for (const m of members) regByCountry[m.country] = (regByCountry[m.country] ?? 0) + 1
+        }
+        // checked-in counts always from members table
+        const chk: Record<string, number> = {}
+        for (const m of members) {
+          if (m.checked_in) chk[m.country] = (chk[m.country] ?? 0) + 1
+        }
+        // age groups (as of event date) + gender — from members table
+        const ageGroups = { a0_5: 0, a5_12: 0, a12_18: 0, a18plus: 0 }
+        const genderCount = { male: 0, female: 0 }
+        for (const m of members) {
+          if (m.dob) {
+            const age = ageAtEvent(m.dob)
+            if (age <= 5)       ageGroups.a0_5++
+            else if (age <= 12) ageGroups.a5_12++
+            else if (age <= 18) ageGroups.a12_18++
+            else                ageGroups.a18plus++
+          }
+          if (m.gender === 'male')   genderCount.male++
+          if (m.gender === 'female') genderCount.female++
+        }
+
+        // totals — members.length is always reliable regardless of RLS
+        const totalRegistered = members.length
+        const totalQ          = quotas.reduce((s, q) => s + q.maxMembers, 0)
+        const totalRem        = Math.max(0, totalQ - totalRegistered)
+        const countriesActive = Object.keys(regByCountry).filter(c => c !== '—').length
+        const rows            = [...quotas]
+          .map(q => ({ code: q.countryCode, quota: q.maxMembers, registered: regByCountry[q.countryCode] ?? 0, checkedIn: chk[q.countryCode] ?? 0 }))
+          .sort((a, b) => b.registered - a.registered)
+        return (
+          <Box sx={{
+            height: { sm: 'calc(100vh - 108px)' },
+            display: 'flex', flexDirection: 'column', overflow: 'hidden',
+            p: { xs: 1.5, sm: 2 }, maxWidth: 1200, mx: 'auto',
+          }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mb: 2, flexShrink: 0 }}>
+              <Box sx={{ flex: '1 1 140px', minWidth: 0 }}>
+                <StatCard icon={<PeopleIcon fontSize="small" />} label="Total Registered" value={totalRegistered} sub={`of ${totalQ} total quota`} accent="#6B4A96" />
+              </Box>
+              <Box sx={{ flex: '1 1 140px', minWidth: 0 }}>
+                <StatCard icon={<HowToRegIcon fontSize="small" />} label="Checked In" value={checkedInCount}
+                  sub={totalRegistered > 0 ? `${Math.round((checkedInCount / totalRegistered) * 100)}% attendance` : '—'} accent="#2e7d32" />
+              </Box>
+              <Box sx={{ flex: '1 1 140px', minWidth: 0 }}>
+                <StatCard icon={<PublicIcon fontSize="small" />} label="Countries" value={countriesActive} sub={`of ${quotas.length} allocated`} accent="#0277bd" />
+              </Box>
+              <Box sx={{ flex: '1 1 140px', minWidth: 0 }}>
+                <StatCard icon={<EventSeatIcon fontSize="small" />} label="Spots Remaining" value={totalRem}
+                  sub={`${Math.round(((totalQ - totalRem) / (totalQ || 1)) * 100)}% filled overall`}
+                  accent={totalRem < totalQ * 0.1 ? '#d32f2f' : '#f57c00'} />
+              </Box>
+            </Box>
+            {/* Age Groups + Gender */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 2, flexShrink: 0, flexWrap: 'wrap' }}>
+              {/* Age Groups Card */}
+              <Card elevation={0} sx={{ flex: '2 1 320px', minWidth: 0, borderRadius: '16px', position: 'relative', overflow: 'hidden',
+                '&::before': { content: '""', position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: '#7c669b' },
+              }}>
+                <CardContent sx={{ pt: 2, pb: '12px !important' }}>
+                  <Typography variant="body2" color="text.secondary" fontWeight={600} fontSize={12}
+                    sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    Age Groups
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    {([
+                      { label: '0–5',   value: ageGroups.a0_5,    color: '#7c669b' },
+                      { label: '5–12',  value: ageGroups.a5_12,   color: '#0277bd' },
+                      { label: '12–18', value: ageGroups.a12_18,  color: '#f57c00' },
+                      { label: '18+',   value: ageGroups.a18plus, color: '#2e7d32' },
+                    ] as const).map(({ label, value, color }) => (
+                      <Box key={label} sx={{
+                        flex: 1, textAlign: 'center', borderRadius: 2,
+                        bgcolor: `${color}0d`, border: '1px solid', borderColor: `${color}25`,
+                        py: 1.25, px: 0.5,
+                      }}>
+                        <Typography fontWeight={800} fontSize={{ xs: 20, sm: 24 }} color={color} lineHeight={1}>{value}</Typography>
+                        <Typography variant="caption" color="text.secondary" fontWeight={600} fontSize={11}>{label} yrs</Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
+
+              {/* Gender Card */}
+              <Card elevation={0} sx={{ flex: '1 1 180px', minWidth: 0, borderRadius: '16px', position: 'relative', overflow: 'hidden',
+                '&::before': { content: '""', position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: '#0277bd' },
+              }}>
+                <CardContent sx={{ pt: 2, pb: '12px !important' }}>
+                  <Typography variant="body2" color="text.secondary" fontWeight={600} fontSize={12}
+                    sx={{ mb: 1.5, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    Gender
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    {([
+                      { label: 'Male',   value: genderCount.male,   color: '#0277bd', icon: '♂' },
+                      { label: 'Female', value: genderCount.female, color: '#c2185b', icon: '♀' },
+                    ] as const).map(({ label, value, color, icon }) => (
+                      <Box key={label} sx={{
+                        flex: 1, textAlign: 'center', borderRadius: 2,
+                        bgcolor: `${color}0d`, border: '1px solid', borderColor: `${color}25`,
+                        py: 1.25, px: 0.5,
+                      }}>
+                        <Typography fontWeight={800} fontSize={{ xs: 20, sm: 24 }} color={color} lineHeight={1}>{value}</Typography>
+                        <Typography variant="caption" color="text.secondary" fontWeight={600} fontSize={11}>{icon} {label}</Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
+            </Box>
+
+            <Typography variant="h6" fontWeight={700} sx={{ mb: 1.5, fontSize: { xs: '1rem', sm: '1.1rem' }, flexShrink: 0 }}>
+              Country Breakdown
+            </Typography>
+            {tableLoading ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}><CircularProgress /></Box>
+            ) : (
+              <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2, flex: 1, minHeight: 0, overflow: 'auto' }}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: 'rgba(107,74,150,0.06)' }}>
+                      <TableCell sx={{ fontWeight: 700 }}>Country</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">Reg.</TableCell>
+                      <TableCell sx={{ fontWeight: 700, display: { xs: 'none', sm: 'table-cell' } }} align="center">Checked In</TableCell>
+                      <TableCell sx={{ fontWeight: 700, display: { xs: 'none', sm: 'table-cell' } }} align="center">Quota</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">Left</TableCell>
+                      <TableCell sx={{ fontWeight: 700, display: { xs: 'none', sm: 'table-cell' }, minWidth: 140 }}>Fill</TableCell>
+                      <TableCell sx={{ fontWeight: 700, display: { xs: 'table-cell', sm: 'none' } }} align="center">%</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map(r => {
+                      const meta      = countryMeta(r.code)
+                      const pct       = r.quota > 0 ? Math.min(100, Math.round((r.registered / r.quota) * 100)) : 0
+                      const color     = quotaFillColor(pct)
+                      const remaining = Math.max(0, r.quota - r.registered)
+                      return (
+                        <TableRow key={r.code} sx={{ '&:hover': { bgcolor: 'rgba(107,74,150,0.04)' } }}>
+                          <TableCell>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Typography fontSize={20} lineHeight={1}>{meta.flag}</Typography>
+                              <Typography fontWeight={600} fontSize={13}>{meta.label}</Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Typography fontWeight={700} color="primary.main">{r.registered}</Typography>
+                          </TableCell>
+                          <TableCell align="center" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                            <Typography fontWeight={700} color="success.main">{r.checkedIn}</Typography>
+                          </TableCell>
+                          <TableCell align="center" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                            <Typography color="text.secondary">{r.quota}</Typography>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Chip
+                              label={remaining === 0 ? 'Full' : remaining}
+                              size="small"
+                              sx={{
+                                fontWeight: 700, fontSize: 11,
+                                bgcolor: remaining === 0 ? '#d32f2f18' : '#2e7d3218',
+                                color:   remaining === 0 ? '#d32f2f'   : '#2e7d32',
+                                border: '1px solid',
+                                borderColor: remaining === 0 ? '#d32f2f40' : '#2e7d3240',
+                              }}
+                            />
+                          </TableCell>
+                          {/* Progress bar — desktop */}
+                          <TableCell sx={{ minWidth: 140, display: { xs: 'none', sm: 'table-cell' } }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <LinearProgress
+                                variant="determinate"
+                                value={pct}
+                                sx={{ flex: 1, height: 6, borderRadius: 3, bgcolor: `${color}20`,
+                                  '& .MuiLinearProgress-bar': { bgcolor: color, borderRadius: 3 } }}
+                              />
+                              <Typography variant="caption" fontWeight={700} color={color} sx={{ minWidth: 32 }}>
+                                {pct}%
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          {/* % only — mobile */}
+                          <TableCell align="center" sx={{ display: { xs: 'table-cell', sm: 'none' } }}>
+                            <Typography variant="caption" fontWeight={700} color={color}>{pct}%</Typography>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </Box>
+        )
+      })()}
+
+      {/* ── Scanner tab ── */}
+      {activeTab === 0 && <Box sx={{
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         gap: { xs: 1.5, sm: 2 },
@@ -276,7 +537,7 @@ export default function AdminScan() {
                 <Button
                   type="submit" fullWidth variant="contained" size="large"
                   disabled={!ticketInput.trim() || checkStatus === 'loading'}
-                  sx={{ fontWeight: 700 }}
+                  sx={{ py: 1.5, fontWeight: 700, color: '#fff', '&.Mui-disabled': { color: 'rgba(255,255,255,0.45)' } }}
                 >
                   {checkStatus === 'loading'
                     ? <CircularProgress size={22} color="inherit" />
@@ -340,7 +601,7 @@ export default function AdminScan() {
           )}
         </Box>
 
-        {/* ── BOTTOM / RIGHT: Members Table ── */}
+        {/* ── RIGHT: Members Table ── */}
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Card sx={{ borderRadius: 3 }}>
             <CardContent sx={{ p: { xs: 1.5, sm: 2 }, '&:last-child': { pb: { xs: 1.5, sm: 2 } } }}>
@@ -429,7 +690,14 @@ export default function AdminScan() {
                       >
                         <TableCell sx={{ whiteSpace: 'nowrap' }}>{m.first_name}</TableCell>
                         <TableCell sx={{ whiteSpace: 'nowrap' }}>{m.last_name}</TableCell>
-                        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{m.country}</TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' }, whiteSpace: 'nowrap' }}>
+                          {m.country && m.country !== '—' ? (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                              <span>{countryMeta(m.country).flag}</span>
+                              <span>{countryMeta(m.country).label}</span>
+                            </Box>
+                          ) : '—'}
+                        </TableCell>
                         <TableCell sx={{ fontFamily: 'monospace', fontSize: '0.72rem', display: { xs: 'none', md: 'table-cell' } }}>
                           {m.ticket_number ?? '—'}
                         </TableCell>
@@ -459,13 +727,13 @@ export default function AdminScan() {
             </CardContent>
           </Card>
         </Box>
-      </Box>
+      </Box>}
 
       {/* Logout confirmation dialog */}
       <Dialog
         open={logoutOpen}
         onClose={() => setLogoutOpen(false)}
-        PaperProps={{ sx: { borderRadius: 3, p: 1, maxWidth: 360, width: '100%' } }}
+        slotProps={{ paper: { sx: { borderRadius: 3, p: 1, maxWidth: 360, width: '100%' } } }}
       >
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
           <Box
