@@ -43,19 +43,60 @@ export default function HeroSection() {
 
   return (
     <Box id="hero" sx={s.outerBox}>
-      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2 }}>
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2, px: { xs: 0, md: undefined } }}>
+        {/* ── Mobile layout (xs only) ── */}
+        <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', alignItems: 'center', px: 2 }}>
+          <Box
+            component="img"
+            src="/images/Mobile%20View%20Cover%20Page.jpeg"
+            alt="Hari Prabodham Amrut Mahotsav Mobile Cover"
+            sx={{
+              width: '100%',
+              height: 'auto',
+              mb: 1.5,
+              display: 'block',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 95%, transparent 100%), linear-gradient(to right, transparent 0%, black 5%, black 92%, transparent 100%)',
+              maskImage: 'linear-gradient(to bottom, black 95%, transparent 100%), linear-gradient(to right, transparent 0%, black 5%, black 92%, transparent 100%)',
+              WebkitMaskComposite: 'source-in',
+              maskComposite: 'intersect',
+            }}
+          />
+          <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', justifyContent: 'center', mb: 2 }}>
+            <Button variant="contained" size="large" onClick={openModal}
+              sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14 }}>
+              Register Now
+              <Box component="svg" aria-hidden="true" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"
+                sx={{ width: 14, height: 14, ml: 0.5 }}>
+                <path d="M5 12h14M13 5l7 7-7 7" />
+              </Box>
+            </Button>
+            <Button variant="outlined" size="large" onClick={() => navigate('/venue')}
+              sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14 }}>
+              Learn More
+            </Button>
+          </Stack>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, width: '100%' }}>
+            {cd.map(({ num, label }) => (
+              <Box key={label} sx={s.cdCell}>
+                <Typography sx={s.cdNum}>{num}</Typography>
+                <Typography sx={s.cdLabel}>{label}</Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
         {/* Top-centre portrait group */}
         <Box
           component="img"
           src="/images/AP_SM_YM.png"
           alt="Acharya Swamiji, Swamiji and Yuvak Mandal"
           sx={{
-            display: 'block',
+            display: { xs: 'none', md: 'block' },
             mx: 'auto',
-            width: { xs: '80%', sm: '60%', md: '45%', lg: '36%' },
+            width: { sm: '60%', md: '45%', lg: '36%' },
             maxWidth: 520,
             objectFit: 'contain',
-            mb: { xs: 2, md: 3 },
+            mb: { md: 3 },
           }}
         />
         <Box sx={s.grid}>
@@ -127,16 +168,6 @@ export default function HeroSection() {
                 </Box>
               ))}
             </Box>
-
-            {/* Portrait — mobile only, shown below countdown */}
-            <Box sx={s.portraitMobileWrap}>
-              <Box
-                component="img"
-                src="/images/DSC01446.png"
-                alt="Pujya Swamiji"
-                sx={s.portraitMobileImg}
-              />
-            </Box>
           </Box>
 
           {/* ── Col 2: Right portrait (md+) ── */}
@@ -158,7 +189,7 @@ export default function HeroSection() {
         viewBox="0 0 1440 160"
         preserveAspectRatio="none"
         aria-hidden="true"
-        sx={{ ...s.waveBottom, width: "100%", height: 110, display: "block" }}
+        sx={{ ...s.waveBottom, width: "100%", height: { xs: 50, md: 110 }, display: "block" }}
       >
         {/* Back wave — softer purple */}
         <path
