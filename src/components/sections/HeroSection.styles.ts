@@ -7,8 +7,8 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     overflow: 'hidden',
     position: 'relative',
     isolation: 'isolate',
-    pt: { xs: '24px', md: '20px' },
-    pb: '120px',
+    pt: { xs: '10px', md: '20px' },
+    pb: { xs: '80px', md: '120px' },
   },
 
   waveBottom: {
@@ -21,9 +21,9 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
 
   // 3-column grid: swamiji | content | portrait
   grid: {
-    display: 'grid',
-    gridTemplateColumns: { xs: '1fr', md: '1fr 360px', lg: '420px 1fr 420px' },
-    gap: { xs: 4, md: 3 },
+    display: { xs: 'none', md: 'grid' },
+    gridTemplateColumns: { md: '1fr 360px', lg: '420px 1fr 420px' },
+    gap: 3,
     alignItems: 'stretch',
     position: 'relative',
     zIndex: 2,
@@ -55,7 +55,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
   titleImg: {
     width: '100%',
     height: 'auto',
-    display: 'block',
+    display: { xs: 'none', md: 'block' },
     mb: 1,
     filter: 'drop-shadow(0 2px 12px rgba(107,74,150,0.20))',
   },
@@ -63,14 +63,14 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
   sutraImg: {
     width: '70%',
     height: 'auto',
-    display: 'block',
+    display: { xs: 'none', md: 'block' },
     opacity: 0.82,
     filter: 'drop-shadow(0 1px 4px rgba(107,74,150,0.08))',
     alignSelf: 'center',
   },
 
   metaRow: {
-    display: 'flex',
+    display: { xs: 'none', md: 'flex' },
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
@@ -101,15 +101,15 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)',
     gap: 1.5,
-    maxWidth: { xs: '100%', md: 420 },
+    maxWidth: 420,
   },
 
   cdCell: {
     background: `color-mix(in srgb, ${C.cream} 70%, transparent)`,
     border: `1px solid ${C.lavender200}CC`,
     borderRadius: '14px',
-    px: 1,
-    py: { xs: 1.25, md: 1.75 },
+    px: { xs: 0.5, md: 1 },
+    py: { xs: 0.75, md: 1.75 },
     textAlign: 'center',
     backdropFilter: 'blur(6px)',
     WebkitBackdropFilter: 'blur(6px)',
@@ -117,7 +117,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
 
   cdNum: {
     fontFamily: '"Cormorant Garamond", serif',
-    fontSize: { xs: '1.6rem', md: '2rem' },
+    fontSize: { xs: '1.2rem', md: '2rem' },
     color: C.purple800,
     lineHeight: 1,
     fontVariantNumeric: 'tabular-nums',
@@ -126,11 +126,11 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
   },
 
   cdLabel: {
-    fontSize: { xs: '0.6rem', md: '0.65rem' },
-    letterSpacing: '0.16em',
+    fontSize: { xs: '0.52rem', md: '0.65rem' },
+    letterSpacing: '0.12em',
     textTransform: 'uppercase' as const,
     color: C.gold700,
-    mt: 0.75,
+    mt: { xs: 0.4, md: 0.75 },
     fontWeight: 600,
   },
 
@@ -153,20 +153,4 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     maskComposite: 'intersect',
   },
 
-  // Mobile portrait shown below countdown
-  portraitMobileWrap: {
-    display: { xs: 'block', md: 'none' },
-    width: '100%',
-    mt: 4,
-    borderRadius: '18px',
-    overflow: 'hidden',
-  },
-
-  portraitMobileImg: {
-    width: '100%',
-    height: 360,
-    objectFit: 'cover',
-    objectPosition: 'top center',
-    display: 'block',
-  },
 };

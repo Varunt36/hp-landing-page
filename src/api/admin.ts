@@ -46,6 +46,51 @@ export async function fetchAllMembers(): Promise<Member[]> {
   })
 }
 
+export interface PaidMember {
+  first_name:    string
+  last_name:     string
+  gender:        string
+  ticket_number: string | null
+  checked_in:    boolean
+}
+
+export async function fetchPaidMembersByCountry(countryCode: string): Promise<PaidMember[]> {
+  // 1. Get paid registration IDs
+  const { data: paidPayments } = await supabase
+    .from('payments')
+    .select('registration_id')
+    .eq('status', 'paid')
+  if (!paidPayments?.length) return []
+
+  const paidRegIds = paidPayments.map(p => p.registration_id as string)
+
+  // 2. Filter to this country
+  const { data: countryRegs } = await supabase
+    .from('registrations')
+    .select('id')
+    .eq('country', countryCode)
+    .in('id', paidRegIds)
+  if (!countryRegs?.length) return []
+
+  const regIds = countryRegs.map(r => r.id as string)
+
+  // 3. Fetch members for those registrations
+  const { data: members } = await supabase
+    .from('members')
+    .select('first_name, last_name, gender, ticket_number, checked_in')
+    .in('registration_id', regIds)
+    .order('last_name', { ascending: true })
+  if (!members) return []
+
+  return members.map(m => ({
+    first_name:    m.first_name    as string,
+    last_name:     m.last_name     as string,
+    gender:        m.gender        as string,
+    ticket_number: m.ticket_number as string | null,
+    checked_in:    m.checked_in    as boolean,
+  }))
+}
+
 export interface CountryRegistrationStat {
   country:       string
   registrations: number   // number of registration groups

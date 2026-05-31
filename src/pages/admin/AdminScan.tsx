@@ -20,8 +20,10 @@ import HowToRegIcon      from '@mui/icons-material/HowToReg'
 import PublicIcon        from '@mui/icons-material/Public'
 import EventSeatIcon     from '@mui/icons-material/EventSeat'
 import { Html5Qrcode } from 'html5-qrcode'
+import * as XLSX from 'xlsx'
 import { useAuth }       from '../../context/AuthContext'
-import { fetchAllMembers, checkInByTicket, fetchRegistrationStats, type Member, type CountryRegistrationStat } from '../../api/admin'
+import { supabase }      from '../../lib/supabase'
+import { fetchAllMembers, checkInByTicket, fetchPaidMembersByCountry, type Member, type PaidMember } from '../../api/admin'
 import { fetchAllQuotas, type CountryQuotaRow } from '../../api/quotas'
 import { COUNTRIES } from '../../data/data'
 
@@ -90,9 +92,25 @@ export default function AdminScan() {
   const [togglingId, setTogglingId] = useState<string | null>(null)
 
   // Tabs + dashboard data
-  const [activeTab, setActiveTab] = useState(0)
-  const [quotas, setQuotas] = useState<CountryQuotaRow[]>([])
-  const [regStats, setRegStats] = useState<CountryRegistrationStat[]>([])
+  const [activeTab, setActiveTab]     = useState(0)
+  const [quotas, setQuotas]           = useState<CountryQuotaRow[]>([])
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+
+  // Country paid-members dialog
+  const [countryDialog, setCountryDialog] = useState<{ code: string; label: string; flag: string } | null>(null)
+  const [paidMembers, setPaidMembers]     = useState<PaidMember[]>([])
+  const [paidLoading, setPaidLoading]     = useState(false)
+
+  const openCountryDialog = async (code: string, label: string, flag: string) => {
+    setCountryDialog({ code, label, flag })
+    setPaidLoading(true)
+    try {
+      const data = await fetchPaidMembersByCountry(code)
+      setPaidMembers(data)
+    } finally {
+      setPaidLoading(false)
+    }
+  }
 
   // Logout confirmation
   const [logoutOpen, setLogoutOpen] = useState(false)
@@ -109,19 +127,34 @@ export default function AdminScan() {
 
   const showToast = (msg: string, sev: ToastSev) => setToast({ open: true, msg, sev })
 
-  // Load members on mount + camera cleanup on unmount
+  // Load members on mount + realtime + 30s poll + camera cleanup on unmount
   useEffect(() => {
-    loadMembers()
-    return () => { void stopCamera() }
+    void loadMembers()
+
+    // Supabase Realtime — instant update on any members/registrations change
+    const channel = supabase
+      .channel('admin-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, () => { void loadMembers() })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'registrations' }, () => { void loadMembers() })
+      .subscribe()
+
+    // Polling fallback every 30 seconds
+    const poll = setInterval(() => { void loadMembers() }, 60_000)
+
+    return () => {
+      void supabase.removeChannel(channel)
+      clearInterval(poll)
+      void stopCamera()
+    }
   }, []) // eslint-disable-line
 
   const loadMembers = async () => {
     setTableLoading(true)
     try {
-      const [data, q, rs] = await Promise.all([fetchAllMembers(), fetchAllQuotas(), fetchRegistrationStats()])
+      const [data, q] = await Promise.all([fetchAllMembers(), fetchAllQuotas()])
       setMembers(data)
       setQuotas(q)
-      setRegStats(rs)
+      setLastUpdated(new Date())
     } catch {
       // silently ignore — table just stays empty
     } finally {
@@ -230,15 +263,38 @@ export default function AdminScan() {
 
   const checkedInCount = useMemo(() => members.filter(m => m.checked_in).length, [members])
 
+  const downloadCountryExcel = () => {
+    if (!countryDialog || !paidMembers.length) return
+    const rows = paidMembers.map((m, i) => ({
+      '#':           i + 1,
+      'First Name':  m.first_name,
+      'Last Name':   m.last_name,
+      'Gender':      m.gender.charAt(0).toUpperCase() + m.gender.slice(1),
+      'Checked In':  m.checked_in ? 'Yes' : 'No',
+    }))
+    const ws = XLSX.utils.json_to_sheet(rows)
+    ws['!cols'] = [{ wch: 4 }, { wch: 16 }, { wch: 16 }, { wch: 10 }, { wch: 12 }]
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, countryDialog.label)
+    XLSX.writeFile(wb, `${countryDialog.label}_paid_members.xlsx`)
+  }
+
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
 
       {/* AppBar */}
       <AppBar position="sticky" sx={{ bgcolor: 'primary.main' }}>
         <Toolbar sx={{ minHeight: { xs: 52, sm: 64 } }}>
-          <Typography fontWeight={700} sx={{ flexGrow: 1, fontSize: { xs: '0.95rem', sm: '1.25rem' } }}>
-            HP Admin Panel
-          </Typography>
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography fontWeight={700} sx={{ fontSize: { xs: '0.95rem', sm: '1.25rem' } }}>
+              HP Admin Panel
+            </Typography>
+            {lastUpdated && (
+              <Typography sx={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1 }}>
+                Live · updated {lastUpdated.toLocaleTimeString()}
+              </Typography>
+            )}
+          </Box>
           {isMobile ? (
             <IconButton color="inherit" onClick={() => setLogoutOpen(true)} size="small"
               sx={{ bgcolor: 'rgba(255,255,255,0.1)', '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}>
@@ -275,12 +331,12 @@ export default function AdminScan() {
 
       {/* ── Dashboard tab ── */}
       {activeTab === 1 && (() => {
-        // per-country registered: prefer regStats (direct from registrations), fall back to members array
+        // Always count actual member rows per country — most accurate, avoids member_count mismatch
         const regByCountry: Record<string, number> = {}
-        if (regStats.length > 0) {
-          for (const rs of regStats) regByCountry[rs.country] = rs.members
-        } else {
-          for (const m of members) regByCountry[m.country] = (regByCountry[m.country] ?? 0) + 1
+        for (const m of members) {
+          if (m.country && m.country !== '—') {
+            regByCountry[m.country] = (regByCountry[m.country] ?? 0) + 1
+          }
         }
         // checked-in counts always from members table
         const chk: Record<string, number> = {}
@@ -409,6 +465,7 @@ export default function AdminScan() {
                       <TableCell sx={{ fontWeight: 700 }} align="center">Left</TableCell>
                       <TableCell sx={{ fontWeight: 700, display: { xs: 'none', sm: 'table-cell' }, minWidth: 140 }}>Fill</TableCell>
                       <TableCell sx={{ fontWeight: 700, display: { xs: 'table-cell', sm: 'none' } }} align="center">%</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">Members</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -464,6 +521,17 @@ export default function AdminScan() {
                           {/* % only — mobile */}
                           <TableCell align="center" sx={{ display: { xs: 'table-cell', sm: 'none' } }}>
                             <Typography variant="caption" fontWeight={700} color={color}>{pct}%</Typography>
+                          </TableCell>
+                          {/* View paid members button */}
+                          <TableCell align="center">
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => openCountryDialog(r.code, meta.label, meta.flag)}
+                              sx={{ fontWeight: 600, fontSize: 11, py: 0.25, px: 1, borderRadius: 2, whiteSpace: 'nowrap' }}
+                            >
+                              View
+                            </Button>
                           </TableCell>
                         </TableRow>
                       )
@@ -728,6 +796,82 @@ export default function AdminScan() {
           </Card>
         </Box>
       </Box>}
+
+      {/* Country paid members dialog */}
+      <Dialog
+        open={!!countryDialog}
+        onClose={() => setCountryDialog(null)}
+        maxWidth="sm"
+        fullWidth
+        slotProps={{ paper: { sx: { borderRadius: 3 } } }}
+      >
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 1 }}>
+          <Typography fontSize={24}>{countryDialog?.flag}</Typography>
+          <Box>
+            <Typography fontWeight={700} fontSize="1.1rem">{countryDialog?.label}</Typography>
+            <Typography variant="caption" color="text.secondary">Paid Members</Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent sx={{ p: 0 }}>
+          {paidLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress size={28} />
+            </Box>
+          ) : paidMembers.length === 0 ? (
+            <Box sx={{ py: 4, textAlign: 'center' }}>
+              <Typography color="text.secondary">No paid members found for this country.</Typography>
+            </Box>
+          ) : (
+            <>
+              <Box sx={{ px: 3, pb: 1 }}>
+                <Chip label={`${paidMembers.length} paid member${paidMembers.length !== 1 ? 's' : ''}`}
+                  size="small" color="success" sx={{ fontWeight: 700 }} />
+              </Box>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: 'rgba(107,74,150,0.06)' }}>
+                      <TableCell sx={{ fontWeight: 700 }}>#</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>First Name</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Last Name</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Gender</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">Status</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {paidMembers.map((m, i) => (
+                      <TableRow key={i} sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                        <TableCell sx={{ color: 'text.secondary', fontSize: 12 }}>{i + 1}</TableCell>
+                        <TableCell>{m.first_name}</TableCell>
+                        <TableCell>{m.last_name}</TableCell>
+                        <TableCell sx={{ textTransform: 'capitalize' }}>{m.gender}</TableCell>
+                        <TableCell align="center">
+                          {m.checked_in
+                            ? <Chip label="Checked In" size="small" color="success" />
+                            : <Chip label="Pending"    size="small" variant="outlined" />}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
+          <Button onClick={() => setCountryDialog(null)} variant="outlined" sx={{ borderRadius: 2 }}>
+            Close
+          </Button>
+          <Button
+            onClick={downloadCountryExcel}
+            variant="contained"
+            disabled={paidLoading || paidMembers.length === 0}
+            sx={{ borderRadius: 2, fontWeight: 700 }}
+          >
+            Download Excel ({paidMembers.length})
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Logout confirmation dialog */}
       <Dialog
