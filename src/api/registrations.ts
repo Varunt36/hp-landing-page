@@ -55,9 +55,18 @@ function friendlyField(field: string): string {
 }
 
 function parseApiError(body: Record<string, unknown>): string {
+  // AppError responses are wrapped as { error: { code, message, details? } };
+  // FastAPI validation errors use a top-level { detail: ... }. Unwrap `error`
+  // first so the real backend message reaches the toast, then fall back to detail.
+  const wrapped = body?.error;
+  const inner =
+    wrapped && typeof wrapped === 'object'
+      ? (wrapped as Record<string, unknown>)
+      : body;
+
   // Backend format: { code, message, details: [{ field, message }] }
-  if (typeof body.message === 'string') {
-    const details = body.details;
+  if (typeof inner.message === 'string') {
+    const details = inner.details;
     if (Array.isArray(details) && details.length > 0) {
       const msgs = details
         .map((d: unknown) => {
@@ -74,7 +83,7 @@ function parseApiError(body: Record<string, unknown>): string {
         .filter(Boolean);
       if (msgs.length > 0) return msgs.join('\n');
     }
-    return body.message;
+    return inner.message;
   }
   // FastAPI fallback: { detail: string | array }
   const detail = body.detail;
