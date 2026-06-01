@@ -625,9 +625,9 @@ export default function ExplorePage() {
         >
           <Container maxWidth="lg">
             <SectionHead
-              eyebrow="Where to Eat"
-              title="Recommended Restaurants"
-              desc="A curated selection of Berlin restaurants near the venue and hotels, from cosy coffeehouses to award-winning fine dining."
+              eyebrow="💛 Special Thanks to Our Supporters"
+              title="Our Supporters"
+              desc="We sincerely thank our Gold Partners for contributing their support during the event and helping us create memorable moments for our devotees and community. Your trust and collaboration truly made a difference."
             />
             <Box
               sx={{
