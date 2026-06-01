@@ -213,7 +213,7 @@ export default function EventInfoSection() {
                       fontSize: '0.72rem',
                       letterSpacing: '0.08em',
                       textTransform: 'uppercase',
-                      color: C.teal300,
+                      color: C.purple800,
                       lineHeight: 1.3,
                     }}
                   >
