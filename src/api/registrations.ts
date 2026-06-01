@@ -118,6 +118,41 @@ export async function pollPaymentStatus(intentId: string): Promise<PaymentStatus
   )
 }
 
+export interface ResendConfirmationResult {
+  sent:      number
+  reference: string
+}
+
+/**
+ * Ask the backend to resend the original confirmation email to a registered,
+ * paid address. `reference` is only needed to disambiguate when the email maps
+ * to more than one registration. `token` is the admin's Supabase access token
+ * (from supabase.auth.getSession()), sent as a Bearer token.
+ */
+export async function resendConfirmation(
+  email: string,
+  token: string,
+  reference?: string,
+): Promise<ResendConfirmationResult> {
+  if (!API_URL) throw new Error('Configuration error: API URL is not set.')
+
+  const res = await fetch(`${API_URL}/resend-confirmation`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(reference ? { email, reference } : { email }),
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(parseApiError(err as Record<string, unknown>))
+  }
+
+  return res.json()
+}
+
 export async function submitRegistration(
   payload: RegistrationPayload,
 ): Promise<RegistrationResult> {

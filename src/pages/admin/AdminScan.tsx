@@ -19,11 +19,15 @@ import PeopleIcon        from '@mui/icons-material/People'
 import HowToRegIcon      from '@mui/icons-material/HowToReg'
 import PublicIcon        from '@mui/icons-material/Public'
 import EventSeatIcon     from '@mui/icons-material/EventSeat'
+import EmailIcon         from '@mui/icons-material/Email'
+import SendIcon          from '@mui/icons-material/Send'
+import ErrorOutlineIcon  from '@mui/icons-material/ErrorOutline'
 import { Html5Qrcode } from 'html5-qrcode'
 import * as XLSX from 'xlsx'
 import { useAuth }       from '../../context/AuthContext'
 import { supabase }      from '../../lib/supabase'
-import { fetchAllMembers, checkInByTicket, fetchPaidMembersByCountry, type Member, type PaidMember } from '../../api/admin'
+import { fetchAllMembers, checkInByTicket, fetchPaidMembersByCountry, verifyEmailRegistrations, type Member, type PaidMember, type RegistrationMatch } from '../../api/admin'
+import { resendConfirmation } from '../../api/registrations'
 import { fetchAllQuotas, type CountryQuotaRow } from '../../api/quotas'
 import { COUNTRIES } from '../../data/data'
 
@@ -119,6 +123,84 @@ export default function AdminScan() {
   const [cameraActive, setCameraActive] = useState(false)
   const scannerRef   = useRef<Html5Qrcode | null>(null)
   const scannerDivId = 'qr-reader'
+
+  // ── Resend confirmation email ──
+  type VerifyStatus = 'idle' | 'verifying' | 'found' | 'multiple' | 'none' | 'error'
+  const [resendEmail,    setResendEmail]    = useState('')
+  const [verifyStatus,   setVerifyStatus]   = useState<VerifyStatus>('idle')
+  const [verifyError,    setVerifyError]    = useState('')
+  const [matches,        setMatches]        = useState<RegistrationMatch[]>([])
+  const [selectedRef,    setSelectedRef]    = useState<string | null>(null)
+  const [resending,      setResending]      = useState(false)
+  const verifySeqRef = useRef(0)
+
+  const runVerify = async (email: string) => {
+    const trimmed = email.trim()
+    if (!trimmed) {
+      setVerifyStatus('idle')
+      setMatches([])
+      setSelectedRef(null)
+      setVerifyError('')
+      return
+    }
+    const seq = ++verifySeqRef.current
+    setVerifyStatus('verifying')
+    setVerifyError('')
+    setSelectedRef(null)
+    try {
+      const results = await verifyEmailRegistrations(trimmed)
+      if (seq !== verifySeqRef.current) return // a newer query superseded this one
+      const paidMatches = results.filter(r => r.paid)
+      setMatches(paidMatches)
+      if (paidMatches.length === 0) {
+        setVerifyStatus('none')
+      } else if (paidMatches.length === 1) {
+        setVerifyStatus('found')
+        setSelectedRef(paidMatches[0].reference)
+      } else {
+        setVerifyStatus('multiple')
+      }
+    } catch (err) {
+      if (seq !== verifySeqRef.current) return
+      setMatches([])
+      setVerifyStatus('error')
+      setVerifyError(err instanceof Error ? err.message : 'Verification failed')
+    }
+  }
+
+  // Debounced auto-verify (~400ms) as the admin types
+  useEffect(() => {
+    const handle = setTimeout(() => { void runVerify(resendEmail) }, 400)
+    return () => clearTimeout(handle)
+  }, [resendEmail]) // eslint-disable-line
+
+  const selectedMatch = matches.find(m => m.reference === selectedRef) ?? null
+  const canResend =
+    !resending &&
+    !!selectedRef &&
+    (verifyStatus === 'found' || verifyStatus === 'multiple')
+
+  const handleResend = async () => {
+    if (!canResend || !selectedMatch) return
+    setResending(true)
+    try {
+      const { data } = await supabase.auth.getSession()
+      const token = data.session?.access_token
+      if (!token) throw new Error('Your admin session has expired. Please sign in again.')
+
+      // Include reference only when disambiguating multiple matches
+      const reference = matches.length > 1 ? selectedMatch.reference : undefined
+      const result = await resendConfirmation(resendEmail.trim(), token, reference)
+      showToast(
+        `✓ Resent to ${resendEmail.trim()}${result.sent > 1 ? ` (${result.sent} emails)` : ''}`,
+        'success',
+      )
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Resend failed', 'error')
+    } finally {
+      setResending(false)
+    }
+  }
 
   // Toast
   type ToastSev = 'success' | 'warning' | 'error'
@@ -326,6 +408,7 @@ export default function AdminScan() {
         >
           <Tab icon={<QrCodeScannerIcon fontSize="small" />} iconPosition="start" label="Scanner" />
           <Tab icon={<BarChartIcon fontSize="small" />} iconPosition="start" label="Dashboard" />
+          <Tab icon={<EmailIcon fontSize="small" />} iconPosition="start" label="Resend Email" />
         </Tabs>
       </AppBar>
 
@@ -796,6 +879,120 @@ export default function AdminScan() {
           </Card>
         </Box>
       </Box>}
+
+      {/* ── Resend Email tab ── */}
+      {activeTab === 2 && (
+        <Box sx={{ p: { xs: 1.5, sm: 2 }, pt: { xs: 2, sm: 3 }, maxWidth: 640, mx: 'auto' }}>
+          <Card sx={{ borderRadius: 3 }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+              <Typography variant="subtitle1" fontWeight={700} gutterBottom>
+                Resend Confirmation Email
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Enter a registrant's email to resend their original confirmation (with QR code).
+              </Typography>
+
+              <TextField
+                fullWidth size="small" type="email"
+                placeholder="registrant@example.com"
+                value={resendEmail}
+                onChange={e => setResendEmail(e.target.value)}
+                autoComplete="off"
+                sx={{ mb: 2 }}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailIcon fontSize="small" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: verifyStatus === 'verifying'
+                      ? <InputAdornment position="end"><CircularProgress size={18} /></InputAdornment>
+                      : undefined,
+                  },
+                }}
+              />
+
+              {/* Verification result */}
+              {verifyStatus === 'found' && selectedMatch && (
+                <Alert
+                  icon={<CheckCircleIcon fontSize="inherit" />}
+                  severity="success"
+                  sx={{ mb: 2, alignItems: 'center', '& .MuiAlert-message': { fontWeight: 600 } }}
+                >
+                  {selectedMatch.reference} · {selectedMatch.leadName}
+                  {selectedMatch.memberCount > 1 ? ` (+${selectedMatch.memberCount - 1})` : ''}
+                  {' · '}{countryMeta(selectedMatch.country).flag} {countryMeta(selectedMatch.country).label}
+                  {' · Paid'}
+                </Alert>
+              )}
+
+              {verifyStatus === 'multiple' && (
+                <Box sx={{ mb: 2 }}>
+                  <Alert severity="info" sx={{ mb: 1.5 }}>
+                    This email is on multiple registrations. Select which one to resend.
+                  </Alert>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {matches.map(m => {
+                      const meta = countryMeta(m.country)
+                      const selected = m.reference === selectedRef
+                      return (
+                        <Card
+                          key={m.reference}
+                          variant="outlined"
+                          onClick={() => setSelectedRef(m.reference)}
+                          sx={{
+                            cursor: 'pointer', borderRadius: 2, borderWidth: 2,
+                            borderColor: selected ? 'primary.main' : 'divider',
+                            bgcolor: selected ? 'rgba(107,74,150,0.06)' : 'inherit',
+                            '&:hover': { borderColor: 'primary.main' },
+                          }}
+                        >
+                          <CardContent sx={{ py: 1.25, '&:last-child': { pb: 1.25 } }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              {selected
+                                ? <CheckCircleIcon color="primary" fontSize="small" />
+                                : <Box sx={{ width: 20, height: 20, borderRadius: '50%', border: '2px solid', borderColor: 'divider' }} />}
+                              <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                                <Typography fontWeight={700} fontSize="0.9rem" sx={{ fontFamily: 'monospace' }}>
+                                  {m.reference}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                  {m.leadName}{m.memberCount > 1 ? ` (+${m.memberCount - 1})` : ''} · {meta.flag} {meta.label} · Paid
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      )
+                    })}
+                  </Box>
+                </Box>
+              )}
+
+              {verifyStatus === 'none' && (
+                <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="warning" sx={{ mb: 2 }}>
+                  No registration found for this email.
+                </Alert>
+              )}
+
+              {verifyStatus === 'error' && (
+                <Alert severity="error" sx={{ mb: 2 }}>{verifyError}</Alert>
+              )}
+
+              <Button
+                fullWidth variant="contained" size="large"
+                startIcon={resending ? undefined : <SendIcon />}
+                disabled={!canResend}
+                onClick={handleResend}
+                sx={{ py: 1.5, fontWeight: 700, color: '#fff', '&.Mui-disabled': { color: 'rgba(255,255,255,0.45)' } }}
+              >
+                {resending ? <CircularProgress size={22} color="inherit" /> : 'Resend Confirmation Email'}
+              </Button>
+            </CardContent>
+          </Card>
+        </Box>
+      )}
 
       {/* Country paid members dialog */}
       <Dialog
