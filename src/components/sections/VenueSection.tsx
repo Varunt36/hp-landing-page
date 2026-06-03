@@ -231,7 +231,13 @@ export default function VenueSection() {
   const handleCloseBooking = () => {
     setBookingOpen(false);
     if (new URLSearchParams(location.search).get('booking') === 'open') {
-      navigate('/venue', { replace: true });
+      // Opened via a deep link (e.g. the Home "How to Book Hotel" link).
+      // Return to the page they came from instead of staying on Venue.
+      if (location.key !== 'default') {
+        navigate(-1);
+      } else {
+        navigate('/', { replace: true });
+      }
     }
   };
 

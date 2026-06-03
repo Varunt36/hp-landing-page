@@ -1,87 +1,12 @@
 ﻿import { useState, useEffect, useRef } from 'react'
 import { usePageMeta } from '../hooks/usePageMeta'
-import { Box, Container, Typography, Link } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import RegisterModal from '../components/form/RegisterModal'
 import { C } from '../theme/theme'
 
 // ── Data ──────────────────────────────────────────────────────────────────────
-
-const RESTAURANTS = [
-  {
-    tag: 'Coffeehouse',
-    stars: 4,
-    name: 'Café Einstein Stammhaus',
-    area: 'Tiergarten',
-    dist: '2.6 km from venue',
-    desc: 'Grand Viennese coffeehouse in a historic villa, perfect for a leisurely breakfast or a quiet afternoon cake.',
-    price: '€18',
-    image:
-      'https://images.unsplash.com/photo-1775059956734-78ffd2075cec?w=600&q=75&auto=format&fit=crop',
-    url: 'https://www.cafeeinstein.com',
-  },
-  {
-    tag: 'Fine Dining',
-    stars: 5,
-    name: 'Restaurant Tim Raue',
-    area: 'Kreuzberg',
-    dist: '3.2 km from venue',
-    desc: 'Two Michelin-star destination, bold Asian-inspired cuisine rooted in Japanese, Thai and Chinese tradition.',
-    price: '€95',
-    image:
-      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=75&auto=format&fit=crop',
-    url: 'https://www.tim-raue.com',
-  },
-  {
-    tag: 'Since 1621',
-    stars: 4,
-    name: 'Zur Letzten Instanz',
-    area: 'Mitte',
-    dist: '1.1 km from venue',
-    desc: "Berlin's oldest restaurant, hearty German classics served in cosy timber interiors since the 17th century.",
-    price: '€22',
-    image:
-      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=75&auto=format&fit=crop',
-    url: 'https://www.zurletzteninstanz.com',
-  },
-  {
-    tag: 'Vegetarian',
-    stars: 5,
-    name: 'Cookies Cream',
-    area: 'Mitte',
-    dist: '0.5 km from venue',
-    desc: 'Award-winning vegetarian fine dining hidden in a Berlin courtyard, creative, seasonal and entirely meat-free.',
-    price: '€65',
-    image:
-      'https://plus.unsplash.com/premium_photo-1755706181246-00e8aa5ca334?w=600&q=75&auto=format&fit=crop',
-    url: 'https://www.cookiescream.com',
-  },
-  {
-    tag: 'Riverside',
-    stars: 4,
-    name: 'Grill Royal',
-    area: 'Mitte',
-    dist: '1.4 km from venue',
-    desc: 'Stylish dining on the banks of the Spree, premium grills, fresh fish and an iconic Berlin waterfront setting.',
-    price: '€55',
-    image:
-      'https://plus.unsplash.com/premium_photo-1745946640146-5521cb53a5b5?w=600&q=75&auto=format&fit=crop',
-    url: 'https://www.grillroyal.com',
-  },
-  {
-    tag: 'Indian',
-    stars: 4,
-    name: 'Amrit Restaurant',
-    area: 'Kreuzberg',
-    dist: '2.8 km from venue',
-    desc: "Berlin's most-loved Indian restaurant with an extensive vegetarian menu, aromatic curries and warm hospitality.",
-    price: '€20',
-    image:
-      'https://plus.unsplash.com/premium_photo-1745946640178-69beac3840cc?w=600&q=75&auto=format&fit=crop',
-    url: 'https://www.amrit.de',
-  },
-];
 
 const NEIGHBORHOODS = [
   { emoji: '🌿', tag: 'Park', area: 'Mitte / Tiergarten', name: 'Tiergarten', desc: "Berlin's green heart and largest inner-city park. Beautiful walking paths, lakes and gardens home to the beloved Café am Neuen See.", dist: '10–15 min walk', stars: 5, url: 'https://maps.google.com/?q=Tiergarten+Berlin' },
@@ -144,235 +69,6 @@ const ESSENTIALS = [
 
 
 // ── Sub-components ────────────────────────────────────────────────────────────
-
-
-// @ts-ignore – reserved for future use when supporter data is available
-function RestaurantCard({
-  restaurant,
-}: {
-  restaurant: (typeof RESTAURANTS)[0];
-}) {
-  return (
-    <Box
-      sx={{
-        background: C.cream,
-        border: `1px solid ${C.lavender200}B3`,
-        borderRadius: '18px',
-        overflow: 'hidden',
-        boxShadow:
-          '0 1px 2px rgba(60,30,90,0.06), 0 2px 8px rgba(60,30,90,0.04)',
-        display: 'flex',
-        flexDirection: 'column',
-        transition:
-          'transform .25s ease, border-color .25s ease, box-shadow .25s ease',
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          borderColor: `${C.gold500}80`,
-          boxShadow:
-            '0 4px 14px rgba(60,30,90,0.08), 0 12px 40px rgba(60,30,90,0.06)',
-        },
-      }}
-    >
-      <Box sx={{ position: 'relative' }}>
-        <Box
-          component="img"
-          src={restaurant.image}
-          alt={restaurant.name}
-          loading="lazy"
-          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-            e.currentTarget.style.background = C.lavender100;
-            e.currentTarget.src =
-              'data:image/gif;base64, R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-          }}
-          sx={{
-            width: '100%',
-            aspectRatio: '16/10',
-            objectFit: 'cover',
-            display: 'block',
-          }}
-        />
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 12,
-            left: 12,
-            background: `${C.cream}EB`,
-            backdropFilter: 'blur(6px)',
-            WebkitBackdropFilter: 'blur(6px)',
-            border: `1px solid ${C.lavender200}99`,
-            borderRadius: '999px',
-            px: 1.25,
-            py: 0.75,
-            fontSize: '0.68rem',
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            color: C.purple800,
-          }}
-        >
-          {restaurant.tag}
-        </Box>
-      </Box>
-
-      <Box
-        sx={{
-          p: '22px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 1,
-          flex: 1,
-        }}
-      >
-        <Typography sx={{ color: C.gold600, letterSpacing: 1, fontSize: 14 }}>
-          {'★'.repeat(restaurant.stars)}
-        </Typography>
-        <Typography
-          sx={{
-            fontFamily: '"Cormorant Garamond", serif',
-            fontSize: 24,
-            color: C.purple800,
-            fontWeight: 500,
-            lineHeight: 1.1,
-          }}
-        >
-          {restaurant.name}
-        </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            flexWrap: 'wrap',
-          }}
-        >
-          <Typography sx={{ fontSize: 13, color: C.muted }}>
-            {restaurant.area}
-          </Typography>
-          <Box
-            sx={{
-              width: 3,
-              height: 3,
-              borderRadius: '50%',
-              background: C.lavender300,
-            }}
-          />
-          <Typography sx={{ fontSize: 13, color: C.muted }}>
-            {restaurant.dist}
-          </Typography>
-        </Box>
-        <Typography
-          sx={{ fontSize: 14.5, lineHeight: 1.6, color: C.muted, mt: 0.5 }}
-        >
-          {restaurant.desc}
-        </Typography>
-
-        <Box
-          sx={{
-            mt: 'auto',
-            pt: 2,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'baseline',
-            gap: 1.5,
-            borderTop: `1px dashed ${C.lavender200}CC`,
-          }}
-        >
-          <Typography
-            sx={{
-              fontFamily: '"Cormorant Garamond", serif',
-              fontSize: 22,
-              color: C.purple800,
-              fontStyle: 'italic',
-            }}
-          >
-            {restaurant.price}
-            <Box
-              component="span"
-              sx={{
-                fontFamily: '"Inter", sans-serif',
-                fontSize: 12,
-                color: C.muted,
-                fontStyle: 'normal',
-                ml: 0.5,
-              }}
-            >
-              / person
-            </Box>
-          </Typography>
-          <Link
-            href={restaurant.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            underline="none"
-            sx={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: C.purple800,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 0.75,
-              '&:hover': { color: C.gold700 },
-            }}
-          >
-            Reserve table
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-            >
-              <path d="M5 12h14M13 5l7 7-7 7" />
-            </svg>
-          </Link>
-        </Box>
-      </Box>
-    </Box>
-  );
-}
-
-
-// @ts-ignore – reserved for future use when supporter data is available
-function TipCard({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
-  return (
-    <Box
-      sx={{
-        mt: 4.5,
-        background: C.cream,
-        border: `1px solid ${C.lavender200}B3`,
-        borderRadius: '18px',
-        p: { xs: '22px', md: '28px 32px' },
-        display: 'grid',
-        gridTemplateColumns: { xs: '1fr', sm: 'auto 1fr' },
-        gap: { xs: 2, sm: 2.75 },
-        alignItems: 'center',
-      }}
-    >
-      <Box
-        sx={{
-          width: 52, height: 52, borderRadius: '50%',
-          background: C.lavender50,
-          border: `1px solid ${C.gold500}80`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: C.purple700,
-          mx: { xs: 'auto', sm: 0 },
-        }}
-      >
-        {icon}
-      </Box>
-      <Box>
-        <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 19, color: C.purple700, fontStyle: 'italic', fontWeight: 500 }}>
-          {title}
-        </Typography>
-        <Typography sx={{ fontSize: 14.5, mt: 0.5, color: C.purple700 }}>
-          {body}
-        </Typography>
-      </Box>
-    </Box>
-  )
-}
 
 function SectionHead({ eyebrow, title, desc }: { eyebrow: string; title: string; desc?: string }) {
   return (
@@ -450,8 +146,8 @@ function SectionHead({ eyebrow, title, desc }: { eyebrow: string; title: string;
 type Section = 'hotels' | 'explore' | 'highlights' | 'essentials'
 
 const NAV_TABS: { id: Section; label: string }[] = [
-  { id: 'hotels',     label: 'Restaurants' },
-  { id: 'explore',    label: 'Explore' },
+  { id: 'hotels',     label: 'Our Sponsors' },
+  { id: 'explore',    label: 'Around Town' },
   { id: 'highlights', label: 'Highlights' },
   { id: 'essentials', label: 'Essentials' },
 ]
@@ -465,6 +161,9 @@ export default function ExplorePage() {
   const highlightsRef = useRef<HTMLElement>(null)
   const essentialsRef = useRef<HTMLElement>(null)
 
+  const isClickScrolling = useRef(false)
+  const clickScrollTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
   useEffect(() => {
     const pairs: [Section, React.RefObject<HTMLElement | null>][] = [
       ['hotels',     hotelsRef],
@@ -473,6 +172,8 @@ export default function ExplorePage() {
       ['essentials', essentialsRef],
     ]
     const onScroll = () => {
+      // Don't let the scroll-spy fight a tab click while it's smooth-scrolling.
+      if (isClickScrolling.current) return
       const THRESHOLD = 220
       let active: Section = 'hotels'
       for (const [id, ref] of pairs) {
@@ -486,7 +187,13 @@ export default function ExplorePage() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const scrollTo = (id: string) => {
+  const scrollTo = (id: Section) => {
+    setActiveSection(id)
+    isClickScrolling.current = true
+    clearTimeout(clickScrollTimer.current)
+    clickScrollTimer.current = setTimeout(() => {
+      isClickScrolling.current = false
+    }, 800)
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
   }
 
@@ -497,7 +204,7 @@ export default function ExplorePage() {
         {/* ── Page hero ── */}
         <Box
           sx={{
-            py: { xs: '72px', md: '96px' },
+            py: { xs: '48px', md: '64px' },
             textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',
@@ -507,15 +214,6 @@ export default function ExplorePage() {
           }}
         >
           <Container maxWidth="md">
-
-            {/* Top ornament */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, mb: 2.5, color: C.gold600 }}>
-              <Typography sx={{ fontSize: 14 }}>✿</Typography>
-              <Box sx={{ height: '1px', width: 48, background: `linear-gradient(to right, transparent, ${C.gold500})` }} />
-              <Typography sx={{ fontSize: 13 }}>♡</Typography>
-              <Box sx={{ height: '1px', width: 48, background: `linear-gradient(to left, transparent, ${C.gold500})` }} />
-              <Typography sx={{ fontSize: 14 }}>✿</Typography>
-            </Box>
 
             {/* Eyebrow */}
             <Typography
@@ -547,32 +245,21 @@ export default function ExplorePage() {
               Discover Berlin – A City Guruhari Has Visited Many Times
             </Typography>
 
-            {/* Body paragraphs */}
-            <Typography sx={{ maxWidth: 700, mx: 'auto', mt: 3, fontSize: { xs: 15, md: 16.5 }, color:  C.purple700, lineHeight: 1.8 }}>
-              As we gather together during this blessed time in the divine presence of Guruhari, we invite you to also enjoy and explore the beautiful city that has welcomed Swamiji on many occasions throughout the years.
+            {/* Body */}
+            <Typography sx={{ maxWidth: 620, mx: 'auto', mt: 2.5, fontSize: { xs: 15, md: 16.5 }, color: C.purple700, lineHeight: 1.8 }}>
+              Between spiritual gatherings and precious moments with loved ones, take time to explore the neighborhoods, cafés, parks and restaurants of a city that has welcomed Swamiji many times over the years.
             </Typography>
-            <Typography sx={{ maxWidth: 700, mx: 'auto', mt: 2, fontSize: { xs: 15, md: 16.5 }, color: C.purple700, lineHeight: 1.8 }}>
-              Berlin is a city of many contrasts. Historic and modern. Vibrant and peaceful. International and local. Between spiritual gatherings and precious moments with family and friends, you may wish to discover some of the neighborhoods, cafés, parks, restaurants and shopping destinations that make Berlin such a unique place.
-            </Typography>
-
-            {/* Middle ornament */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, my: 3, color: C.gold600 }}>
-              <Typography sx={{ fontSize: 14 }}>✿</Typography>
-              <Box sx={{ height: '1px', width: 48, background: `linear-gradient(to right, transparent, ${C.gold500})` }} />
-              <Typography sx={{ fontSize: 13 }}>♡</Typography>
-              <Box sx={{ height: '1px', width: 48, background: `linear-gradient(to left, transparent, ${C.gold500})` }} />
-              <Typography sx={{ fontSize: 14 }}>✿</Typography>
-            </Box>
 
             {/* Quote */}
             <Typography
               sx={{
                 maxWidth: 560,
                 mx: 'auto',
-                fontSize: { xs: 25, md: 18 },
+                mt: 3.5,
+                fontSize: { xs: 16, md: 19 },
                 color: C.purple700,
                 fontStyle: 'italic',
-                lineHeight: 1.75,
+                lineHeight: 1.7,
                 fontFamily: '"Blue Mirage", serif',
               }}
             >
@@ -809,10 +496,7 @@ export default function ExplorePage() {
                       )}
                     </Box>
                     <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 22, color: C.purple700, fontWeight: 700, lineHeight: 1.15, mb: 0.4 }}>{name}</Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 1.25 }}>
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-                      <Typography sx={{ fontSize: 13, color: C.muted }}>{area}</Typography>
-                    </Box>
+                    <Typography sx={{ fontSize: 13, color: C.muted, mb: 1.25 }}>{area}</Typography>
                     <Typography sx={{ fontSize: 14, color: C.muted, lineHeight: 1.65, mb: 2 }}>{desc}</Typography>
                   </Box>
                   <Box sx={{ px: 3, py: 1.25, borderTop: `1px dashed ${C.lavender200}CC`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
