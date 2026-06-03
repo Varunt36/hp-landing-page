@@ -1,6 +1,8 @@
-import { type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Container, Typography, Button } from '@mui/material';
 import { C } from '../../theme/theme';
+import HotelBookingModal from '../form/HotelBookingModal';
 
 const subLabelSx = {
   fontSize: 11,
@@ -177,7 +179,7 @@ const REACH: {
 
         <Box>
           <Typography sx={subLabelSx}>By Train · ~ 1 hour</Typography>
-          <Typography sx={bodyTextSx}>
+          <Typography sx={{ ...bodyTextSx, color: C.purple600 }}>
             From the airport take the train RE7 or RB14 to Zoologischer Garten,
             then the bus 100 to Lützowplatz, which stops directly in front of
             the hotel.
@@ -206,13 +208,33 @@ const REACH: {
       </svg>
     ),
     title: 'From Berlin Hauptbahnhof',
-    detail:
-      'Take S-Bahn S5, S7 or S75 two stops to Zoologischer Garten, then ride bus 100 or 200 to Lützowplatz — the stop is directly in front of the hotel.',
+    detail: (
+      <Typography sx={{ ...bodyTextSx, color: C.purple600 }}>
+        Take S-Bahn S5, S7 or S75 two stops to Zoologischer Garten, then ride bus 100 or 200 to Lützowplatz — the stop is directly in front of the hotel.
+      </Typography>
+    ),
     time: '~ 25 min',
   },
 ];
 
 export default function VenueSection() {
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get('booking') === 'open') {
+      setBookingOpen(true);
+    }
+  }, [location.search]);
+
+  const handleCloseBooking = () => {
+    setBookingOpen(false);
+    if (new URLSearchParams(location.search).get('booking') === 'open') {
+      navigate('/venue', { replace: true });
+    }
+  };
+
   const reachCard = {
     background: C.cream,
     border: `1px solid ${C.lavender200}B3`,
@@ -294,7 +316,7 @@ export default function VenueSection() {
             >
               Hotel Berlin, Berlin
             </Typography>
-            <Typography sx={{ mt: 1.5, color: C.muted, lineHeight: 1.75 }}>
+            <Typography sx={{ mt: 1.5, color: C.purple600, lineHeight: 1.75 }}>
               Set in the heart of west Berlin at Lützowplatz a serene yet
               central setting for satsaṅg, music, prasād and quiet reflection.
             </Typography>
@@ -367,7 +389,31 @@ export default function VenueSection() {
               >
                 Get Directions
               </Button>
+              <Button
+                variant="contained"
+                onClick={() => setBookingOpen(true)}
+                startIcon={
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M3 9h18M9 21V9M3 3h18v18H3z" />
+                  </svg>
+                }
+              >
+                How to Book Hotel
+              </Button>
             </Box>
+            <HotelBookingModal
+              open={bookingOpen}
+              onClose={handleCloseBooking}
+            />
           </Box>
 
           {/* Map side */}

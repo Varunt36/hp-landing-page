@@ -28,13 +28,14 @@ const items: {
       'Discounted hotel rooms are available at the event location.',
       'Booking link sent after registration.',
     ],
+    link: { text: 'How to Book Hotel', href: '/venue?booking=open' },
   },
   {
     icon: <RestaurantIcon sx={{ fontSize: 22, color: C.purple800 }} />,
     title: 'Meals',
     lines: [
       'Lunch, dinner & refreshments included.',
-      'Breakfast is not included. However, if you stay at the hotel, breakfast is included in the room rate.',
+      'Breakfast is not included at the Mahotsav venue.',
     ],
   },
   {
@@ -63,6 +64,54 @@ function renderLine(line: Line, i: number, fontSize: string) {
       {text}
     </Typography>
   )
+}
+
+function ItemLink({ href, text }: { href: string; text: string }) {
+  return (
+    <Box
+      component={Link}
+      to={href}
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 0.65,
+        mt: 1.25,
+        px: 1.5,
+        py: 0.65,
+        borderRadius: '999px',
+        fontSize: '0.78rem',
+        fontWeight: 700,
+        letterSpacing: '0.02em',
+        color: C.purple700,
+        background: C.lavender100,
+        border: `1px solid ${C.lavender300}`,
+        textDecoration: 'none',
+        alignSelf: 'flex-start',
+        transition:
+          'background .18s, border-color .18s, color .18s, box-shadow .18s',
+        '&:hover': {
+          background: C.lavender200,
+          borderColor: C.purple600,
+          color: C.purple800,
+          boxShadow: `0 2px 8px rgba(107,74,150,0.15)`,
+        },
+      }}
+    >
+      {text}
+      <svg
+        width="11"
+        height="11"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M5 12h14M13 5l7 7-7 7" />
+      </svg>
+    </Box>
+  );
 }
 
 export default function EventInfoSection() {
@@ -162,26 +211,7 @@ export default function EventInfoSection() {
                 </Box>
                 {item.lines.map((line, i) => renderLine(line, i, '0.875rem'))}
                 {item.link && (
-                  <Box
-                    component={Link}
-                    to={item.link.href}
-                    sx={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 0.5,
-                      mt: 0.5,
-                      fontSize: '0.95rem',
-                      fontWeight: 600,
-                      color: C.purple600,
-                      textDecoration: 'none',
-                      '&:hover': {
-                        color: C.purple800,
-                        textDecoration: 'underline',
-                      },
-                    }}
-                  >
-                    {item.link.text} →
-                  </Box>
+                  <ItemLink href={item.link.href} text={item.link.text} />
                 )}
               </Box>
             </Box>
@@ -222,26 +252,7 @@ export default function EventInfoSection() {
                 </Box>
                 {item.lines.map((line, i) => renderLine(line, i, '0.82rem'))}
                 {item.link && (
-                  <Box
-                    component="a"
-                    href={item.link.href}
-                    sx={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 0.5,
-                      mt: 0.5,
-                      fontSize: '0.875rem',
-                      fontWeight: 600,
-                      color: C.purple600,
-                      textDecoration: 'none',
-                      '&:hover': {
-                        color: C.purple800,
-                        textDecoration: 'underline',
-                      },
-                    }}
-                  >
-                    {item.link.text} →
-                  </Box>
+                  <ItemLink href={item.link.href} text={item.link.text} />
                 )}
               </Box>
             </Grid>
