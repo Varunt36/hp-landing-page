@@ -119,6 +119,79 @@ export async function fetchRegistrationStats(): Promise<CountryRegistrationStat[
   }))
 }
 
+// ── Resend confirmation: verify an entered email against registered members ──
+export interface RegistrationMatch {
+  reference:    string
+  registrationId: string
+  leadName:     string
+  memberCount:  number
+  country:      string
+  paid:         boolean
+}
+
+/**
+ * Look up the registration(s) a given email belongs to and confirm they are paid.
+ * Reuses the authenticated-admin Supabase reads (RLS) used elsewhere in this file.
+ * Returns one entry per registration the email is a member of. The caller decides
+ * how to render (single match → confirm; multiple → let the admin pick).
+ */
+export async function verifyEmailRegistrations(email: string): Promise<RegistrationMatch[]> {
+  const normalized = email.trim().toLowerCase()
+  if (!normalized) return []
+
+  // 1. Members whose email matches (case-insensitive)
+  const { data: matchedMembers, error } = await supabase
+    .from('members')
+    .select('registration_id, email')
+    .ilike('email', normalized)
+  if (error) throw new Error(error.message)
+  if (!matchedMembers?.length) return []
+
+  const regIds = [...new Set(matchedMembers.map(m => m.registration_id as string))]
+
+  // 2. Registration details for those groups
+  const { data: regs } = await supabase
+    .from('registrations')
+    .select('id, reference, country, member_count')
+    .in('id', regIds)
+  if (!regs?.length) return []
+
+  // 3. Payment status for those groups
+  const { data: payments } = await supabase
+    .from('payments')
+    .select('registration_id, status')
+    .in('registration_id', regIds)
+  const paidRegIds = new Set(
+    (payments ?? [])
+      .filter(p => (p.status as string) === 'paid')
+      .map(p => p.registration_id as string),
+  )
+
+  // 4. Lead member (first by ticket_number) per group, for a friendly label
+  const { data: leadMembers } = await supabase
+    .from('members')
+    .select('registration_id, first_name, last_name, ticket_number')
+    .in('registration_id', regIds)
+    .order('ticket_number', { ascending: true })
+
+  const leadByReg = new Map<string, string>()
+  for (const m of leadMembers ?? []) {
+    const rid = m.registration_id as string
+    if (!leadByReg.has(rid)) {
+      leadByReg.set(rid, `${m.first_name ?? ''} ${m.last_name ?? ''}`.trim())
+    }
+  }
+
+  return regs.map(r => ({
+    reference:      (r.reference as string) ?? '—',
+    registrationId: r.id as string,
+    leadName:       leadByReg.get(r.id as string) ?? '—',
+    memberCount:    (r.member_count as number) ?? 0,
+    country:        (r.country as string) ?? '—',
+    paid:           paidRegIds.has(r.id as string),
+  }))
+}
+
 export async function checkInByTicket(ticketNumber: string): Promise<Member> {
   const ticket = ticketNumber.trim().toUpperCase()
 

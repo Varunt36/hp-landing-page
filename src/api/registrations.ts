@@ -55,9 +55,18 @@ function friendlyField(field: string): string {
 }
 
 function parseApiError(body: Record<string, unknown>): string {
+  // AppError responses are wrapped as { error: { code, message, details? } };
+  // FastAPI validation errors use a top-level { detail: ... }. Unwrap `error`
+  // first so the real backend message reaches the toast, then fall back to detail.
+  const wrapped = body?.error;
+  const inner =
+    wrapped && typeof wrapped === 'object'
+      ? (wrapped as Record<string, unknown>)
+      : body;
+
   // Backend format: { code, message, details: [{ field, message }] }
-  if (typeof body.message === 'string') {
-    const details = body.details;
+  if (typeof inner.message === 'string') {
+    const details = inner.details;
     if (Array.isArray(details) && details.length > 0) {
       const msgs = details
         .map((d: unknown) => {
@@ -74,7 +83,7 @@ function parseApiError(body: Record<string, unknown>): string {
         .filter(Boolean);
       if (msgs.length > 0) return msgs.join('\n');
     }
-    return body.message;
+    return inner.message;
   }
   // FastAPI fallback: { detail: string | array }
   const detail = body.detail;
@@ -116,6 +125,41 @@ export async function pollPaymentStatus(intentId: string): Promise<PaymentStatus
   throw new Error(
     'Payment confirmation timed out. If you were charged, please contact support with your payment details.',
   )
+}
+
+export interface ResendConfirmationResult {
+  sent:      number
+  reference: string
+}
+
+/**
+ * Ask the backend to resend the original confirmation email to a registered,
+ * paid address. `reference` is only needed to disambiguate when the email maps
+ * to more than one registration. `token` is the admin's Supabase access token
+ * (from supabase.auth.getSession()), sent as a Bearer token.
+ */
+export async function resendConfirmation(
+  email: string,
+  token: string,
+  reference?: string,
+): Promise<ResendConfirmationResult> {
+  if (!API_URL) throw new Error('Configuration error: API URL is not set.')
+
+  const res = await fetch(`${API_URL}/resend-confirmation`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(reference ? { email, reference } : { email }),
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(parseApiError(err as Record<string, unknown>))
+  }
+
+  return res.json()
 }
 
 export async function submitRegistration(
