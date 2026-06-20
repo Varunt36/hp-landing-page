@@ -8,7 +8,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     position: 'relative',
     isolation: 'isolate',
     pt: { xs: '10px', md: '20px' },
-    pb: { xs: '80px', md: '120px' },
+    pb: { xs: '80px', md: '160px' },
   },
 
   waveBottom: {
@@ -56,7 +56,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     width: '100%',
     height: 'auto',
     display: { xs: 'none', md: 'block' },
-    mb: 1,
+    mb: 0,
     filter: 'drop-shadow(0 2px 12px rgba(107,74,150,0.20))',
   },
 
@@ -75,7 +75,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
     justifyContent: 'center',
     alignSelf: 'center',
     gap: '18px',
-    mt: 2.5,
+    mt: 1.5,
     color: C.purple600,
     fontFamily: '"Blue Mirage", serif',
     fontSize: { xs: '1.2rem', md: '1.4rem' },
@@ -91,7 +91,7 @@ export const heroStyles: Record<string, SxProps<Theme>> = {
   ctaRow: {
     display: 'flex',
     gap: 1.5,
-    mt: 4,
+    mt: 2.5,
     flexWrap: 'wrap',
   },
 

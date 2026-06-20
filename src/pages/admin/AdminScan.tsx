@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, Alert, Snackbar, InputAdornment, useTheme, useMediaQuery, Switch,
   Dialog, DialogTitle, DialogContent, DialogActions,
-  Tabs, Tab, LinearProgress,
+  Tabs, Tab, LinearProgress, Select, MenuItem, FormControl, InputLabel,
 } from '@mui/material'
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
 import LogoutIcon        from '@mui/icons-material/Logout'
@@ -19,11 +19,18 @@ import PeopleIcon        from '@mui/icons-material/People'
 import HowToRegIcon      from '@mui/icons-material/HowToReg'
 import PublicIcon        from '@mui/icons-material/Public'
 import EventSeatIcon     from '@mui/icons-material/EventSeat'
+import EditIcon          from '@mui/icons-material/Edit'
+import SaveIcon          from '@mui/icons-material/Save'
+import { DataGrid, GridColumnMenu, type GridColDef, type GridColumnMenuProps } from '@mui/x-data-grid'
+
+function SlimColumnMenu(props: GridColumnMenuProps) {
+  return <GridColumnMenu {...props} slots={{ columnMenuColumnsItem: null }} />
+}
 import { Html5Qrcode } from 'html5-qrcode'
 import * as XLSX from 'xlsx'
 import { useAuth }       from '../../context/AuthContext'
 import { supabase }      from '../../lib/supabase'
-import { fetchAllMembers, checkInByTicket, fetchPaidMembersByCountry, type Member, type PaidMember } from '../../api/admin'
+import { fetchAllMembers, checkInByTicket, fetchPaidMembersByCountry, updateMember, type Member, type PaidMember } from '../../api/admin'
 import { fetchAllQuotas, type CountryQuotaRow } from '../../api/quotas'
 import { COUNTRIES } from '../../data/data'
 
@@ -126,6 +133,15 @@ export default function AdminScan() {
     ({ open: false, msg: '', sev: 'success' })
 
   const showToast = (msg: string, sev: ToastSev) => setToast({ open: true, msg, sev })
+
+  // Status filter
+  const [statusFilter, setStatusFilter] = useState<'all' | 'checked_in' | 'pending'>('all')
+
+  // Edit dialog
+  const [editOpen, setEditOpen]       = useState(false)
+  const [editMember, setEditMember]   = useState<Member | null>(null)
+  const [editForm, setEditForm]       = useState({ first_name: '', last_name: '', gender: 'male', dob: '' })
+  const [editSaving, setEditSaving]   = useState(false)
 
   // Load members on mount + realtime + 30s poll + camera cleanup on unmount
   useEffect(() => {
@@ -253,15 +269,76 @@ export default function AdminScan() {
 
   const filteredMembers = useMemo(() => {
     const q = tableSearch.toLowerCase()
-    return members.filter(m =>
-      m.first_name.toLowerCase().includes(q) ||
-      m.last_name.toLowerCase().includes(q)  ||
-      (m.ticket_number ?? '').toLowerCase().includes(q) ||
-      m.country.toLowerCase().includes(q)
-    )
-  }, [members, tableSearch])
+    return members.filter(m => {
+      const matchSearch =
+        m.first_name.toLowerCase().includes(q) ||
+        m.last_name.toLowerCase().includes(q)  ||
+        (m.ticket_number ?? '').toLowerCase().includes(q) ||
+        m.country.toLowerCase().includes(q)
+      const matchStatus =
+        statusFilter === 'all'        ? true :
+        statusFilter === 'checked_in' ? m.checked_in : !m.checked_in
+      return matchSearch && matchStatus
+    })
+  }, [members, tableSearch, statusFilter])
 
   const checkedInCount = useMemo(() => members.filter(m => m.checked_in).length, [members])
+
+  const columns = useMemo<GridColDef<Member>[]>(() => [
+    { field: 'first_name',    headerName: 'First Name',  flex: 1, minWidth: 100 },
+    { field: 'last_name',     headerName: 'Last Name',   flex: 1, minWidth: 100 },
+    {
+      field: 'country', headerName: 'Country', flex: 1, minWidth: 130,
+      renderCell: ({ row }) => row.country && row.country !== '—' ? (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, height: '100%' }}>
+          <span>{countryMeta(row.country).flag}</span>
+          <span>{countryMeta(row.country).label}</span>
+        </Box>
+      ) : '—',
+    },
+    {
+      field: 'ticket_number', headerName: 'Ticket', flex: 1, minWidth: 160,
+      renderCell: ({ value }) => <Typography sx={{ fontFamily: 'monospace', fontSize: '0.72rem' }}>{value ?? '—'}</Typography>,
+    },
+    {
+      field: 'created_at', headerName: 'Registered', width: 110,
+      renderCell: ({ value }) => value ? new Date(value as string).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }) : '—',
+    },
+    {
+      field: 'checked_in', headerName: 'Status', width: 120,
+      renderCell: ({ value }) => value
+        ? <Chip label="Checked In" size="small" color="success" />
+        : <Chip label="Pending"    size="small" variant="outlined" />,
+    },
+    {
+      field: '_checkin', headerName: 'Check In', width: 90, sortable: false, filterable: false,
+      renderCell: ({ row }) => togglingId === row.id
+        ? <CircularProgress size={20} />
+        : <Switch checked={row.checked_in} disabled={row.checked_in || !row.ticket_number}
+            onChange={() => handleToggleCheckIn(row)} color="success" size="small" />,
+    },
+  ], [togglingId]) // eslint-disable-line
+
+  const openEdit = (member: Member) => {
+    setEditMember(member)
+    setEditForm({ first_name: member.first_name, last_name: member.last_name, gender: member.gender, dob: member.dob ?? '' })
+    setEditOpen(true)
+  }
+
+  const handleEditSave = async () => {
+    if (!editMember) return
+    setEditSaving(true)
+    try {
+      await updateMember(editMember.id, editForm)
+      setMembers(prev => prev.map(m => m.id === editMember.id ? { ...m, ...editForm } : m))
+      setEditOpen(false)
+      showToast('Member updated successfully.', 'success')
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Update failed', 'error')
+    } finally {
+      setEditSaving(false)
+    }
+  }
 
   const downloadCountryExcel = () => {
     if (!countryDialog || !paidMembers.length) return
@@ -707,7 +784,7 @@ export default function AdminScan() {
                 fullWidth size="small" placeholder="Search name, ticket, country…"
                 value={tableSearch}
                 onChange={e => setTableSearch(e.target.value)}
-                sx={{ mb: 2 }}
+                sx={{ mb: 1.5 }}
                 slotProps={{
                   input: {
                     startAdornment: (
@@ -719,83 +796,82 @@ export default function AdminScan() {
                 }}
               />
 
-              <TableContainer
-                component={Paper}
-                variant="outlined"
-                sx={{ borderRadius: 2, maxHeight: { xs: 380, sm: 460, md: 560 }, overflow: 'auto' }}
-              >
-                <Table size="small" stickyHeader>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 700, whiteSpace: 'nowrap' }}>First Name</TableCell>
-                      <TableCell sx={{ fontWeight: 700, whiteSpace: 'nowrap' }}>Last Name</TableCell>
-                      <TableCell sx={{ fontWeight: 700, display: { xs: 'none', sm: 'table-cell' } }}>Country</TableCell>
-                      <TableCell sx={{ fontWeight: 700, display: { xs: 'none', md: 'table-cell' } }}>Ticket</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }} align="center">Status</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }} align="center">Check In</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {tableLoading && members.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
-                          <CircularProgress size={28} />
-                        </TableCell>
-                      </TableRow>
-                    ) : filteredMembers.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} align="center" sx={{ py: 4, color: 'text.secondary' }}>
-                          {tableSearch ? 'No results found' : 'No members yet'}
-                        </TableCell>
-                      </TableRow>
-                    ) : filteredMembers.map(m => (
-                      <TableRow
-                        key={m.id}
-                        sx={{
-                          bgcolor: m.checked_in ? 'rgba(46,125,50,0.07)' : 'inherit',
-                          '&:hover': { bgcolor: m.checked_in ? 'rgba(46,125,50,0.12)' : 'action.hover' },
-                        }}
-                      >
-                        <TableCell sx={{ whiteSpace: 'nowrap' }}>{m.first_name}</TableCell>
-                        <TableCell sx={{ whiteSpace: 'nowrap' }}>{m.last_name}</TableCell>
-                        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' }, whiteSpace: 'nowrap' }}>
-                          {m.country && m.country !== '—' ? (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                              <span>{countryMeta(m.country).flag}</span>
-                              <span>{countryMeta(m.country).label}</span>
-                            </Box>
-                          ) : '—'}
-                        </TableCell>
-                        <TableCell sx={{ fontFamily: 'monospace', fontSize: '0.72rem', display: { xs: 'none', md: 'table-cell' } }}>
-                          {m.ticket_number ?? '—'}
-                        </TableCell>
-                        <TableCell align="center" sx={{ whiteSpace: 'nowrap' }}>
-                          {m.checked_in
-                            ? <Chip label={isMobile ? '✓' : 'Checked In'} size="small" color="success" />
-                            : <Chip label={isMobile ? '–' : 'Pending'}    size="small" variant="outlined" />}
-                        </TableCell>
-                        <TableCell align="center">
-                          {togglingId === m.id
-                            ? <CircularProgress size={20} />
-                            : (
-                              <Switch
-                                checked={m.checked_in}
-                                disabled={m.checked_in || !m.ticket_number}
-                                onChange={() => handleToggleCheckIn(m)}
-                                color="success"
-                                size="small"
-                              />
-                            )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              {/* Status filter + row count */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5, flexWrap: 'wrap' }}>
+                {(['all', 'checked_in', 'pending'] as const).map(f => (
+                  <Chip
+                    key={f}
+                    label={f === 'all' ? `All (${members.length})` : f === 'checked_in' ? `Checked In (${checkedInCount})` : `Pending (${members.length - checkedInCount})`}
+                    size="small"
+                    onClick={() => setStatusFilter(f)}
+                    color={statusFilter === f ? 'primary' : 'default'}
+                    variant={statusFilter === f ? 'filled' : 'outlined'}
+                    sx={{ fontWeight: 600, cursor: 'pointer' }}
+                  />
+                ))}
+                <Typography variant="caption" color="text.secondary" sx={{ ml: 'auto' }}>
+                  {filteredMembers.length} result{filteredMembers.length !== 1 ? 's' : ''}
+                </Typography>
+              </Box>
+
+              <DataGrid
+                rows={filteredMembers}
+                columns={columns}
+                loading={tableLoading}
+                pageSizeOptions={[10, 25, 50, 100]}
+                initialState={{ pagination: { paginationModel: { pageSize: 25 } }, sorting: { sortModel: [{ field: 'created_at', sort: 'desc' }] } }}
+                getRowId={row => row.id}
+                getRowClassName={({ row }) => row.checked_in ? 'row-checked-in' : ''}
+                disableRowSelectionOnClick
+                disableColumnSelector
+                density="compact"
+                slots={{ columnMenu: SlimColumnMenu }}
+                sx={{
+                  height: { xs: 420, sm: 500, md: 580 },
+                  borderRadius: 2,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  '& .MuiDataGrid-columnHeader': { fontWeight: 700, bgcolor: 'rgba(107,74,150,0.05)' },
+                  '& .row-checked-in': { bgcolor: 'rgba(46,125,50,0.07)', '&:hover': { bgcolor: 'rgba(46,125,50,0.12)' } },
+                  '& .MuiDataGrid-cell:focus': { outline: 'none' },
+                }}
+              />
             </CardContent>
           </Card>
         </Box>
       </Box>}
+
+      {/* Edit member dialog */}
+      <Dialog open={editOpen} onClose={() => !editSaving && setEditOpen(false)} maxWidth="xs" fullWidth
+        slotProps={{ paper: { sx: { borderRadius: 3 } } }}>
+        <DialogTitle sx={{ fontWeight: 700, pb: 1 }}>Edit Member</DialogTitle>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '12px !important' }}>
+          <TextField label="First Name" size="small" fullWidth value={editForm.first_name}
+            onChange={e => setEditForm(f => ({ ...f, first_name: e.target.value }))} />
+          <TextField label="Last Name" size="small" fullWidth value={editForm.last_name}
+            onChange={e => setEditForm(f => ({ ...f, last_name: e.target.value }))} />
+          <FormControl size="small" fullWidth>
+            <InputLabel>Gender</InputLabel>
+            <Select label="Gender" value={editForm.gender}
+              onChange={e => setEditForm(f => ({ ...f, gender: e.target.value }))}>
+              <MenuItem value="male">Male</MenuItem>
+              <MenuItem value="female">Female</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField label="Date of Birth" size="small" fullWidth type="date" value={editForm.dob}
+            onChange={e => setEditForm(f => ({ ...f, dob: e.target.value }))}
+            slotProps={{ inputLabel: { shrink: true } }} />
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
+          <Button variant="outlined" onClick={() => setEditOpen(false)} disabled={editSaving} sx={{ borderRadius: 2 }}>
+            Cancel
+          </Button>
+          <Button variant="contained" startIcon={editSaving ? <CircularProgress size={16} color="inherit" /> : <SaveIcon />}
+            onClick={handleEditSave} disabled={editSaving} sx={{ borderRadius: 2, fontWeight: 700 }}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Country paid members dialog */}
       <Dialog
