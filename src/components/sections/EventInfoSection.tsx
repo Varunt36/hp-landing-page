@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { Box, Container, Typography, Divider, Grid } from '@mui/material'
 import { Link } from 'react-router-dom';
+import HotelBookingModal from '../form/HotelBookingModal'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import HotelIcon from '@mui/icons-material/Hotel'
 import RestaurantIcon from '@mui/icons-material/Restaurant'
@@ -39,7 +41,7 @@ const items: {
       },
       'Booking link sent after registration.',
     ],
-    link: { text: 'How to Book Hotel', href: '/venue?booking=open' },
+    link: { text: 'How to Book Hotel', action: 'booking' },
   },
   {
     icon: <RestaurantIcon sx={{ fontSize: 22, color: C.purple800 }} />,
@@ -188,7 +190,9 @@ function ItemLink({
 }
 
 export default function EventInfoSection() {
+  const [bookingOpen, setBookingOpen] = useState(false)
   return (
+    <>
     <Box
       component="section"
       sx={{
@@ -368,5 +372,7 @@ export default function EventInfoSection() {
         </Box>
       </Container>
     </Box>
+    <HotelBookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
+    </>
   );
 }
