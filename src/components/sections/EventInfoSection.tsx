@@ -19,7 +19,7 @@ const items: {
   icon: React.ReactNode;
   title: string;
   lines: Line[];
-  link?: { text: string; href: string; external?: boolean };
+  link?: { text: string; href: string; external?: boolean } | { text: string; action: string };
 }[] = [
   {
     icon: <AccessTimeIcon sx={{ fontSize: 22, color: C.purple800 }} />,
@@ -131,17 +131,22 @@ function ItemLink({
   href,
   text,
   external,
+  onClick,
 }: {
-  href: string;
+  href?: string;
   text: string;
   external?: boolean;
+  onClick?: () => void;
 }) {
+  const isButton = !!onClick
   return (
     <Box
-      component={external ? 'a' : Link}
-      {...(external
-        ? { href, target: '_blank', rel: 'noopener noreferrer' }
-        : { to: href })}
+      component={isButton ? 'button' : external ? 'a' : Link}
+      {...(isButton
+        ? { type: 'button', onClick }
+        : external
+          ? { href, target: '_blank', rel: 'noopener noreferrer' }
+          : { to: href })}
       sx={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -169,7 +174,7 @@ function ItemLink({
       }}
     >
       {text}
-      {href.startsWith('mailto:') ? (
+      {href?.startsWith('mailto:') ? (
         <SendIcon sx={{ fontSize: 13 }} />
       ) : (
         <svg
@@ -289,11 +294,9 @@ export default function EventInfoSection() {
                 </Box>
                 {item.lines.map((line, i) => renderLine(line, i, '0.875rem'))}
                 {item.link && (
-                  <ItemLink
-                    href={item.link.href}
-                    text={item.link.text}
-                    external={item.link.external}
-                  />
+                  'action' in item.link
+                    ? <ItemLink text={item.link.text} onClick={() => setBookingOpen(true)} />
+                    : <ItemLink href={item.link.href} text={item.link.text} external={item.link.external} />
                 )}
               </Box>
             </Box>
@@ -334,11 +337,9 @@ export default function EventInfoSection() {
                 </Box>
                 {item.lines.map((line, i) => renderLine(line, i, '0.82rem'))}
                 {item.link && (
-                  <ItemLink
-                    href={item.link.href}
-                    text={item.link.text}
-                    external={item.link.external}
-                  />
+                  'action' in item.link
+                    ? <ItemLink text={item.link.text} onClick={() => setBookingOpen(true)} />
+                    : <ItemLink href={item.link.href} text={item.link.text} external={item.link.external} />
                 )}
               </Box>
             </Grid>
