@@ -10,13 +10,14 @@ export type Member = {
   group_reference: string
   gender: string
   dob: string
+  created_at: string | null
 }
 
 export async function fetchAllMembers(): Promise<Member[]> {
   const { data: members, error } = await supabase
     .from('members')
-    .select('id, first_name, last_name, ticket_number, checked_in, registration_id, gender, dob')
-    .order('first_name', { ascending: true })
+    .select('id, first_name, last_name, ticket_number, checked_in, registration_id, gender, dob, created_at')
+    .order('created_at', { ascending: false })
 
   if (error) throw new Error(error.message)
   if (!members?.length) return []
@@ -40,8 +41,9 @@ export async function fetchAllMembers(): Promise<Member[]> {
       checked_in:      row.checked_in,
       country:         reg?.country   ?? '—',
       group_reference: reg?.reference ?? '—',
-      gender:          row.gender  as string,
-      dob:             row.dob     as string,
+      gender:          row.gender      as string,
+      dob:             row.dob         as string,
+      created_at:      row.created_at  as string ?? null,
     }
   })
 }
@@ -119,6 +121,16 @@ export async function fetchRegistrationStats(): Promise<CountryRegistrationStat[
   }))
 }
 
+export async function updateMember(id: string, updates: {
+  first_name?: string
+  last_name?: string
+  gender?: string
+  dob?: string
+}): Promise<void> {
+  const { error } = await supabase.from('members').update(updates).eq('id', id)
+  if (error) throw new Error(error.message)
+}
+
 export async function checkInByTicket(ticketNumber: string): Promise<Member> {
   const ticket = ticketNumber.trim().toUpperCase()
 
@@ -153,7 +165,8 @@ export async function checkInByTicket(ticketNumber: string): Promise<Member> {
     checked_in:      true,
     country:         reg?.country   ?? '—',
     group_reference: reg?.reference ?? '—',
-    gender:          found.gender  as string,
-    dob:             found.dob     as string,
+    gender:          found.gender      as string,
+    dob:             found.dob         as string,
+    created_at:      null,
   }
 }

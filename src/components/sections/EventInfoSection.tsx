@@ -4,15 +4,20 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import HotelIcon from '@mui/icons-material/Hotel'
 import RestaurantIcon from '@mui/icons-material/Restaurant'
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism'
+import FlightIcon from '@mui/icons-material/Flight';
+import SendIcon from '@mui/icons-material/Send';
 import { C } from '../../theme/theme'
 
-type Line = string | { text: string; bold: boolean }
+type LinePart =
+  | { text: string; bold?: boolean }
+  | { text: string; href: string };
+type Line = string | { text: string; bold: boolean } | { parts: LinePart[] };
 
 const items: {
   icon: React.ReactNode;
   title: string;
   lines: Line[];
-  link?: { text: string; href: string };
+  link?: { text: string; href: string; external?: boolean };
 }[] = [
   {
     icon: <AccessTimeIcon sx={{ fontSize: 22, color: C.purple800 }} />,
@@ -25,7 +30,13 @@ const items: {
     title: 'Accommodation and Transportation',
     lines: [
       { text: 'Please arrange your own stay and accomodation.', bold: true },
-      'Discounted hotel rooms are available at the event location.',
+      {
+        parts: [
+          { text: 'Discounted hotel rooms available at ' },
+          { text: 'Hotel Berlin', bold: true },
+          { text: ' - breakfast included.' },
+        ],
+      },
       'Booking link sent after registration.',
     ],
     link: { text: 'How to Book Hotel', href: '/venue?booking=open' },
@@ -46,9 +57,57 @@ const items: {
       'Children under 5 attend free. Registration is still required for all members.',
     ],
   },
+  {
+    icon: <FlightIcon sx={{ fontSize: 22, color: C.purple800 }} />,
+    title: 'Visa Invitation Letter',
+    lines: [
+      {
+        parts: [
+          { text: 'Email your passport copy to ' },
+          { text: 'info@yds-germany.de', href: 'mailto:info@yds-germany.de' },
+        ],
+      },
+    ],
+  },
 ];
 
 function renderLine(line: Line, i: number, fontSize: string) {
+  if (typeof line === 'object' && 'parts' in line) {
+    return (
+      <Typography
+        key={i}
+        sx={{ fontSize, color: 'text.secondary', lineHeight: 1.65 }}
+      >
+        {line.parts.map((p, j) =>
+          'href' in p ? (
+            <Box
+              key={j}
+              component="a"
+              href={p.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                fontWeight: 600,
+                color: C.purple700,
+                textDecoration: 'underline',
+                '&:hover': { color: C.purple800 },
+              }}
+            >
+              {p.text}
+            </Box>
+          ) : (
+            <Box
+              key={j}
+              component="span"
+              sx={{ fontWeight: p.bold ? 700 : 400 }}
+            >
+              {p.text}
+            </Box>
+          ),
+        )}
+      </Typography>
+    );
+  }
   const text   = typeof line === 'string' ? line : line.text
   const isBold = typeof line === 'object' && line.bold
   return (
@@ -66,11 +125,21 @@ function renderLine(line: Line, i: number, fontSize: string) {
   )
 }
 
-function ItemLink({ href, text }: { href: string; text: string }) {
+function ItemLink({
+  href,
+  text,
+  external,
+}: {
+  href: string;
+  text: string;
+  external?: boolean;
+}) {
   return (
     <Box
-      component={Link}
-      to={href}
+      component={external ? 'a' : Link}
+      {...(external
+        ? { href, target: '_blank', rel: 'noopener noreferrer' }
+        : { to: href })}
       sx={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -98,18 +167,22 @@ function ItemLink({ href, text }: { href: string; text: string }) {
       }}
     >
       {text}
-      <svg
-        width="11"
-        height="11"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M5 12h14M13 5l7 7-7 7" />
-      </svg>
+      {href.startsWith('mailto:') ? (
+        <SendIcon sx={{ fontSize: 13 }} />
+      ) : (
+        <svg
+          width="11"
+          height="11"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M5 12h14M13 5l7 7-7 7" />
+        </svg>
+      )}
     </Box>
   );
 }
@@ -171,12 +244,12 @@ export default function EventInfoSection() {
         {/* Desktop: one row with vertical dividers */}
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0 }}>
           {items.map((item, idx) => (
-            <Box key={item.title} sx={{ display: 'flex', flex: 1 }}>
+            <Box key={item.title} sx={{ display: 'flex', flex: 1, minWidth: 0 }}>
               {idx > 0 && (
                 <Divider
                   orientation="vertical"
                   flexItem
-                  sx={{ borderColor: C.lavender200, mx: 3 }}
+                  sx={{ borderColor: C.lavender200, mx: { md: 1.5, lg: 2.5 } }}
                 />
               )}
               <Box
@@ -200,10 +273,11 @@ export default function EventInfoSection() {
                     sx={{
                       fontFamily: '"Blue Mirage", serif',
                       fontWeight: 700,
-                      fontSize: '0.78rem',
-                      letterSpacing: '0.1em',
+                      fontSize: { md: '0.68rem', lg: '0.78rem' },
+                      letterSpacing: { md: '0.06em', lg: '0.1em' },
                       textTransform: 'uppercase',
                       color: C.purple800,
+                      lineHeight: 1.3,
                     }}
                   >
                     {item.title}
@@ -211,7 +285,11 @@ export default function EventInfoSection() {
                 </Box>
                 {item.lines.map((line, i) => renderLine(line, i, '0.875rem'))}
                 {item.link && (
-                  <ItemLink href={item.link.href} text={item.link.text} />
+                  <ItemLink
+                    href={item.link.href}
+                    text={item.link.text}
+                    external={item.link.external}
+                  />
                 )}
               </Box>
             </Box>
@@ -224,8 +302,8 @@ export default function EventInfoSection() {
           spacing={3}
           sx={{ display: { xs: 'flex', md: 'none' } }}
         >
-          {items.map((item) => (
-            <Grid key={item.title} size={{ xs: 6 }}>
+          {items.map((item, idx) => (
+            <Grid key={item.title} size={{ xs: idx === items.length - 1 && items.length % 2 !== 0 ? 12 : 6 }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
                 <Box
                   sx={{
@@ -252,7 +330,11 @@ export default function EventInfoSection() {
                 </Box>
                 {item.lines.map((line, i) => renderLine(line, i, '0.82rem'))}
                 {item.link && (
-                  <ItemLink href={item.link.href} text={item.link.text} />
+                  <ItemLink
+                    href={item.link.href}
+                    text={item.link.text}
+                    external={item.link.external}
+                  />
                 )}
               </Box>
             </Grid>

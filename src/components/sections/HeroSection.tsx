@@ -96,7 +96,7 @@ export default function HeroSection() {
             width: { sm: '60%', md: '45%', lg: '36%' },
             maxWidth: 520,
             objectFit: 'contain',
-            mb: { md: 3 },
+            mb: { md: 1.5 },
           }}
         />
         <Box sx={s.grid}>
