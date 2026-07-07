@@ -62,9 +62,9 @@ import { supabase } from "../../lib/supabase";
 import {
   fetchAllMembers,
   checkInByTicket,
-  fetchPaidMembersByCountry,
+  fetchMembersByCountry,
   type Member,
-  type PaidMember,
+  type CountryMember,
 } from "../../api/admin";
 import { fetchAllQuotas, type CountryQuotaRow } from "../../api/quotas";
 import { COUNTRIES } from "../../data/data";
@@ -86,6 +86,23 @@ function ageAtEvent(dob: string): number {
   const dm = EVENT_AGE_DATE.getMonth() - b.getMonth();
   if (dm < 0 || (dm === 0 && EVENT_AGE_DATE.getDate() < b.getDate())) age--;
   return age;
+}
+
+// Event runs Aug 15–17 — used to flag members whose birthday falls during the event
+const EVENT_BIRTHDAY_MONTH = 7; // August (0-indexed)
+const EVENT_BIRTHDAY_DAYS = [15, 16, 17];
+function formatBirthday(dob: string): string {
+  return new Date(dob).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+  });
+}
+function formatDob(dob: string): string {
+  return new Date(dob).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 interface StatCardProps {
@@ -171,6 +188,7 @@ function StatCard({
 }
 
 type CheckStatus = "idle" | "loading" | "success" | "duplicate" | "error";
+type AgeGroupKey = "a0_5" | "a5_12" | "a12_18" | "a18plus";
 
 export default function AdminScan() {
   const { logout } = useAuth();
@@ -199,14 +217,28 @@ export default function AdminScan() {
   const [quotas, setQuotas] = useState<CountryQuotaRow[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  // Country paid-members dialog
+  // Country members dialog
   const [countryDialog, setCountryDialog] = useState<{
     code: string;
     label: string;
     flag: string;
   } | null>(null);
-  const [paidMembers, setPaidMembers] = useState<PaidMember[]>([]);
-  const [paidLoading, setPaidLoading] = useState(false);
+  const [countryMembers, setCountryMembers] = useState<CountryMember[]>([]);
+  const [countryMembersLoading, setCountryMembersLoading] = useState(false);
+
+  // Age group members dialog
+  const [ageDialog, setAgeDialog] = useState<{
+    key: AgeGroupKey;
+    label: string;
+    color: string;
+  } | null>(null);
+
+  // Under-age threshold list
+  const [underAgeThreshold, setUnderAgeThreshold] = useState(14);
+  const [underAgeDialogOpen, setUnderAgeDialogOpen] = useState(false);
+
+  // Event birthday list (Aug 15–17)
+  const [birthdayDialogOpen, setBirthdayDialogOpen] = useState(false);
 
   const openCountryDialog = async (
     code: string,
@@ -214,12 +246,12 @@ export default function AdminScan() {
     flag: string,
   ) => {
     setCountryDialog({ code, label, flag });
-    setPaidLoading(true);
+    setCountryMembersLoading(true);
     try {
-      const data = await fetchPaidMembersByCountry(code);
-      setPaidMembers(data);
+      const data = await fetchMembersByCountry(code);
+      setCountryMembers(data);
     } finally {
-      setPaidLoading(false);
+      setCountryMembersLoading(false);
     }
   };
 
@@ -424,6 +456,47 @@ export default function AdminScan() {
     [members],
   );
 
+  const ageBuckets = useMemo(() => {
+    const groups: Record<AgeGroupKey, Member[]> = {
+      a0_5: [],
+      a5_12: [],
+      a12_18: [],
+      a18plus: [],
+    };
+    for (const m of members) {
+      if (!m.dob) continue;
+      const age = ageAtEvent(m.dob);
+      if (age <= 5) groups.a0_5.push(m);
+      else if (age <= 12) groups.a5_12.push(m);
+      else if (age <= 18) groups.a12_18.push(m);
+      else groups.a18plus.push(m);
+    }
+    return groups;
+  }, [members]);
+
+  const underAgeMembers = useMemo(
+    () =>
+      members
+        .filter((m) => m.dob && ageAtEvent(m.dob) < underAgeThreshold)
+        .sort((a, b) => ageAtEvent(a.dob) - ageAtEvent(b.dob)),
+    [members, underAgeThreshold],
+  );
+
+  const birthdayMembers = useMemo(
+    () =>
+      members
+        .filter((m) => {
+          if (!m.dob) return false;
+          const d = new Date(m.dob);
+          return (
+            d.getMonth() === EVENT_BIRTHDAY_MONTH &&
+            EVENT_BIRTHDAY_DAYS.includes(d.getDate())
+          );
+        })
+        .sort((a, b) => new Date(a.dob).getDate() - new Date(b.dob).getDate()),
+    [members],
+  );
+
   const columns = useMemo<GridColDef<Member>[]>(
     () => [
       { field: "first_name", headerName: "First Name", flex: 1, minWidth: 100 },
@@ -509,12 +582,13 @@ export default function AdminScan() {
   ); // eslint-disable-line
 
   const downloadCountryExcel = () => {
-    if (!countryDialog || !paidMembers.length) return;
-    const rows = paidMembers.map((m, i) => ({
+    if (!countryDialog || !countryMembers.length) return;
+    const rows = countryMembers.map((m, i) => ({
       "#": i + 1,
       "First Name": m.first_name,
       "Last Name": m.last_name,
       Gender: m.gender.charAt(0).toUpperCase() + m.gender.slice(1),
+      Payment: m.paid ? "Paid" : "Pending",
       "Checked In": m.checked_in ? "Yes" : "No",
     }));
     const ws = XLSX.utils.json_to_sheet(rows);
@@ -523,11 +597,89 @@ export default function AdminScan() {
       { wch: 16 },
       { wch: 16 },
       { wch: 10 },
+      { wch: 10 },
       { wch: 12 },
     ];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, countryDialog.label);
-    XLSX.writeFile(wb, `${countryDialog.label}_paid_members.xlsx`);
+    XLSX.writeFile(wb, `${countryDialog.label}_members.xlsx`);
+  };
+
+  const downloadAgeExcel = () => {
+    if (!ageDialog) return;
+    const list = ageBuckets[ageDialog.key];
+    if (!list.length) return;
+    const rows = list.map((m, i) => ({
+      "#": i + 1,
+      "First Name": m.first_name,
+      "Last Name": m.last_name,
+      Country: countryMeta(m.country).label,
+      Gender: m.gender.charAt(0).toUpperCase() + m.gender.slice(1),
+      Age: ageAtEvent(m.dob),
+      "Checked In": m.checked_in ? "Yes" : "No",
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [
+      { wch: 4 },
+      { wch: 16 },
+      { wch: 16 },
+      { wch: 16 },
+      { wch: 10 },
+      { wch: 6 },
+      { wch: 12 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, ageDialog.label);
+    XLSX.writeFile(
+      wb,
+      `Age_${ageDialog.label.replace(/[^\w]+/g, "_")}_members.xlsx`,
+    );
+  };
+
+  const downloadUnderAgeExcel = () => {
+    if (!underAgeMembers.length) return;
+    const rows = underAgeMembers.map((m, i) => ({
+      "#": i + 1,
+      "First Name": m.first_name,
+      "Last Name": m.last_name,
+      Age: ageAtEvent(m.dob),
+      Birthdate: formatDob(m.dob),
+      Country: countryMeta(m.country).label,
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [
+      { wch: 4 },
+      { wch: 16 },
+      { wch: 16 },
+      { wch: 6 },
+      { wch: 12 },
+      { wch: 16 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, `Under ${underAgeThreshold}`);
+    XLSX.writeFile(wb, `Under_${underAgeThreshold}_members.xlsx`);
+  };
+
+  const downloadBirthdayExcel = () => {
+    if (!birthdayMembers.length) return;
+    const rows = birthdayMembers.map((m, i) => ({
+      "#": i + 1,
+      "First Name": m.first_name,
+      "Last Name": m.last_name,
+      Country: countryMeta(m.country).label,
+      Birthday: formatBirthday(m.dob),
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [
+      { wch: 4 },
+      { wch: 16 },
+      { wch: 16 },
+      { wch: 16 },
+      { wch: 10 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Event Birthdays");
+    XLSX.writeFile(wb, "Event_Birthdays_Aug15-17.xlsx");
   };
 
   return (
@@ -632,17 +784,9 @@ export default function AdminScan() {
           for (const m of members) {
             if (m.checked_in) chk[m.country] = (chk[m.country] ?? 0) + 1;
           }
-          // age groups (as of event date) + gender — from members table
-          const ageGroups = { a0_5: 0, a5_12: 0, a12_18: 0, a18plus: 0 };
+          // gender — from members table (age groups come from ageBuckets)
           const genderCount = { male: 0, female: 0 };
           for (const m of members) {
-            if (m.dob) {
-              const age = ageAtEvent(m.dob);
-              if (age <= 5) ageGroups.a0_5++;
-              else if (age <= 12) ageGroups.a5_12++;
-              else if (age <= 18) ageGroups.a12_18++;
-              else ageGroups.a18plus++;
-            }
             if (m.gender === "male") genderCount.male++;
             if (m.gender === "female") genderCount.female++;
           }
@@ -772,29 +916,36 @@ export default function AdminScan() {
                       {(
                         [
                           {
+                            key: "a0_5" as const,
                             label: "0–5",
-                            value: ageGroups.a0_5,
+                            value: ageBuckets.a0_5.length,
                             color: "#7c669b",
                           },
                           {
+                            key: "a5_12" as const,
                             label: "5–12",
-                            value: ageGroups.a5_12,
+                            value: ageBuckets.a5_12.length,
                             color: "#0277bd",
                           },
                           {
+                            key: "a12_18" as const,
                             label: "12–18",
-                            value: ageGroups.a12_18,
+                            value: ageBuckets.a12_18.length,
                             color: "#f57c00",
                           },
                           {
+                            key: "a18plus" as const,
                             label: "18+",
-                            value: ageGroups.a18plus,
+                            value: ageBuckets.a18plus.length,
                             color: "#2e7d32",
                           },
                         ] as const
-                      ).map(({ label, value, color }) => (
+                      ).map(({ key, label, value, color }) => (
                         <Box
                           key={label}
+                          onClick={() =>
+                            setAgeDialog({ key, label: `${label} yrs`, color })
+                          }
                           sx={{
                             flex: 1,
                             textAlign: "center",
@@ -804,6 +955,13 @@ export default function AdminScan() {
                             borderColor: `${color}25`,
                             py: 1.25,
                             px: 0.5,
+                            cursor: "pointer",
+                            transition:
+                              "background-color .15s, border-color .15s",
+                            "&:hover": {
+                              bgcolor: `${color}1a`,
+                              borderColor: `${color}50`,
+                            },
                           }}
                         >
                           <Typography
@@ -821,6 +979,17 @@ export default function AdminScan() {
                             fontSize={11}
                           >
                             {label} yrs
+                          </Typography>
+                          <Typography
+                            sx={{
+                              fontSize: 9,
+                              fontWeight: 700,
+                              color,
+                              mt: 0.25,
+                              display: "block",
+                            }}
+                          >
+                            View →
                           </Typography>
                         </Box>
                       ))}
@@ -910,6 +1079,230 @@ export default function AdminScan() {
                           </Typography>
                         </Box>
                       ))}
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Box>
+
+              {/* Under-age filter + Event birthdays */}
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 2,
+                  mb: 2,
+                  flexShrink: 0,
+                  flexWrap: "wrap",
+                }}
+              >
+                {/* Under-age filter card */}
+                <Card
+                  elevation={0}
+                  sx={{
+                    flex: "1 1 260px",
+                    minWidth: 0,
+                    borderRadius: "16px",
+                    position: "relative",
+                    overflow: "hidden",
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "3px",
+                      background: "#c2185b",
+                    },
+                  }}
+                >
+                  <CardContent sx={{ pt: 2, pb: "12px !important" }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      fontWeight={600}
+                      fontSize={12}
+                      sx={{
+                        mb: 1.25,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.08em",
+                      }}
+                    >
+                      Members Under Age
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        mb: 1.25,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <TextField
+                        type="number"
+                        size="small"
+                        value={underAgeThreshold}
+                        onChange={(e) =>
+                          setUnderAgeThreshold(
+                            Math.max(0, Number(e.target.value) || 0),
+                          )
+                        }
+                        slotProps={{ htmlInput: { min: 0, max: 100 } }}
+                        sx={{ width: 84 }}
+                      />
+                      <Box sx={{ display: "flex", gap: 0.5 }}>
+                        {[12, 14, 16, 18].map((preset) => (
+                          <Chip
+                            key={preset}
+                            label={preset}
+                            size="small"
+                            onClick={() => setUnderAgeThreshold(preset)}
+                            color={
+                              underAgeThreshold === preset
+                                ? "primary"
+                                : "default"
+                            }
+                            variant={
+                              underAgeThreshold === preset
+                                ? "filled"
+                                : "outlined"
+                            }
+                            sx={{ fontWeight: 600, cursor: "pointer" }}
+                          />
+                        ))}
+                      </Box>
+                    </Box>
+                    <Box
+                      onClick={() => setUnderAgeDialogOpen(true)}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        borderRadius: 2,
+                        bgcolor: "#c2185b0d",
+                        border: "1px solid",
+                        borderColor: "#c2185b25",
+                        px: 1.5,
+                        py: 1,
+                        cursor: "pointer",
+                        transition:
+                          "background-color .15s, border-color .15s",
+                        "&:hover": {
+                          bgcolor: "#c2185b1a",
+                          borderColor: "#c2185b50",
+                        },
+                      }}
+                    >
+                      <Box>
+                        <Typography
+                          fontWeight={800}
+                          fontSize={{ xs: 20, sm: 24 }}
+                          color="#c2185b"
+                          lineHeight={1}
+                        >
+                          {underAgeMembers.length}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          fontWeight={600}
+                          fontSize={11}
+                        >
+                          under {underAgeThreshold} yrs
+                        </Typography>
+                      </Box>
+                      <Typography
+                        sx={{ fontSize: 11, fontWeight: 700, color: "#c2185b" }}
+                      >
+                        View →
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+
+                {/* Event birthdays card */}
+                <Card
+                  elevation={0}
+                  sx={{
+                    flex: "1 1 260px",
+                    minWidth: 0,
+                    borderRadius: "16px",
+                    position: "relative",
+                    overflow: "hidden",
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "3px",
+                      background: "#f57c00",
+                    },
+                  }}
+                >
+                  <CardContent sx={{ pt: 2, pb: "12px !important" }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      fontWeight={600}
+                      fontSize={12}
+                      sx={{
+                        textTransform: "uppercase",
+                        letterSpacing: "0.08em",
+                      }}
+                    >
+                      Event Birthdays
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: "block", mb: 1.25 }}
+                    >
+                      15 – 17 August
+                    </Typography>
+                    <Box
+                      onClick={() => setBirthdayDialogOpen(true)}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        borderRadius: 2,
+                        bgcolor: "#f57c000d",
+                        border: "1px solid",
+                        borderColor: "#f57c0025",
+                        px: 1.5,
+                        py: 1,
+                        cursor: "pointer",
+                        transition:
+                          "background-color .15s, border-color .15s",
+                        "&:hover": {
+                          bgcolor: "#f57c001a",
+                          borderColor: "#f57c0050",
+                        },
+                      }}
+                    >
+                      <Box>
+                        <Typography
+                          fontWeight={800}
+                          fontSize={{ xs: 20, sm: 24 }}
+                          color="#f57c00"
+                          lineHeight={1}
+                        >
+                          {birthdayMembers.length}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          fontWeight={600}
+                          fontSize={11}
+                        >
+                          member{birthdayMembers.length !== 1 ? "s" : ""}
+                        </Typography>
+                      </Box>
+                      <Typography
+                        sx={{ fontSize: 11, fontWeight: 700, color: "#f57c00" }}
+                      >
+                        View →
+                      </Typography>
                     </Box>
                   </CardContent>
                 </Card>
@@ -1508,7 +1901,7 @@ export default function AdminScan() {
         </Box>
       )}
 
-      {/* Country paid members dialog */}
+      {/* Country members dialog */}
       <Dialog
         open={!!countryDialog}
         onClose={() => setCountryDialog(null)}
@@ -1525,28 +1918,48 @@ export default function AdminScan() {
               {countryDialog?.label}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              Paid Members
+              All Registered Members
             </Typography>
           </Box>
         </DialogTitle>
         <DialogContent sx={{ p: 0 }}>
-          {paidLoading ? (
+          {countryMembersLoading ? (
             <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
               <CircularProgress size={28} />
             </Box>
-          ) : paidMembers.length === 0 ? (
+          ) : countryMembers.length === 0 ? (
             <Box sx={{ py: 4, textAlign: "center" }}>
               <Typography color="text.secondary">
-                No paid members found for this country.
+                No members found for this country.
               </Typography>
             </Box>
           ) : (
             <>
-              <Box sx={{ px: 3, pb: 1 }}>
+              <Box
+                sx={{
+                  px: 3,
+                  pb: 1,
+                  display: "flex",
+                  gap: 1,
+                  flexWrap: "wrap",
+                }}
+              >
                 <Chip
-                  label={`${paidMembers.length} paid member${paidMembers.length !== 1 ? "s" : ""}`}
+                  label={`${countryMembers.length} registered`}
+                  size="small"
+                  sx={{ fontWeight: 700 }}
+                />
+                <Chip
+                  label={`${countryMembers.filter((m) => m.paid).length} paid`}
                   size="small"
                   color="success"
+                  sx={{ fontWeight: 700 }}
+                />
+                <Chip
+                  label={`${countryMembers.filter((m) => !m.paid).length} pending`}
+                  size="small"
+                  color="warning"
+                  variant="outlined"
                   sx={{ fontWeight: 700 }}
                 />
               </Box>
@@ -1559,12 +1972,15 @@ export default function AdminScan() {
                       <TableCell sx={{ fontWeight: 700 }}>Last Name</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Gender</TableCell>
                       <TableCell sx={{ fontWeight: 700 }} align="center">
-                        Status
+                        Payment
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">
+                        Check-in
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {paidMembers.map((m, i) => (
+                    {countryMembers.map((m, i) => (
                       <TableRow
                         key={i}
                         sx={{ "&:hover": { bgcolor: "action.hover" } }}
@@ -1578,6 +1994,18 @@ export default function AdminScan() {
                         <TableCell>{m.last_name}</TableCell>
                         <TableCell sx={{ textTransform: "capitalize" }}>
                           {m.gender}
+                        </TableCell>
+                        <TableCell align="center">
+                          {m.paid ? (
+                            <Chip label="Paid" size="small" color="success" />
+                          ) : (
+                            <Chip
+                              label="Pending"
+                              size="small"
+                              color="warning"
+                              variant="outlined"
+                            />
+                          )}
                         </TableCell>
                         <TableCell align="center">
                           {m.checked_in ? (
@@ -1613,10 +2041,411 @@ export default function AdminScan() {
           <Button
             onClick={downloadCountryExcel}
             variant="contained"
-            disabled={paidLoading || paidMembers.length === 0}
+            disabled={countryMembersLoading || countryMembers.length === 0}
             sx={{ borderRadius: 2, fontWeight: 700 }}
           >
-            Download Excel ({paidMembers.length})
+            Download Excel ({countryMembers.length})
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Age group members dialog */}
+      <Dialog
+        open={!!ageDialog}
+        onClose={() => setAgeDialog(null)}
+        maxWidth="sm"
+        fullWidth
+        slotProps={{ paper: { sx: { borderRadius: 3 } } }}
+      >
+        <DialogTitle
+          sx={{ display: "flex", alignItems: "center", gap: 1, pb: 1 }}
+        >
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              bgcolor: `${ageDialog?.color}18`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: ageDialog?.color,
+              flexShrink: 0,
+              fontWeight: 800,
+            }}
+          >
+            {ageDialog ? ageBuckets[ageDialog.key].length : 0}
+          </Box>
+          <Box>
+            <Typography fontWeight={700} fontSize="1.1rem">
+              {ageDialog?.label}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Age Group Members
+            </Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent sx={{ p: 0 }}>
+          {!ageDialog || ageBuckets[ageDialog.key].length === 0 ? (
+            <Box sx={{ py: 4, textAlign: "center" }}>
+              <Typography color="text.secondary">
+                No members found in this age group.
+              </Typography>
+            </Box>
+          ) : (
+            <>
+              <Box sx={{ px: 3, pb: 1 }}>
+                <Chip
+                  label={`${ageBuckets[ageDialog.key].length} member${ageBuckets[ageDialog.key].length !== 1 ? "s" : ""}`}
+                  size="small"
+                  color="success"
+                  sx={{ fontWeight: 700 }}
+                />
+              </Box>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: "rgba(107,74,150,0.06)" }}>
+                      <TableCell sx={{ fontWeight: 700 }}>#</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Country</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">
+                        Age
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">
+                        Status
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {ageBuckets[ageDialog.key].map((m, i) => {
+                      const meta = countryMeta(m.country);
+                      return (
+                        <TableRow
+                          key={m.id}
+                          sx={{ "&:hover": { bgcolor: "action.hover" } }}
+                        >
+                          <TableCell
+                            sx={{ color: "text.secondary", fontSize: 12 }}
+                          >
+                            {i + 1}
+                          </TableCell>
+                          <TableCell>
+                            {m.first_name} {m.last_name}
+                          </TableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.5,
+                              }}
+                            >
+                              <span>{meta.flag}</span>
+                              <span>{meta.label}</span>
+                            </Box>
+                          </TableCell>
+                          <TableCell align="center">
+                            {m.dob ? ageAtEvent(m.dob) : "—"}
+                          </TableCell>
+                          <TableCell align="center">
+                            {m.checked_in ? (
+                              <Chip
+                                label="Checked In"
+                                size="small"
+                                color="success"
+                              />
+                            ) : (
+                              <Chip
+                                label="Pending"
+                                size="small"
+                                variant="outlined"
+                              />
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
+          <Button
+            onClick={() => setAgeDialog(null)}
+            variant="outlined"
+            sx={{ borderRadius: 2 }}
+          >
+            Close
+          </Button>
+          <Button
+            onClick={downloadAgeExcel}
+            variant="contained"
+            disabled={!ageDialog || ageBuckets[ageDialog.key].length === 0}
+            sx={{ borderRadius: 2, fontWeight: 700 }}
+          >
+            Download Excel (
+            {ageDialog ? ageBuckets[ageDialog.key].length : 0})
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Under-age members dialog */}
+      <Dialog
+        open={underAgeDialogOpen}
+        onClose={() => setUnderAgeDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        slotProps={{ paper: { sx: { borderRadius: 3 } } }}
+      >
+        <DialogTitle
+          sx={{ display: "flex", alignItems: "center", gap: 1, pb: 1 }}
+        >
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              bgcolor: "#c2185b18",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#c2185b",
+              flexShrink: 0,
+              fontWeight: 800,
+            }}
+          >
+            {underAgeMembers.length}
+          </Box>
+          <Box>
+            <Typography fontWeight={700} fontSize="1.1rem">
+              Under {underAgeThreshold} yrs
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Members below the selected age
+            </Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent sx={{ p: 0 }}>
+          {underAgeMembers.length === 0 ? (
+            <Box sx={{ py: 4, textAlign: "center" }}>
+              <Typography color="text.secondary">
+                No members under {underAgeThreshold} yrs found.
+              </Typography>
+            </Box>
+          ) : (
+            <>
+              <Box sx={{ px: 3, pb: 1 }}>
+                <Chip
+                  label={`${underAgeMembers.length} member${underAgeMembers.length !== 1 ? "s" : ""}`}
+                  size="small"
+                  color="success"
+                  sx={{ fontWeight: 700 }}
+                />
+              </Box>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: "rgba(107,74,150,0.06)" }}>
+                      <TableCell sx={{ fontWeight: 700 }}>#</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">
+                        Age
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Birthdate</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Country</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {underAgeMembers.map((m, i) => {
+                      const meta = countryMeta(m.country);
+                      return (
+                        <TableRow
+                          key={m.id}
+                          sx={{ "&:hover": { bgcolor: "action.hover" } }}
+                        >
+                          <TableCell
+                            sx={{ color: "text.secondary", fontSize: 12 }}
+                          >
+                            {i + 1}
+                          </TableCell>
+                          <TableCell>
+                            {m.first_name} {m.last_name}
+                          </TableCell>
+                          <TableCell align="center">
+                            {ageAtEvent(m.dob)}
+                          </TableCell>
+                          <TableCell>{m.dob ? formatDob(m.dob) : "—"}</TableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.5,
+                              }}
+                            >
+                              <span>{meta.flag}</span>
+                              <span>{meta.label}</span>
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
+          <Button
+            onClick={() => setUnderAgeDialogOpen(false)}
+            variant="outlined"
+            sx={{ borderRadius: 2 }}
+          >
+            Close
+          </Button>
+          <Button
+            onClick={downloadUnderAgeExcel}
+            variant="contained"
+            disabled={underAgeMembers.length === 0}
+            sx={{ borderRadius: 2, fontWeight: 700 }}
+          >
+            Download Excel ({underAgeMembers.length})
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Event birthdays dialog */}
+      <Dialog
+        open={birthdayDialogOpen}
+        onClose={() => setBirthdayDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        slotProps={{ paper: { sx: { borderRadius: 3 } } }}
+      >
+        <DialogTitle
+          sx={{ display: "flex", alignItems: "center", gap: 1, pb: 1 }}
+        >
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              bgcolor: "#f57c0018",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#f57c00",
+              flexShrink: 0,
+              fontWeight: 800,
+            }}
+          >
+            {birthdayMembers.length}
+          </Box>
+          <Box>
+            <Typography fontWeight={700} fontSize="1.1rem">
+              Event Birthdays
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              15 – 17 August
+            </Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent sx={{ p: 0 }}>
+          {birthdayMembers.length === 0 ? (
+            <Box sx={{ py: 4, textAlign: "center" }}>
+              <Typography color="text.secondary">
+                No members have a birthday during the event.
+              </Typography>
+            </Box>
+          ) : (
+            <>
+              <Box sx={{ px: 3, pb: 1 }}>
+                <Chip
+                  label={`${birthdayMembers.length} member${birthdayMembers.length !== 1 ? "s" : ""}`}
+                  size="small"
+                  color="success"
+                  sx={{ fontWeight: 700 }}
+                />
+              </Box>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: "rgba(107,74,150,0.06)" }}>
+                      <TableCell sx={{ fontWeight: 700 }}>#</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Country</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">
+                        Birthday
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {birthdayMembers.map((m, i) => {
+                      const meta = countryMeta(m.country);
+                      return (
+                        <TableRow
+                          key={m.id}
+                          sx={{ "&:hover": { bgcolor: "action.hover" } }}
+                        >
+                          <TableCell
+                            sx={{ color: "text.secondary", fontSize: 12 }}
+                          >
+                            {i + 1}
+                          </TableCell>
+                          <TableCell>
+                            {m.first_name} {m.last_name}
+                          </TableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.5,
+                              }}
+                            >
+                              <span>{meta.flag}</span>
+                              <span>{meta.label}</span>
+                            </Box>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Chip
+                              label={formatBirthday(m.dob)}
+                              size="small"
+                              sx={{
+                                fontWeight: 700,
+                                bgcolor: "#f57c0018",
+                                color: "#f57c00",
+                              }}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
+          <Button
+            onClick={() => setBirthdayDialogOpen(false)}
+            variant="outlined"
+            sx={{ borderRadius: 2 }}
+          >
+            Close
+          </Button>
+          <Button
+            onClick={downloadBirthdayExcel}
+            variant="contained"
+            disabled={birthdayMembers.length === 0}
+            sx={{ borderRadius: 2, fontWeight: 700 }}
+          >
+            Download Excel ({birthdayMembers.length})
           </Button>
         </DialogActions>
       </Dialog>
