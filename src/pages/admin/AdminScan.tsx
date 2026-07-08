@@ -809,10 +809,8 @@ export default function AdminScan() {
           return (
             <Box
               sx={{
-                height: { sm: "calc(100vh - 108px)" },
                 display: "flex",
                 flexDirection: "column",
-                overflow: "hidden",
                 p: { xs: 1.5, sm: 2 },
                 maxWidth: 1200,
                 mx: "auto",
@@ -1329,9 +1327,7 @@ export default function AdminScan() {
                   variant="outlined"
                   sx={{
                     borderRadius: 2,
-                    flex: 1,
-                    minHeight: 0,
-                    overflow: "auto",
+                    overflowX: "auto",
                   }}
                 >
                   <Table size="small">
