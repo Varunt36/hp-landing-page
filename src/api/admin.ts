@@ -48,38 +48,41 @@ export async function fetchAllMembers(): Promise<Member[]> {
   })
 }
 
-export interface PaidMember {
+export interface CountryMember {
   first_name:    string
   last_name:     string
   gender:        string
   ticket_number: string | null
   checked_in:    boolean
+  paid:          boolean
 }
 
-export async function fetchPaidMembersByCountry(countryCode: string): Promise<PaidMember[]> {
-  // 1. Get paid registration IDs
-  const { data: paidPayments } = await supabase
-    .from('payments')
-    .select('registration_id')
-    .eq('status', 'paid')
-  if (!paidPayments?.length) return []
-
-  const paidRegIds = paidPayments.map(p => p.registration_id as string)
-
-  // 2. Filter to this country
+export async function fetchMembersByCountry(countryCode: string): Promise<CountryMember[]> {
+  // 1. Get all registrations for this country
   const { data: countryRegs } = await supabase
     .from('registrations')
     .select('id')
     .eq('country', countryCode)
-    .in('id', paidRegIds)
   if (!countryRegs?.length) return []
 
   const regIds = countryRegs.map(r => r.id as string)
 
+  // 2. Get payment status for those registrations
+  const { data: payments } = await supabase
+    .from('payments')
+    .select('registration_id, status')
+    .in('registration_id', regIds)
+
+  const paidRegIds = new Set(
+    (payments ?? [])
+      .filter(p => p.status === 'paid')
+      .map(p => p.registration_id as string),
+  )
+
   // 3. Fetch members for those registrations
   const { data: members } = await supabase
     .from('members')
-    .select('first_name, last_name, gender, ticket_number, checked_in')
+    .select('first_name, last_name, gender, ticket_number, checked_in, registration_id')
     .in('registration_id', regIds)
     .order('last_name', { ascending: true })
   if (!members) return []
@@ -90,6 +93,7 @@ export async function fetchPaidMembersByCountry(countryCode: string): Promise<Pa
     gender:        m.gender        as string,
     ticket_number: m.ticket_number as string | null,
     checked_in:    m.checked_in    as boolean,
+    paid:          paidRegIds.has(m.registration_id as string),
   }))
 }
 

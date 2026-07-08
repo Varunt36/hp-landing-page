@@ -210,7 +210,7 @@ const REACH: {
     title: 'From Berlin Hauptbahnhof',
     detail: (
       <Typography sx={{ ...bodyTextSx, color: C.purple600 }}>
-        Take S-Bahn S5, S7 or S75 two stops to Zoologischer Garten, then ride bus 100 or 200 to Lützowplatz — the stop is directly in front of the hotel.
+        Take S-Bahn S3, S5 or S7 two stops to Zoologischer Garten, then ride bus 100 or 200 to Lützowplatz — the stop is directly in front of the hotel.
       </Typography>
     ),
     time: '~ 25 min',
@@ -543,6 +543,410 @@ export default function VenueSection() {
                 )}
               </Box>
             ))}
+          </Box>
+
+          {/* Ticket guidelines + useful tools */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+              gap: { xs: 2.5, md: 2.75 },
+              mt: { xs: 2.5, md: 2.75 },
+            }}
+          >
+            <Box component="article" sx={reachCard}>
+              <Box
+                sx={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: '50%',
+                  background: C.lavender50,
+                  border: `1px solid ${C.gold500}80`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: C.purple700,
+                  mb: 1.75,
+                }}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-2z" />
+                  <path d="M13 6v1.5M13 10.75v2.5M13 17v1" />
+                </svg>
+              </Box>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontSize: { xs: '1.3rem', md: '1.375rem' },
+                  color: C.purple800,
+                  fontFamily: '"Blue Mirage", serif',
+                }}
+              >
+                Ticket Guidelines
+              </Typography>
+              <Box sx={{ borderTop: `1px dashed ${C.lavender200}`, mt: 1.25, mb: 1.5 }} />
+              <Box
+                component="ul"
+                sx={{
+                  listStyle: 'none',
+                  p: 0,
+                  m: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1.1,
+                }}
+              >
+                <Box
+                  component="li"
+                  sx={{
+                    display: 'flex',
+                    gap: 0.75,
+                    fontSize: { xs: 14, md: 14.5 },
+                    lineHeight: 1.6,
+                    color: C.ink,
+                    alignItems: 'baseline',
+                  }}
+                >
+                  <Box component="span" sx={{ color: C.gold600 }}>
+                    •
+                  </Box>
+                  <Box>
+                    <Typography
+                      component="span"
+                      sx={{ fontWeight: 700, color: C.purple800 }}
+                    >
+                      Type:{' '}
+                    </Typography>
+                    <Box
+                      component="span"
+                      sx={{
+                        background: C.lavender100,
+                        color: C.purple800,
+                        fontWeight: 600,
+                        borderRadius: '6px',
+                        px: 0.75,
+                        py: 0.15,
+                      }}
+                    >
+                      Single Ticket Berlin ABC
+                    </Box>
+                  </Box>
+                </Box>
+                <Box
+                  component="li"
+                  sx={{
+                    display: 'flex',
+                    gap: 0.75,
+                    fontSize: { xs: 14, md: 14.5 },
+                    lineHeight: 1.6,
+                    color: C.ink,
+                    alignItems: 'baseline',
+                  }}
+                >
+                  <Box component="span" sx={{ color: C.gold600 }}>
+                    •
+                  </Box>
+                  <Box>
+                    <Typography
+                      component="span"
+                      sx={{ fontWeight: 700, color: C.purple800 }}
+                    >
+                      Fare:{' '}
+                    </Typography>
+                    <Box
+                      component="span"
+                      sx={{
+                        background: '#F3DFA0',
+                        color: C.gold700,
+                        fontWeight: 700,
+                        borderRadius: '6px',
+                        px: 0.75,
+                        py: 0.15,
+                      }}
+                    >
+                      €5.00
+                    </Box>
+                  </Box>
+                </Box>
+                <Box
+                  component="li"
+                  sx={{
+                    display: 'flex',
+                    gap: 0.75,
+                    fontSize: { xs: 14, md: 14.5 },
+                    lineHeight: 1.6,
+                    color: C.ink,
+                  }}
+                >
+                  <Box component="span" sx={{ color: C.gold600 }}>
+                    •
+                  </Box>
+                  <Box>
+                    <Typography
+                      component="span"
+                      sx={{ fontWeight: 700, color: C.purple800 }}
+                    >
+                      Validity:{' '}
+                    </Typography>
+                    120 minutes (one-way journey).
+                  </Box>
+                </Box>
+                <Box
+                  component="li"
+                  sx={{
+                    display: 'flex',
+                    gap: 0.75,
+                    fontSize: { xs: 14, md: 14.5 },
+                    lineHeight: 1.6,
+                    color: C.ink,
+                  }}
+                >
+                  <Box component="span">⚠️</Box>
+                  <Box>
+                    <Typography
+                      component="span"
+                      sx={{ fontWeight: 700, color: C.gold700 }}
+                    >
+                      Note:{' '}
+                    </Typography>
+                    Paper tickets must be validated on the platform{' '}
+                    <Typography
+                      component="span"
+                      sx={{ fontWeight: 700, color: C.purple700 }}
+                    >
+                      before boarding
+                    </Typography>
+                    .
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+
+            <Box component="article" sx={reachCard}>
+              <Box
+                sx={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: '50%',
+                  background: C.lavender50,
+                  border: `1px solid ${C.gold500}80`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: C.purple700,
+                  mb: 1.75,
+                }}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="7" y="2" width="10" height="20" rx="2" />
+                  <path d="M11 18h2" />
+                </svg>
+              </Box>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontSize: { xs: '1.3rem', md: '1.375rem' },
+                  color: C.purple800,
+                  fontFamily: '"Blue Mirage", serif',
+                }}
+              >
+                Useful Tools
+              </Typography>
+              <Box sx={{ borderTop: `1px dashed ${C.lavender200}`, mt: 1.25, mb: 1.5 }} />
+              <Box
+                component="ul"
+                sx={{
+                  listStyle: 'none',
+                  p: 0,
+                  m: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1.1,
+                }}
+              >
+                <Box
+                  component="li"
+                  sx={{
+                    display: 'flex',
+                    gap: 0.75,
+                    fontSize: { xs: 14, md: 14.5 },
+                    lineHeight: 1.6,
+                    color: C.ink,
+                  }}
+                >
+                  <Box component="span" sx={{ color: C.gold600 }}>
+                    •
+                  </Box>
+                  <Box>
+                    <Typography
+                      component="span"
+                      sx={{ fontWeight: 700, color: C.purple800 }}
+                    >
+                      Live Routes:{' '}
+                    </Typography>
+                    Official{' '}
+                    <Typography
+                      component="span"
+                      sx={{ fontWeight: 700, color: C.purple700 }}
+                    >
+                      BVG Fahrinfo
+                    </Typography>{' '}
+                    App available on iOS &amp; Android.
+                  </Box>
+                </Box>
+                <Box
+                  component="li"
+                  sx={{
+                    display: 'flex',
+                    gap: 0.75,
+                    fontSize: { xs: 14, md: 14.5 },
+                    lineHeight: 1.6,
+                    color: C.ink,
+                  }}
+                >
+                  <Box component="span" sx={{ color: C.gold600 }}>
+                    •
+                  </Box>
+                  <Box>
+                    <Typography
+                      component="span"
+                      sx={{ fontWeight: 700, color: C.purple800 }}
+                    >
+                      Purchase:{' '}
+                    </Typography>
+                    Station ticket machines or online via BVG App.
+                  </Box>
+                </Box>
+                <Box
+                  component="li"
+                  sx={{
+                    display: 'flex',
+                    gap: 0.75,
+                    fontSize: { xs: 14, md: 14.5 },
+                    lineHeight: 1.6,
+                    color: C.ink,
+                  }}
+                >
+                  <Box component="span" sx={{ color: C.gold600 }}>
+                    •
+                  </Box>
+                  <Box>
+                    <Typography
+                      component="span"
+                      sx={{ fontWeight: 700, color: C.purple800 }}
+                    >
+                      Media Links:{' '}
+                    </Typography>
+                    Watch the{' '}
+                    <Box
+                      component="a"
+                      href="https://drive.google.com/drive/folders/11XlNVvUJz2jmJ4KcOWn2LrrRwboLwSbN?usp=drive_link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{
+                        fontWeight: 700,
+                        color: C.purple700,
+                        textDecoration: 'underline',
+                      }}
+                    >
+                      Helpful Video Guides
+                    </Box>{' '}
+                    directly here.
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Support contact */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 1.5,
+              mt: { xs: 2.5, md: 2.75 },
+              background: C.lavender100,
+              border: `1px solid ${C.lavender300}`,
+              borderLeft: `4px solid ${C.gold500}`,
+              borderRadius: '14px',
+              p: { xs: 2.5, md: 3 },
+            }}
+          >
+            <Box sx={{ color: C.purple700, mt: 0.25, flexShrink: 0 }}>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+            </Box>
+            <Box>
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  color: C.purple800,
+                  fontSize: { xs: '0.95rem', md: '1rem' },
+                  fontFamily: '"Blue Mirage", serif',
+                  mb: 0.5,
+                }}
+              >
+                Support Contact
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: { xs: 14, md: 14.5 },
+                  color: C.ink,
+                  lineHeight: 1.6,
+                }}
+              >
+                If you have any questions, please contact{' '}
+                <Typography
+                  component="span"
+                  sx={{ fontWeight: 700, color: C.purple700 }}
+                >
+                  Nirav Gevariya
+                </Typography>{' '}
+                on WhatsApp at{' '}
+                <Box
+                  component="a"
+                  href="https://wa.me/4917657613438"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    fontWeight: 700,
+                    color: C.purple700,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  +49 176 57613438
+                </Box>
+                . Safe travels to the Mahotsav!
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Container>
