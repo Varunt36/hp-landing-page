@@ -210,7 +210,7 @@ const REACH: {
     title: 'From Berlin Hauptbahnhof',
     detail: (
       <Typography sx={{ ...bodyTextSx, color: C.purple600 }}>
-        Take S-Bahn S5, S7 or S75 two stops to Zoologischer Garten, then ride bus 100 or 200 to Lützowplatz — the stop is directly in front of the hotel.
+        Take S-Bahn S3, S5 or S7 two stops to Zoologischer Garten, then ride bus 100 or 200 to Lützowplatz — the stop is directly in front of the hotel.
       </Typography>
     ),
     time: '~ 25 min',
