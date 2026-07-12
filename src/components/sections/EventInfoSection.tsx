@@ -1,7 +1,5 @@
-import { useState } from 'react'
 import { Box, Container, Typography, Divider, Grid } from '@mui/material'
 import { Link } from 'react-router-dom';
-import HotelBookingModal from '../form/HotelBookingModal'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import HotelIcon from '@mui/icons-material/Hotel'
 import RestaurantIcon from '@mui/icons-material/Restaurant'
@@ -19,7 +17,7 @@ const items: {
   icon: React.ReactNode;
   title: string;
   lines: Line[];
-  link?: { text: string; href: string; external?: boolean } | { text: string; action: string };
+  link?: { text: string; href: string; external?: boolean };
 }[] = [
   {
     icon: <AccessTimeIcon sx={{ fontSize: 22, color: C.purple800 }} />,
@@ -32,16 +30,7 @@ const items: {
     title: 'Accommodation and Transportation',
     lines: [
       { text: 'Please arrange your own stay and accomodation.', bold: true },
-      {
-        parts: [
-          { text: 'Discounted hotel rooms available at ' },
-          { text: 'Hotel Berlin', bold: true },
-          { text: ' - breakfast included.' },
-        ],
-      },
-      'Booking link sent after registration.',
     ],
-    link: { text: 'How to Book Hotel', action: 'booking' },
   },
   {
     icon: <RestaurantIcon sx={{ fontSize: 22, color: C.purple800 }} />,
@@ -131,22 +120,17 @@ function ItemLink({
   href,
   text,
   external,
-  onClick,
 }: {
   href?: string;
   text: string;
   external?: boolean;
-  onClick?: () => void;
 }) {
-  const isButton = !!onClick
   return (
     <Box
-      component={isButton ? 'button' : external ? 'a' : Link}
-      {...(isButton
-        ? { type: 'button', onClick }
-        : external
-          ? { href, target: '_blank', rel: 'noopener noreferrer' }
-          : { to: href })}
+      component={external ? 'a' : Link}
+      {...(external
+        ? { href, target: '_blank', rel: 'noopener noreferrer' }
+        : { to: href })}
       sx={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -195,7 +179,6 @@ function ItemLink({
 }
 
 export default function EventInfoSection() {
-  const [bookingOpen, setBookingOpen] = useState(false)
   return (
     <>
     <Box
@@ -294,9 +277,7 @@ export default function EventInfoSection() {
                 </Box>
                 {item.lines.map((line, i) => renderLine(line, i, '0.875rem'))}
                 {item.link && (
-                  'action' in item.link
-                    ? <ItemLink text={item.link.text} onClick={() => setBookingOpen(true)} />
-                    : <ItemLink href={item.link.href} text={item.link.text} external={item.link.external} />
+                  <ItemLink href={item.link.href} text={item.link.text} external={item.link.external} />
                 )}
               </Box>
             </Box>
@@ -337,9 +318,7 @@ export default function EventInfoSection() {
                 </Box>
                 {item.lines.map((line, i) => renderLine(line, i, '0.82rem'))}
                 {item.link && (
-                  'action' in item.link
-                    ? <ItemLink text={item.link.text} onClick={() => setBookingOpen(true)} />
-                    : <ItemLink href={item.link.href} text={item.link.text} external={item.link.external} />
+                  <ItemLink href={item.link.href} text={item.link.text} external={item.link.external} />
                 )}
               </Box>
             </Grid>
@@ -373,7 +352,6 @@ export default function EventInfoSection() {
         </Box>
       </Container>
     </Box>
-    <HotelBookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
     </>
   );
 }
