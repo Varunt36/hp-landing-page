@@ -3,7 +3,7 @@
 // Collects group-level info: country, local karyakarta name, and number of members.
 // On "Next", this data is saved to the global store and the form advances to Step 2.
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Typography, Box, FormControl, InputLabel, Select, MenuItem,
   TextField, Button, FormHelperText, CircularProgress, Alert,
@@ -26,10 +26,15 @@ export default function Step1GroupInfo() {
   // null = still loading, string[] = loaded (empty means fetch failed → fall back to all)
   const [availableCodes, setAvailableCodes] = useState<string[] | null>(null)
 
+  // Tracks the latest country selection so the async fetch below never overwrites
+  // a choice the member made while the request was in flight (stale-closure bug).
+  const countryRef = useRef(country)
+  useEffect(() => { countryRef.current = country }, [country])
+
   useEffect(() => {
     fetchAvailableCountryCodes().then(codes => {
       setAvailableCodes(codes)
-      if (codes.length > 0 && !codes.includes(country)) {
+      if (codes.length > 0 && !codes.includes(countryRef.current)) {
         setCountry(codes[0])
         setMemberCount(1)
       }

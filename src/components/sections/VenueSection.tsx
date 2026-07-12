@@ -134,7 +134,7 @@ const REACH: {
               mb: 0.75,
             }}
           >
-            You can rent a car from the platforms below — each link opens their
+            You can rent a car from the platforms below each link opens their
             booking page:
           </Typography>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -171,18 +171,31 @@ const REACH: {
           <Typography
             sx={{ fontSize: 14, color: C.purple800, fontWeight: 700, mt: 1 }}
           >
-            Paid parking on site — approx. €20–€25 per day.
+            Paid parking on site approx. €20 – €25 per day.
+          </Typography>
+        </Box>
+
+        <Box sx={{ borderTop: `1px dashed ${C.lavender200}`, my: 1.5 }} />
+
+        <Box sx={{ mb: 1.5 }}>
+          <Typography sx={subLabelSx}>By Public Transport · ~ 35 min</Typography>
+          <Typography sx={{ ...bodyTextSx, color: C.purple600 }}>
+            From Terminal 1, Level U2, take the FEX Train (Flughafen-Express,
+            every 15 min) or RB 20 (towards Berlin Hbf, every 1 hour) about 12
+            min to Berlin Südkreuz. Exit to the bus stop, then take Bus M46
+            (towards S+U Alexanderplatz, exit at Schillstraße) or Bus 106
+            (towards U Seestraße, exit at Lützowplatz) about 17 min. Both stops
+            are a 3 – 4 min walk from the hotel.
           </Typography>
         </Box>
 
         <Box sx={{ borderTop: `1px dashed ${C.lavender200}`, my: 1.5 }} />
 
         <Box>
-          <Typography sx={subLabelSx}>By Train · ~ 1 hour</Typography>
+          <Typography sx={subLabelSx}>By Taxi · 30–45 min</Typography>
           <Typography sx={{ ...bodyTextSx, color: C.purple600 }}>
-            From the airport take the train RE7 or RB14 to Zoologischer Garten,
-            then the bus 100 to Lützowplatz, which stops directly in front of
-            the hotel.
+            Estimated fare €60 – €70. Book via Uber, FreeNow or Bolt, or take a
+            taxi in person from the stand outside the airport.
           </Typography>
         </Box>
       </>
@@ -210,10 +223,11 @@ const REACH: {
     title: 'From Berlin Hauptbahnhof',
     detail: (
       <Typography sx={{ ...bodyTextSx, color: C.purple600 }}>
-        Take S-Bahn S3, S5 or S7 two stops to Zoologischer Garten, then ride bus 100 or 200 to Lützowplatz — the stop is directly in front of the hotel.
+        Take S-Bahn S3, S5 or S7 two stops to Zoologischer Garten, then ride bus
+        100 or 200 to Lützowplatz the stop is directly in front of the hotel.
       </Typography>
     ),
-    time: '~ 25 min',
+    time: 'By Public Transport · 25 min',
   },
 ];
 
@@ -593,7 +607,13 @@ export default function VenueSection() {
               >
                 Ticket Guidelines
               </Typography>
-              <Box sx={{ borderTop: `1px dashed ${C.lavender200}`, mt: 1.25, mb: 1.5 }} />
+              <Box
+                sx={{
+                  borderTop: `1px dashed ${C.lavender200}`,
+                  mt: 1.25,
+                  mb: 1.5,
+                }}
+              />
               <Box
                 component="ul"
                 sx={{
@@ -697,7 +717,9 @@ export default function VenueSection() {
                     >
                       Validity:{' '}
                     </Typography>
-                    120 minutes (one-way journey).
+                    <Typography component="span" sx={{ color: C.purple700 }}>
+                      120 minutes (one-way journey).
+                    </Typography>
                   </Box>
                 </Box>
                 <Box
@@ -714,11 +736,13 @@ export default function VenueSection() {
                   <Box>
                     <Typography
                       component="span"
-                      sx={{ fontWeight: 700, color: C.gold700 }}
+                      sx={{ fontWeight: 700, color: C.purple800 }}
                     >
                       Note:{' '}
                     </Typography>
-                    Paper tickets must be validated on the platform{' '}
+                    <Typography component="span" sx={{ color: C.purple700 }}>
+                      Paper tickets must be validated on the platform{' '}
+                    </Typography>
                     <Typography
                       component="span"
                       sx={{ fontWeight: 700, color: C.purple700 }}
@@ -770,7 +794,13 @@ export default function VenueSection() {
               >
                 Useful Tools
               </Typography>
-              <Box sx={{ borderTop: `1px dashed ${C.lavender200}`, mt: 1.25, mb: 1.5 }} />
+              <Box
+                sx={{
+                  borderTop: `1px dashed ${C.lavender200}`,
+                  mt: 1.25,
+                  mb: 1.5,
+                }}
+              />
               <Box
                 component="ul"
                 sx={{
@@ -802,14 +832,18 @@ export default function VenueSection() {
                     >
                       Live Routes:{' '}
                     </Typography>
-                    Official{' '}
+                    <Typography component="span" sx={{ color: C.purple700 }}>
+                      Official{' '}
+                    </Typography>
                     <Typography
                       component="span"
                       sx={{ fontWeight: 700, color: C.purple700 }}
                     >
                       BVG Fahrinfo
                     </Typography>{' '}
-                    App available on iOS &amp; Android.
+                    <Typography component="span" sx={{ color: C.purple700 }}>
+                      App available on iOS &amp; Android.
+                    </Typography>
                   </Box>
                 </Box>
                 <Box
@@ -832,7 +866,9 @@ export default function VenueSection() {
                     >
                       Purchase:{' '}
                     </Typography>
-                    Station ticket machines or online via BVG App.
+                    <Typography component="span" sx={{ color: C.purple700 }}>
+                      Station ticket machines or online via BVG App.
+                    </Typography>
                   </Box>
                 </Box>
                 <Box
@@ -855,7 +891,9 @@ export default function VenueSection() {
                     >
                       Media Links:{' '}
                     </Typography>
-                    Watch the{' '}
+                    <Typography component="span" sx={{ color: C.purple700 }}>
+                      Watch the{' '}
+                    </Typography>
                     <Box
                       component="a"
                       href="https://drive.google.com/drive/folders/11XlNVvUJz2jmJ4KcOWn2LrrRwboLwSbN?usp=drive_link"
@@ -869,7 +907,9 @@ export default function VenueSection() {
                     >
                       Helpful Video Guides
                     </Box>{' '}
-                    directly here.
+                    <Typography component="span" sx={{ color: C.purple700 }}>
+                      directly here.
+                    </Typography>
                   </Box>
                 </Box>
               </Box>
