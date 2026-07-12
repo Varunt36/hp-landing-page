@@ -856,22 +856,23 @@ export default function VenueSection() {
             </Box>
           </Box>
 
-          {/* From Berlin Hauptbahnhof — full-width row */}
+          {/* From Berlin Hauptbahnhof — compact banner */}
           <Box
             component="article"
             sx={{
               ...reachCard,
               mt: { xs: 2.5, md: 2.75 },
+              p: { xs: 2.5, md: 2.75 },
               display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { xs: "flex-start", sm: "center" },
+              gap: { xs: 1.75, sm: 2.5 },
             }}
           >
             <Box
               sx={{
-                width: 52,
-                height: 52,
+                width: 46,
+                height: 46,
                 borderRadius: "50%",
                 background: C.lavender50,
                 border: `1px solid ${C.gold500}80`,
@@ -879,7 +880,8 @@ export default function VenueSection() {
                 alignItems: "center",
                 justifyContent: "center",
                 color: C.purple700,
-                mb: 1.75,
+                flexShrink: 0,
+                "& svg": { width: 22, height: 22 },
               }}
             >
               <svg
@@ -898,43 +900,49 @@ export default function VenueSection() {
                 <path d="M6 21l2-4M18 21l-2-4" />
               </svg>
             </Box>
-            <Typography
-              variant="h3"
-              sx={{
-                fontSize: { xs: "1.3rem", md: "1.375rem" },
-                color: C.purple800,
-                fontFamily: '"Blue Mirage", serif',
-              }}
-            >
-              From Berlin Hauptbahnhof
-            </Typography>
-            <Typography
-              sx={{
-                ...bodyTextSx,
-                color: C.purple600,
-                mt: 1.25,
-                maxWidth: 620,
-              }}
-            >
-              Take S-Bahn S3, S5 or S7 two stops to Zoologischer Garten, then
-              ride bus 100 or 200 to Lützowplatz the stop is directly in front
-              of the hotel.
-            </Typography>
-            <Typography
-              sx={{
-                display: "block",
-                mt: 1.75,
-                fontSize: "0.65rem",
-                letterSpacing: "0.16em",
-                textTransform: "uppercase",
-                color: C.gold700,
-                fontWeight: 600,
-                pt: 1.5,
-                borderTop: `1px dashed ${C.lavender200}`,
-              }}
-            >
-              By Public Transport · 25 min
-            </Typography>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 1.25,
+                  flexWrap: "wrap",
+                  mb: 0.5,
+                }}
+              >
+                <Typography
+                  variant="h3"
+                  sx={{
+                    fontSize: { xs: "1.2rem", md: "1.3rem" },
+                    color: C.purple800,
+                    fontFamily: '"Blue Mirage", serif',
+                  }}
+                >
+                  From Berlin Hauptbahnhof
+                </Typography>
+                <Box
+                  component="span"
+                  sx={{
+                    fontSize: "0.62rem",
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: C.gold700,
+                    fontWeight: 700,
+                    background: C.lavender100,
+                    borderRadius: "999px",
+                    px: 1,
+                    py: 0.35,
+                  }}
+                >
+                  By Public Transport · 25 min
+                </Box>
+              </Box>
+              <Typography sx={{ ...bodyTextSx, color: C.purple600 }}>
+                Take S-Bahn S3, S5 or S7 two stops to Zoologischer Garten, then
+                ride bus 100 or 200 to Lützowplatz the stop is directly in front
+                of the hotel.
+              </Typography>
+            </Box>
           </Box>
 
           {/* Ticket guidelines + useful tools */}
