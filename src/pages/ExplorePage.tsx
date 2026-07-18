@@ -214,7 +214,6 @@ export default function ExplorePage() {
           }}
         >
           <Container maxWidth="md">
-
             {/* Eyebrow */}
             <Typography
               component="span"
@@ -246,8 +245,20 @@ export default function ExplorePage() {
             </Typography>
 
             {/* Body */}
-            <Typography sx={{ maxWidth: 620, mx: 'auto', mt: 2.5, fontSize: { xs: 15, md: 16.5 }, color: C.purple700, lineHeight: 1.8 }}>
-              Between spiritual gatherings and precious moments with loved ones, take time to explore the neighborhoods, cafés, parks and restaurants of a city that has welcomed Swamiji many times over the years.
+            <Typography
+              sx={{
+                maxWidth: 620,
+                mx: 'auto',
+                mt: 2.5,
+                fontSize: { xs: 15, md: 16.5 },
+                color: C.purple700,
+                lineHeight: 1.8,
+              }}
+            >
+              Between spiritual gatherings and precious moments with loved ones,
+              take time to explore the neighborhoods, cafés, parks and
+              restaurants of a city that has welcomed Swamiji many times over
+              the years.
             </Typography>
 
             {/* Quote */}
@@ -263,9 +274,9 @@ export default function ExplorePage() {
                 fontFamily: '"Blue Mirage", serif',
               }}
             >
-              "Wherever Guruhari goes, memories are created, hearts are touched, and places become special forever."
+              "Wherever Guruhari goes, memories are created, hearts are touched,
+              and places become special forever."
             </Typography>
-
           </Container>
         </Box>
 
@@ -310,11 +321,15 @@ export default function ExplorePage() {
                 whiteSpace: 'nowrap',
                 flexShrink: 0,
                 border: `1px solid ${activeSection === id ? C.purple800 : `${C.lavender200}99`}`,
-                background: activeSection === id ? C.purple800 : `${C.lavender100}80`,
+                background:
+                  activeSection === id ? C.purple800 : `${C.lavender100}80`,
                 color: activeSection === id ? C.cream : C.purple800,
                 transition: 'all .2s ease',
                 fontFamily: '"Blue Mirage", serif',
-                '&:hover': { background: activeSection === id ? C.purple800 : C.lavender100 },
+                '&:hover': {
+                  background:
+                    activeSection === id ? C.purple800 : C.lavender100,
+                },
               }}
             >
               {label}
@@ -333,34 +348,48 @@ export default function ExplorePage() {
             <SectionHead
               eyebrow="💛 Special Thanks to Our Supporters"
               title="Our Supporters"
-              desc="We sincerely thank our Gold Partners for contributing their support during the event and helping us create memorable moments for our devotees and community. Your trust and collaboration truly made a difference."
             />
-            {/* Coming soon placeholder */}
+            {/* Gold Partners */}
             <Box
               sx={{
                 textAlign: 'center',
-                py: { xs: 6, md: 8 },
-                px: 3,
+                py: { xs: 5, md: 7 },
+                px: { xs: 3, md: 4 },
                 borderRadius: '20px',
-                border: `1px dashed ${C.lavender300}`,
+                border: `1px solid ${C.lavender200}`,
                 background: `linear-gradient(135deg, ${C.lavender50} 0%, ${C.cream2} 100%)`,
               }}
             >
-              <Typography sx={{ fontSize: { xs: 36, md: 44 }, mb: 2 }}>✨</Typography>
-              <Typography
+              <Box
                 sx={{
-                  fontFamily: '"Blue Mirage", serif',
-                  fontSize: { xs: '1.6rem', md: '2rem' },
-                  color: C.purple700,
-                  fontStyle: 'italic',
-                  mb: 1.25,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: '#fff',
+                  borderRadius: '16px',
+                  border: `1px solid ${C.lavender100}`,
+                  px: { xs: 4, md: 6 },
+                  py: { xs: 3, md: 4 },
+                  boxShadow: '0 12px 30px -14px rgba(75,45,110,0.22)',
+                  transition: 'transform .25s ease, box-shadow .25s ease',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 18px 38px -16px rgba(75,45,110,0.3)',
+                  },
                 }}
               >
-                Coming Soon
-              </Typography>
-              <Typography sx={{ fontSize: { xs: 14, md: 15 }, color: C.muted, maxWidth: 420, mx: 'auto', lineHeight: 1.7 }}>
-                Our supporters will be announced here. Stay tuned for updates.
-              </Typography>
+                <Box
+                  component="img"
+                  src="/images/Deutsches%20Feingoldhaus%20Logo.png"
+                  alt="Deutsches Feingoldhaus by GoldInvest"
+                  sx={{
+                    maxWidth: { xs: 220, md: 300 },
+                    width: '100%',
+                    height: 'auto',
+                    display: 'block',
+                  }}
+                />
+              </Box>
             </Box>
           </Container>
         </Box>
@@ -370,7 +399,11 @@ export default function ExplorePage() {
           component="section"
           id="explore"
           ref={exploreRef}
-          sx={{ py: { xs: 8, md: 10 }, scrollMarginTop: '140px', borderTop: `1px dashed ${C.lavender200}B3` }}
+          sx={{
+            py: { xs: 8, md: 10 },
+            scrollMarginTop: '140px',
+            borderTop: `1px dashed ${C.lavender200}B3`,
+          }}
         >
           <Container maxWidth="lg">
             {/* Explore section header */}
@@ -395,7 +428,11 @@ export default function ExplorePage() {
                   mt: 1,
                   color: C.purple800,
                   fontFamily: '"Blue Mirage", serif',
-                  fontSize: { xs: '1.5rem', sm: '1.8rem', md: 'clamp(2rem, 5vw, 3.5rem)' },
+                  fontSize: {
+                    xs: '1.5rem',
+                    sm: '1.8rem',
+                    md: 'clamp(2rem, 5vw, 3.5rem)',
+                  },
                   fontStyle: 'italic',
                   lineHeight: 1.15,
                 }}
@@ -413,50 +450,75 @@ export default function ExplorePage() {
                   lineHeight: 1.7,
                 }}
               >
-                A curated companion to the most beautiful neighborhoods, cafés, restaurants and shopping destinations within easy reach of Hotel Berlin.
+                A curated companion to the most beautiful neighborhoods, cafés,
+                restaurants and shopping destinations within easy reach of Hotel
+                Berlin.
               </Typography>
 
               {/* Feature pills */}
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: { xs: 2, md: 3 }, mt: 2.5, flexWrap: 'wrap' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: { xs: 2, md: 3 },
+                  mt: 2.5,
+                  flexWrap: 'wrap',
+                }}
+              >
                 {[
                   { icon: '🚶', label: 'Walking distance' },
                   { icon: '🚗', label: 'Short taxi rides' },
                   { icon: '🌿', label: 'Green & local' },
                 ].map(({ icon, label }) => (
-                  <Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                  <Box
+                    key={label}
+                    sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}
+                  >
                     <Typography sx={{ fontSize: 15 }}>{icon}</Typography>
-                    <Typography sx={{ fontSize: 14, color: C.purple700, fontWeight: 500 }}>{label}</Typography>
+                    <Typography
+                      sx={{ fontSize: 14, color: C.purple700, fontWeight: 500 }}
+                    >
+                      {label}
+                    </Typography>
                   </Box>
                 ))}
               </Box>
             </Box>
 
             {/* ── Sub-tab nav ── */}
-            <Box sx={{
-              display: 'flex',
-              justifyContent: { xs: 'flex-start', sm: 'center' },
-              gap: { xs: 0.75, md: 1 },
-              mb: { xs: 4, md: 5 },
-              overflowX: 'auto',
-              WebkitOverflowScrolling: 'touch',
-              scrollbarWidth: 'none',
-              '&::-webkit-scrollbar': { display: 'none' },
-              pb: 0.5,
-            }}>
-              {([
-                { id: 'neighborhoods', label: 'Neighborhoods', icon: '📍' },
-                { id: 'cafes',         label: 'Cafés',          icon: '☕' },
-                { id: 'restaurants',   label: 'Restaurants',    icon: '🍽️' },
-                { id: 'shopping',      label: 'Shopping',       icon: '🛍️' },
-              ] as const).map(({ id, label, icon }) => (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: { xs: 'flex-start', sm: 'center' },
+                gap: { xs: 0.75, md: 1 },
+                mb: { xs: 4, md: 5 },
+                overflowX: 'auto',
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+                '&::-webkit-scrollbar': { display: 'none' },
+                pb: 0.5,
+              }}
+            >
+              {(
+                [
+                  { id: 'neighborhoods', label: 'Neighborhoods', icon: '📍' },
+                  { id: 'cafes', label: 'Cafés', icon: '☕' },
+                  { id: 'restaurants', label: 'Restaurants', icon: '🍽️' },
+                  { id: 'shopping', label: 'Shopping', icon: '🛍️' },
+                ] as const
+              ).map(({ id, label, icon }) => (
                 <Box
                   key={id}
                   component="button"
                   type="button"
                   onClick={() => setExploreSubTab(id)}
                   sx={{
-                    display: 'inline-flex', alignItems: 'center', gap: 0.75,
-                    px: { xs: 1.75, md: 2.25 }, py: { xs: 0.9, md: 1.1 },
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 0.75,
+                    px: { xs: 1.75, md: 2.25 },
+                    py: { xs: 0.9, md: 1.1 },
                     borderRadius: '999px',
                     fontSize: { xs: 13.5, md: 15 },
                     fontWeight: 600,
@@ -465,10 +527,14 @@ export default function ExplorePage() {
                     whiteSpace: 'nowrap',
                     flexShrink: 0,
                     border: `1px solid ${exploreSubTab === id ? C.purple800 : `${C.lavender200}99`}`,
-                    background: exploreSubTab === id ? C.purple800 : `${C.lavender100}80`,
+                    background:
+                      exploreSubTab === id ? C.purple800 : `${C.lavender100}80`,
                     color: exploreSubTab === id ? C.cream : C.purple800,
                     transition: 'all .2s ease',
-                    '&:hover': { background: exploreSubTab === id ? C.purple800 : C.lavender100 },
+                    '&:hover': {
+                      background:
+                        exploreSubTab === id ? C.purple800 : C.lavender100,
+                    },
                   }}
                 >
                   <span>{icon}</span> {label}
@@ -477,40 +543,181 @@ export default function ExplorePage() {
             </Box>
 
             {/* ── Sub-tab content ── */}
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2,1fr)', md: 'repeat(3,1fr)' }, gap: { xs: 2.5, md: 2.75 } }}>
-              {(exploreSubTab === 'neighborhoods' ? NEIGHBORHOODS
-                : exploreSubTab === 'cafes'        ? CAFES
-                : exploreSubTab === 'restaurants'  ? EXPLORE_RESTAURANTS
-                : SHOPPING
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2,1fr)',
+                  md: 'repeat(3,1fr)',
+                },
+                gap: { xs: 2.5, md: 2.75 },
+              }}
+            >
+              {(exploreSubTab === 'neighborhoods'
+                ? NEIGHBORHOODS
+                : exploreSubTab === 'cafes'
+                  ? CAFES
+                  : exploreSubTab === 'restaurants'
+                    ? EXPLORE_RESTAURANTS
+                    : SHOPPING
               ).map((item) => {
-                const { tag, area, name, desc, dist } = item as { emoji: string; tag: string; area: string; name: string; desc: string; dist: string; stars?: number; url?: string }
-                const url = (item as { url?: string }).url
-                const stars = (item as { stars?: number }).stars
+                const { tag, area, name, desc, dist } = item as {
+                  emoji: string;
+                  tag: string;
+                  area: string;
+                  name: string;
+                  desc: string;
+                  dist: string;
+                  stars?: number;
+                  url?: string;
+                };
+                const url = (item as { url?: string }).url;
+                const stars = (item as { stars?: number }).stars;
                 return (
-                <Box key={name} sx={{ background: C.cream, border: `1px solid ${C.lavender200}B3`, borderRadius: '18px', overflow: 'hidden', boxShadow: '0 1px 2px rgba(60,30,90,0.06)', transition: 'transform .25s, box-shadow .25s', '&:hover': { transform: 'translateY(-4px)', borderColor: `${C.gold500}80`, boxShadow: '0 4px 14px rgba(60,30,90,0.1)' } }}>
-                  <Box sx={{ px: 3, pt: 2.5, pb: 0.5 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.25 }}>
-                      <Typography sx={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: C.purple700, background: C.lavender100, border: `1px solid ${C.lavender200}`, borderRadius: '999px', px: 1.25, py: 0.4 }}>{tag}</Typography>
-                      {stars && (
-                        <Typography sx={{ fontSize: 13, color: C.gold600, letterSpacing: 1 }}>{'★'.repeat(stars)}</Typography>
-                      )}
+                  <Box
+                    key={name}
+                    sx={{
+                      background: C.cream,
+                      border: `1px solid ${C.lavender200}B3`,
+                      borderRadius: '18px',
+                      overflow: 'hidden',
+                      boxShadow: '0 1px 2px rgba(60,30,90,0.06)',
+                      transition: 'transform .25s, box-shadow .25s',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
+                        borderColor: `${C.gold500}80`,
+                        boxShadow: '0 4px 14px rgba(60,30,90,0.1)',
+                      },
+                    }}
+                  >
+                    <Box sx={{ px: 3, pt: 2.5, pb: 0.5 }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          mb: 1.25,
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: '0.65rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.14em',
+                            textTransform: 'uppercase',
+                            color: C.purple700,
+                            background: C.lavender100,
+                            border: `1px solid ${C.lavender200}`,
+                            borderRadius: '999px',
+                            px: 1.25,
+                            py: 0.4,
+                          }}
+                        >
+                          {tag}
+                        </Typography>
+                        {stars && (
+                          <Typography
+                            sx={{
+                              fontSize: 13,
+                              color: C.gold600,
+                              letterSpacing: 1,
+                            }}
+                          >
+                            {'★'.repeat(stars)}
+                          </Typography>
+                        )}
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontFamily: '"Blue Mirage", serif',
+                          fontSize: 22,
+                          color: C.purple700,
+                          fontWeight: 700,
+                          lineHeight: 1.15,
+                          mb: 0.4,
+                        }}
+                      >
+                        {name}
+                      </Typography>
+                      <Typography
+                        sx={{ fontSize: 13, color: C.muted, mb: 1.25 }}
+                      >
+                        {area}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontSize: 14,
+                          color: C.muted,
+                          lineHeight: 1.65,
+                          mb: 2,
+                        }}
+                      >
+                        {desc}
+                      </Typography>
                     </Box>
-                    <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 22, color: C.purple700, fontWeight: 700, lineHeight: 1.15, mb: 0.4 }}>{name}</Typography>
-                    <Typography sx={{ fontSize: 13, color: C.muted, mb: 1.25 }}>{area}</Typography>
-                    <Typography sx={{ fontSize: 14, color: C.muted, lineHeight: 1.65, mb: 2 }}>{desc}</Typography>
+                    <Box
+                      sx={{
+                        px: 3,
+                        py: 1.25,
+                        borderTop: `1px dashed ${C.lavender200}CC`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.75,
+                        }}
+                      >
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke={C.gold700}
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                          <circle cx="12" cy="9" r="2.5" />
+                        </svg>
+                        <Typography
+                          sx={{
+                            fontSize: 13,
+                            color: C.gold700,
+                            fontWeight: 600,
+                          }}
+                        >
+                          {dist}
+                        </Typography>
+                      </Box>
+                      <Box
+                        component="a"
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: C.purple700,
+                          textDecoration: 'none',
+                          '&:hover': {
+                            color: C.purple800,
+                            textDecoration: 'underline',
+                          },
+                        }}
+                      >
+                        Discover →
+                      </Box>
+                    </Box>
                   </Box>
-                  <Box sx={{ px: 3, py: 1.25, borderTop: `1px dashed ${C.lavender200}CC`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.gold700} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-                      <Typography sx={{ fontSize: 13, color: C.gold700, fontWeight: 600 }}>{dist}</Typography>
-                    </Box>
-                    <Box component="a" href={url} target="_blank" rel="noopener noreferrer"
-                      sx={{ fontSize: 13, fontWeight: 600, color: C.purple700, textDecoration: 'none', '&:hover': { color: C.purple800, textDecoration: 'underline' } }}>
-                      Discover →
-                    </Box>
-                  </Box>
-                </Box>
-              )})}
+                );
+              })}
             </Box>
           </Container>
         </Box>
@@ -520,24 +727,84 @@ export default function ExplorePage() {
           component="section"
           id="highlights"
           ref={highlightsRef}
-          sx={{ py: { xs: 8, md: 10 }, scrollMarginTop: '140px', background: `linear-gradient(180deg, ${C.lavender50} 0%, ${C.cream} 100%)`, borderTop: `1px dashed ${C.lavender200}B3` }}
+          sx={{
+            py: { xs: 8, md: 10 },
+            scrollMarginTop: '140px',
+            background: `linear-gradient(180deg, ${C.lavender50} 0%, ${C.cream} 100%)`,
+            borderTop: `1px dashed ${C.lavender200}B3`,
+          }}
         >
           <Container maxWidth="lg">
             <SectionHead
               eyebrow="Personal Favorites"
               title="A few highlights"
             />
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2,1fr)', md: 'repeat(3,1fr)' }, gap: { xs: 2.5, md: 2.75 } }}>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2,1fr)',
+                  md: 'repeat(3,1fr)',
+                },
+                gap: { xs: 2.5, md: 2.75 },
+              }}
+            >
               {HIGHLIGHTS.map(({ category, places }) => (
-                <Box key={category} sx={{ background: C.cream, border: `1px solid ${C.purple700}B3`, borderRadius: '18px', p: 3, boxShadow: '0 1px 2px rgba(60,30,90,0.06)', transition: 'transform .25s, box-shadow .25s', '&:hover': { transform: 'translateY(-4px)', borderColor: `${C.gold500}80`, boxShadow: '0 4px 14px rgba(60,30,90,0.1)' } }}>
-                  <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: { xs: '1.25rem', md: '1.35rem' }, color: C.purple700, fontWeight: 700, mb: 1.75 }}>
+                <Box
+                  key={category}
+                  sx={{
+                    background: C.cream,
+                    border: `1px solid ${C.purple700}B3`,
+                    borderRadius: '18px',
+                    p: 3,
+                    boxShadow: '0 1px 2px rgba(60,30,90,0.06)',
+                    transition: 'transform .25s, box-shadow .25s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      borderColor: `${C.gold500}80`,
+                      boxShadow: '0 4px 14px rgba(60,30,90,0.1)',
+                    },
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontFamily: '"Blue Mirage", serif',
+                      fontSize: { xs: '1.25rem', md: '1.35rem' },
+                      color: C.purple700,
+                      fontWeight: 700,
+                      mb: 1.75,
+                    }}
+                  >
                     {category}
                   </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Box
+                    sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
+                  >
                     {places.map((place) => (
-                      <Box key={place} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography sx={{ fontSize: 13, color: C.gold600, lineHeight: 1, flexShrink: 0 }}>✦</Typography>
-                        <Typography sx={{ fontSize: 14.5, color: C.purple700, fontWeight: 500 }}>{place}</Typography>
+                      <Box
+                        key={place}
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: 13,
+                            color: C.gold600,
+                            lineHeight: 1,
+                            flexShrink: 0,
+                          }}
+                        >
+                          ✦
+                        </Typography>
+                        <Typography
+                          sx={{
+                            fontSize: 14.5,
+                            color: C.purple700,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {place}
+                        </Typography>
                       </Box>
                     ))}
                   </Box>
@@ -552,7 +819,11 @@ export default function ExplorePage() {
           component="section"
           id="essentials"
           ref={essentialsRef}
-          sx={{ py: { xs: 8, md: 10 }, scrollMarginTop: '140px', borderTop: `1px dashed ${C.purple700}B3` }}
+          sx={{
+            py: { xs: 8, md: 10 },
+            scrollMarginTop: '140px',
+            borderTop: `1px dashed ${C.purple700}B3`,
+          }}
         >
           <Container maxWidth="lg">
             <SectionHead
@@ -560,18 +831,57 @@ export default function ExplorePage() {
               title="Essentials"
               desc="Everything you need to know before you arrive — transport, money, weather and more."
             />
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2,1fr)', md: 'repeat(3,1fr)' }, gap: { xs: 2.5, md: 2.75 } }}>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2,1fr)',
+                  md: 'repeat(3,1fr)',
+                },
+                gap: { xs: 2.5, md: 2.75 },
+              }}
+            >
               {ESSENTIALS.map(({ emoji, title, body }) => (
-                <Box key={title} sx={{ background: C.cream, border: `1px solid ${C.purple700}B3`, borderRadius: '18px', p: 3, boxShadow: '0 1px 2px rgba(60,30,90,0.06)', transition: 'transform .25s, box-shadow .25s', '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 4px 14px rgba(60,30,90,0.1)' } }}>
-                  <Typography sx={{ fontSize: 36, mb: 1.5 }}>{emoji}</Typography>
-                  <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 22, color: C.purple700, fontWeight: 700, mb: 1 }}>{title}</Typography>
-                  <Typography sx={{ fontSize: 14.5, color: C.purple600, lineHeight: 1.6 }}>{body}</Typography>
+                <Box
+                  key={title}
+                  sx={{
+                    background: C.cream,
+                    border: `1px solid ${C.purple700}B3`,
+                    borderRadius: '18px',
+                    p: 3,
+                    boxShadow: '0 1px 2px rgba(60,30,90,0.06)',
+                    transition: 'transform .25s, box-shadow .25s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 4px 14px rgba(60,30,90,0.1)',
+                    },
+                  }}
+                >
+                  <Typography sx={{ fontSize: 36, mb: 1.5 }}>
+                    {emoji}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: '"Blue Mirage", serif',
+                      fontSize: 22,
+                      color: C.purple700,
+                      fontWeight: 700,
+                      mb: 1,
+                    }}
+                  >
+                    {title}
+                  </Typography>
+                  <Typography
+                    sx={{ fontSize: 14.5, color: C.purple600, lineHeight: 1.6 }}
+                  >
+                    {body}
+                  </Typography>
                 </Box>
               ))}
             </Box>
           </Container>
         </Box>
-
       </Box>
       <Footer />
       <RegisterModal />
