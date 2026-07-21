@@ -719,7 +719,7 @@ export default function ExplorePage() {
                     },
                   }}
                 >
-                  Visit website
+                  Check Out GoldInvest
                   <Box component="span" sx={{ fontSize: 14, lineHeight: 1 }}>
                     ↗
                   </Box>
