@@ -507,16 +507,16 @@ export default function ExplorePage() {
   return (
     <>
       <Navbar />
-      <Box component="main" sx={{ pt: { xs: "64px", md: "72px" } }}>
+      <Box component="main" sx={{ pt: { xs: '64px', md: '72px' } }}>
         {/* ── Page hero ── */}
         <Box
           sx={{
-            py: { xs: "48px", md: "64px" },
-            textAlign: "center",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
+            py: { xs: '48px', md: '64px' },
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
             background: `radial-gradient(700px 380px at 50% 0%, ${C.lavender100}B3, transparent 70%), ${C.cream}`,
           }}
         >
@@ -526,9 +526,9 @@ export default function ExplorePage() {
               component="span"
               sx={{
                 fontFamily: '"Blue Mirage", serif',
-                fontSize: { xs: "0.7rem", md: "0.78rem" },
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
+                fontSize: { xs: '0.7rem', md: '0.78rem' },
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
                 color: C.purple700,
                 fontWeight: 700,
               }}
@@ -541,9 +541,9 @@ export default function ExplorePage() {
               variant="h1"
               sx={{
                 mt: 1.25,
-                fontSize: { xs: "1.9rem", md: "clamp(2rem, 4vw, 3rem)" },
+                fontSize: { xs: '1.9rem', md: 'clamp(2rem, 4vw, 3rem)' },
                 color: C.purple800,
-                fontStyle: "italic",
+                fontStyle: 'italic',
                 fontFamily: '"Blue Mirage", serif',
                 lineHeight: 1.25,
               }}
@@ -555,7 +555,7 @@ export default function ExplorePage() {
             <Typography
               sx={{
                 maxWidth: 620,
-                mx: "auto",
+                mx: 'auto',
                 mt: 2.5,
                 fontSize: { xs: 15, md: 16.5 },
                 color: C.purple700,
@@ -572,11 +572,11 @@ export default function ExplorePage() {
             <Typography
               sx={{
                 maxWidth: 560,
-                mx: "auto",
+                mx: 'auto',
                 mt: 3.5,
                 fontSize: { xs: 16, md: 19 },
                 color: C.purple700,
-                fontStyle: "italic",
+                fontStyle: 'italic',
                 lineHeight: 1.7,
                 fontFamily: '"Blue Mirage", serif',
               }}
@@ -592,22 +592,22 @@ export default function ExplorePage() {
           component="nav"
           aria-label="Explore sections"
           sx={{
-            position: "sticky",
+            position: 'sticky',
             top: { xs: 64, md: 72 },
             zIndex: 30,
-            display: "flex",
-            justifyContent: { xs: "flex-start", sm: "center" },
+            display: 'flex',
+            justifyContent: { xs: 'flex-start', sm: 'center' },
             gap: { xs: 0.75, md: 1 },
             pt: { xs: 1.75, md: 2.5 },
             pb: { xs: 1.25, md: 1.75 },
             px: { xs: 2, md: 0 },
-            overflowX: "auto",
-            WebkitOverflowScrolling: "touch",
-            scrollbarWidth: "none",
-            "&::-webkit-scrollbar": { display: "none" },
+            overflowX: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'none',
+            '&::-webkit-scrollbar': { display: 'none' },
             background: `${C.cream}EB`,
-            backdropFilter: "saturate(140%) blur(10px)",
-            WebkitBackdropFilter: "saturate(140%) blur(10px)",
+            backdropFilter: 'saturate(140%) blur(10px)',
+            WebkitBackdropFilter: 'saturate(140%) blur(10px)',
             borderBottom: `1px solid ${C.lavender200}80`,
           }}
         >
@@ -620,20 +620,20 @@ export default function ExplorePage() {
               sx={{
                 px: { xs: 1.75, md: 2.5 },
                 py: { xs: 0.9, md: 1.25 },
-                borderRadius: "999px",
+                borderRadius: '999px',
                 fontSize: { xs: 14, md: 16 },
                 fontWeight: 600,
-                letterSpacing: "0.02em",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
+                letterSpacing: '0.02em',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
                 flexShrink: 0,
                 border: `1px solid ${activeSection === id ? C.purple800 : `${C.lavender200}99`}`,
                 background:
                   activeSection === id ? C.purple800 : `${C.lavender100}80`,
                 color: activeSection === id ? C.cream : C.purple800,
-                transition: "all .2s ease",
+                transition: 'all .2s ease',
                 fontFamily: '"Blue Mirage", serif',
-                "&:hover": {
+                '&:hover': {
                   background:
                     activeSection === id ? C.purple800 : C.lavender100,
                 },
@@ -649,7 +649,7 @@ export default function ExplorePage() {
           component="section"
           id="hotels"
           ref={hotelsRef}
-          sx={{ py: { xs: 8, md: 10 }, scrollMarginTop: "140px" }}
+          sx={{ py: { xs: 8, md: 10 }, scrollMarginTop: '140px' }}
         >
           <Container maxWidth="lg">
             <SectionHead
@@ -658,23 +658,23 @@ export default function ExplorePage() {
               desc="We sincerely thank our Gold Partners for contributing their support during the event and helping us create memorable moments for our devotees and community. Your trust and collaboration truly made a difference."
             />
             {/* Gold Partners */}
-            <Box sx={{ textAlign: "center" }}>
+            <Box sx={{ textAlign: 'center' }}>
               <Box
                 sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  maxWidth: "100%",
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  maxWidth: '100%',
                   py: { xs: 3, md: 4 },
                   px: { xs: 4, md: 6 },
-                  borderRadius: "20px",
-                  background: "transparent",
-                  border: "1px solid rgba(200,168,106,0.22)",
-                  boxShadow: "0 12px 30px -18px rgba(120,90,40,0.22)",
-                  transition: "transform .25s ease, box-shadow .25s ease",
-                  "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: "0 18px 40px -20px rgba(120,90,40,0.3)",
+                  borderRadius: '20px',
+                  background: 'transparent',
+                  border: '1px solid rgba(200,168,106,0.22)',
+                  boxShadow: '0 12px 30px -18px rgba(120,90,40,0.22)',
+                  transition: 'transform .25s ease, box-shadow .25s ease',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 18px 40px -20px rgba(120,90,40,0.3)',
                   },
                 }}
               >
@@ -684,11 +684,46 @@ export default function ExplorePage() {
                   alt="Deutsches Feingoldhaus by GoldInvest"
                   sx={{
                     maxWidth: { xs: 240, sm: 320, md: 520 },
-                    width: "100%",
-                    height: "auto",
-                    display: "block",
+                    width: '100%',
+                    height: 'auto',
+                    display: 'block',
                   }}
                 />
+              </Box>
+              <Box sx={{ mt: 2.5 }}>
+                <Box
+                  component="a"
+                  href="https://deutsches-feingoldhaus.de"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 0.75,
+                    px: 3,
+                    py: 1,
+                    borderRadius: '999px',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    letterSpacing: '0.03em',
+                    color: C.gold600,
+                    background: 'rgba(200,168,106,0.08)',
+                    border: '1px solid rgba(200,168,106,0.35)',
+                    textDecoration: 'none',
+                    transition: 'all .2s ease',
+                    '&:hover': {
+                      background: C.gold300,
+                      color: '#fff',
+                      borderColor: C.gold300,
+                      transform: 'translateY(-1px)',
+                    },
+                  }}
+                >
+                  Check Out GoldInvest
+                  <Box component="span" sx={{ fontSize: 14, lineHeight: 1 }}>
+                    ↗
+                  </Box>
+                </Box>
               </Box>
             </Box>
           </Container>
@@ -701,20 +736,20 @@ export default function ExplorePage() {
           ref={exploreRef}
           sx={{
             py: { xs: 8, md: 10 },
-            scrollMarginTop: "140px",
+            scrollMarginTop: '140px',
             borderTop: `1px dashed ${C.lavender200}B3`,
           }}
         >
           <Container maxWidth="lg">
             {/* Explore section header */}
-            <Box sx={{ textAlign: "center", mb: { xs: 5, md: 6 } }}>
+            <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 6 } }}>
               <Typography
                 component="span"
                 sx={{
                   fontFamily: '"Blue Mirage", serif',
-                  fontSize: "0.78rem",
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
+                  fontSize: '0.78rem',
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
                   color: C.purple700,
                   fontWeight: 700,
                 }}
@@ -729,11 +764,11 @@ export default function ExplorePage() {
                   color: C.purple800,
                   fontFamily: '"Blue Mirage", serif',
                   fontSize: {
-                    xs: "1.5rem",
-                    sm: "1.8rem",
-                    md: "clamp(2rem, 5vw, 3.5rem)",
+                    xs: '1.5rem',
+                    sm: '1.8rem',
+                    md: 'clamp(2rem, 5vw, 3.5rem)',
                   },
-                  fontStyle: "italic",
+                  fontStyle: 'italic',
                   lineHeight: 1.15,
                 }}
               >
@@ -743,7 +778,7 @@ export default function ExplorePage() {
               <Typography
                 sx={{
                   maxWidth: 600,
-                  mx: "auto",
+                  mx: 'auto',
                   mt: 1.75,
                   fontSize: { xs: 15, md: 17 },
                   color: C.purple700,
@@ -758,22 +793,22 @@ export default function ExplorePage() {
               {/* Feature pills */}
               <Box
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   gap: { xs: 2, md: 3 },
                   mt: 2.5,
-                  flexWrap: "wrap",
+                  flexWrap: 'wrap',
                 }}
               >
                 {[
-                  { icon: "🚶", label: "Walking distance" },
-                  { icon: "🚗", label: "Short taxi rides" },
-                  { icon: "🌿", label: "Green & local" },
+                  { icon: '🚶', label: 'Walking distance' },
+                  { icon: '🚗', label: 'Short taxi rides' },
+                  { icon: '🌿', label: 'Green & local' },
                 ].map(({ icon, label }) => (
                   <Box
                     key={label}
-                    sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+                    sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}
                   >
                     <Typography sx={{ fontSize: 15 }}>{icon}</Typography>
                     <Typography
@@ -789,23 +824,23 @@ export default function ExplorePage() {
             {/* ── Sub-tab nav ── */}
             <Box
               sx={{
-                display: "flex",
-                justifyContent: { xs: "flex-start", sm: "center" },
+                display: 'flex',
+                justifyContent: { xs: 'flex-start', sm: 'center' },
                 gap: { xs: 0.75, md: 1 },
                 mb: { xs: 4, md: 5 },
-                overflowX: "auto",
-                WebkitOverflowScrolling: "touch",
-                scrollbarWidth: "none",
-                "&::-webkit-scrollbar": { display: "none" },
+                overflowX: 'auto',
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+                '&::-webkit-scrollbar': { display: 'none' },
                 pb: 0.5,
               }}
             >
               {(
                 [
-                  { id: "neighborhoods", label: "Neighborhoods", icon: "📍" },
-                  { id: "cafes", label: "Cafés", icon: "☕" },
-                  { id: "restaurants", label: "Restaurants", icon: "🍽️" },
-                  { id: "shopping", label: "Shopping", icon: "🛍️" },
+                  { id: 'neighborhoods', label: 'Neighborhoods', icon: '📍' },
+                  { id: 'cafes', label: 'Cafés', icon: '☕' },
+                  { id: 'restaurants', label: 'Restaurants', icon: '🍽️' },
+                  { id: 'shopping', label: 'Shopping', icon: '🛍️' },
                 ] as const
               ).map(({ id, label, icon }) => (
                 <Box
@@ -814,24 +849,24 @@ export default function ExplorePage() {
                   type="button"
                   onClick={() => setExploreSubTab(id)}
                   sx={{
-                    display: "inline-flex",
-                    alignItems: "center",
+                    display: 'inline-flex',
+                    alignItems: 'center',
                     gap: 0.75,
                     px: { xs: 1.75, md: 2.25 },
                     py: { xs: 0.9, md: 1.1 },
-                    borderRadius: "999px",
+                    borderRadius: '999px',
                     fontSize: { xs: 13.5, md: 15 },
                     fontWeight: 600,
                     fontFamily: '"Blue Mirage", serif',
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
                     flexShrink: 0,
                     border: `1px solid ${exploreSubTab === id ? C.purple800 : `${C.lavender200}99`}`,
                     background:
                       exploreSubTab === id ? C.purple800 : `${C.lavender100}80`,
                     color: exploreSubTab === id ? C.cream : C.purple800,
-                    transition: "all .2s ease",
-                    "&:hover": {
+                    transition: 'all .2s ease',
+                    '&:hover': {
                       background:
                         exploreSubTab === id ? C.purple800 : C.lavender100,
                     },
@@ -845,20 +880,20 @@ export default function ExplorePage() {
             {/* ── Sub-tab content ── */}
             <Box
               sx={{
-                display: "grid",
+                display: 'grid',
                 gridTemplateColumns: {
-                  xs: "1fr",
-                  sm: "repeat(2,1fr)",
-                  md: "repeat(3,1fr)",
+                  xs: '1fr',
+                  sm: 'repeat(2,1fr)',
+                  md: 'repeat(3,1fr)',
                 },
                 gap: { xs: 2.5, md: 2.75 },
               }}
             >
-              {(exploreSubTab === "neighborhoods"
+              {(exploreSubTab === 'neighborhoods'
                 ? NEIGHBORHOODS
-                : exploreSubTab === "cafes"
+                : exploreSubTab === 'cafes'
                   ? CAFES
-                  : exploreSubTab === "restaurants"
+                  : exploreSubTab === 'restaurants'
                     ? EXPLORE_RESTAURANTS
                     : SHOPPING
               ).map((item) => {
@@ -880,36 +915,36 @@ export default function ExplorePage() {
                     sx={{
                       background: C.cream,
                       border: `1px solid ${C.lavender200}B3`,
-                      borderRadius: "18px",
-                      overflow: "hidden",
-                      boxShadow: "0 1px 2px rgba(60,30,90,0.06)",
-                      transition: "transform .25s, box-shadow .25s",
-                      "&:hover": {
-                        transform: "translateY(-4px)",
+                      borderRadius: '18px',
+                      overflow: 'hidden',
+                      boxShadow: '0 1px 2px rgba(60,30,90,0.06)',
+                      transition: 'transform .25s, box-shadow .25s',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
                         borderColor: `${C.gold500}80`,
-                        boxShadow: "0 4px 14px rgba(60,30,90,0.1)",
+                        boxShadow: '0 4px 14px rgba(60,30,90,0.1)',
                       },
                     }}
                   >
                     <Box sx={{ px: 3, pt: 2.5, pb: 0.5 }}>
                       <Box
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
                           mb: 1.25,
                         }}
                       >
                         <Typography
                           sx={{
-                            fontSize: "0.65rem",
+                            fontSize: '0.65rem',
                             fontWeight: 700,
-                            letterSpacing: "0.14em",
-                            textTransform: "uppercase",
+                            letterSpacing: '0.14em',
+                            textTransform: 'uppercase',
                             color: C.purple700,
                             background: C.lavender100,
                             border: `1px solid ${C.lavender200}`,
-                            borderRadius: "999px",
+                            borderRadius: '999px',
                             px: 1.25,
                             py: 0.4,
                           }}
@@ -924,7 +959,7 @@ export default function ExplorePage() {
                               letterSpacing: 1,
                             }}
                           >
-                            {"★".repeat(stars)}
+                            {'★'.repeat(stars)}
                           </Typography>
                         )}
                       </Box>
@@ -961,15 +996,15 @@ export default function ExplorePage() {
                         px: 3,
                         py: 1.25,
                         borderTop: `1px dashed ${C.lavender200}CC`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
                       }}
                     >
                       <Box
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
+                          display: 'flex',
+                          alignItems: 'center',
                           gap: 0.75,
                         }}
                       >
@@ -1005,10 +1040,10 @@ export default function ExplorePage() {
                           fontSize: 13,
                           fontWeight: 600,
                           color: C.purple700,
-                          textDecoration: "none",
-                          "&:hover": {
+                          textDecoration: 'none',
+                          '&:hover': {
                             color: C.purple800,
-                            textDecoration: "underline",
+                            textDecoration: 'underline',
                           },
                         }}
                       >
@@ -1029,7 +1064,7 @@ export default function ExplorePage() {
           ref={highlightsRef}
           sx={{
             py: { xs: 8, md: 10 },
-            scrollMarginTop: "140px",
+            scrollMarginTop: '140px',
             background: `linear-gradient(180deg, ${C.lavender50} 0%, ${C.cream} 100%)`,
             borderTop: `1px dashed ${C.lavender200}B3`,
           }}
@@ -1041,11 +1076,11 @@ export default function ExplorePage() {
             />
             <Box
               sx={{
-                display: "grid",
+                display: 'grid',
                 gridTemplateColumns: {
-                  xs: "1fr",
-                  sm: "repeat(2,1fr)",
-                  md: "repeat(3,1fr)",
+                  xs: '1fr',
+                  sm: 'repeat(2,1fr)',
+                  md: 'repeat(3,1fr)',
                 },
                 gap: { xs: 2.5, md: 2.75 },
               }}
@@ -1056,21 +1091,21 @@ export default function ExplorePage() {
                   sx={{
                     background: C.cream,
                     border: `1px solid ${C.purple700}B3`,
-                    borderRadius: "18px",
+                    borderRadius: '18px',
                     p: 3,
-                    boxShadow: "0 1px 2px rgba(60,30,90,0.06)",
-                    transition: "transform .25s, box-shadow .25s",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
+                    boxShadow: '0 1px 2px rgba(60,30,90,0.06)',
+                    transition: 'transform .25s, box-shadow .25s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
                       borderColor: `${C.gold500}80`,
-                      boxShadow: "0 4px 14px rgba(60,30,90,0.1)",
+                      boxShadow: '0 4px 14px rgba(60,30,90,0.1)',
                     },
                   }}
                 >
                   <Typography
                     sx={{
                       fontFamily: '"Blue Mirage", serif',
-                      fontSize: { xs: "1.25rem", md: "1.35rem" },
+                      fontSize: { xs: '1.25rem', md: '1.35rem' },
                       color: C.purple700,
                       fontWeight: 700,
                       mb: 1.75,
@@ -1079,12 +1114,12 @@ export default function ExplorePage() {
                     {category}
                   </Typography>
                   <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                    sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
                   >
                     {places.map((place) => (
                       <Box
                         key={place}
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                       >
                         <Typography
                           sx={{
@@ -1121,7 +1156,7 @@ export default function ExplorePage() {
           ref={essentialsRef}
           sx={{
             py: { xs: 8, md: 10 },
-            scrollMarginTop: "140px",
+            scrollMarginTop: '140px',
             borderTop: `1px dashed ${C.purple700}B3`,
           }}
         >
@@ -1133,11 +1168,11 @@ export default function ExplorePage() {
             />
             <Box
               sx={{
-                display: "grid",
+                display: 'grid',
                 gridTemplateColumns: {
-                  xs: "1fr",
-                  sm: "repeat(2,1fr)",
-                  md: "repeat(3,1fr)",
+                  xs: '1fr',
+                  sm: 'repeat(2,1fr)',
+                  md: 'repeat(3,1fr)',
                 },
                 gap: { xs: 2.5, md: 2.75 },
               }}
@@ -1148,13 +1183,13 @@ export default function ExplorePage() {
                   sx={{
                     background: C.cream,
                     border: `1px solid ${C.purple700}B3`,
-                    borderRadius: "18px",
+                    borderRadius: '18px',
                     p: 3,
-                    boxShadow: "0 1px 2px rgba(60,30,90,0.06)",
-                    transition: "transform .25s, box-shadow .25s",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: "0 4px 14px rgba(60,30,90,0.1)",
+                    boxShadow: '0 1px 2px rgba(60,30,90,0.06)',
+                    transition: 'transform .25s, box-shadow .25s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: '0 4px 14px rgba(60,30,90,0.1)',
                     },
                   }}
                 >
