@@ -693,7 +693,7 @@ export default function ExplorePage() {
               <Box sx={{ mt: 2.5 }}>
                 <Box
                   component="a"
-                  href="https://www.goldinvest.at"
+                  href="https://deutsches-feingoldhaus.de"
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{
