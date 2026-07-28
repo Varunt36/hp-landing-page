@@ -786,9 +786,17 @@ export default function AdminScan() {
           }
           // gender — from members table (age groups come from ageBuckets)
           const genderCount = { male: 0, female: 0 };
+          const genderByCountry: Record<
+            string,
+            { male: number; female: number }
+          > = {};
           for (const m of members) {
             if (m.gender === "male") genderCount.male++;
             if (m.gender === "female") genderCount.female++;
+            if (!m.country || m.country === "—") continue;
+            const g = (genderByCountry[m.country] ??= { male: 0, female: 0 });
+            if (m.gender === "male") g.male++;
+            if (m.gender === "female") g.female++;
           }
 
           // totals — members.length is always reliable regardless of RLS
@@ -804,6 +812,8 @@ export default function AdminScan() {
               quota: q.maxMembers,
               registered: regByCountry[q.countryCode] ?? 0,
               checkedIn: chk[q.countryCode] ?? 0,
+              male: genderByCountry[q.countryCode]?.male ?? 0,
+              female: genderByCountry[q.countryCode]?.female ?? 0,
             }))
             .sort((a, b) => b.registered - a.registered);
           return (
@@ -1358,6 +1368,9 @@ export default function AdminScan() {
                         <TableCell sx={{ fontWeight: 700 }} align="center">
                           Left
                         </TableCell>
+                        <TableCell sx={{ fontWeight: 700 }} align="center">
+                          M / F
+                        </TableCell>
                         <TableCell
                           sx={{
                             fontWeight: 700,
@@ -1453,6 +1466,41 @@ export default function AdminScan() {
                                     remaining === 0 ? "#d32f2f40" : "#2e7d3240",
                                 }}
                               />
+                            </TableCell>
+                            {/* Gender split */}
+                            <TableCell align="center">
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  gap: 0.5,
+                                }}
+                              >
+                                <Typography
+                                  component="span"
+                                  fontWeight={700}
+                                  fontSize={13}
+                                  color="#1976d2"
+                                >
+                                  {r.male}
+                                </Typography>
+                                <Typography
+                                  component="span"
+                                  fontSize={12}
+                                  color="text.disabled"
+                                >
+                                  /
+                                </Typography>
+                                <Typography
+                                  component="span"
+                                  fontWeight={700}
+                                  fontSize={13}
+                                  color="#c2185b"
+                                >
+                                  {r.female}
+                                </Typography>
+                              </Box>
                             </TableCell>
                             {/* Progress bar — desktop */}
                             <TableCell
