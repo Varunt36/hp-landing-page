@@ -30,7 +30,7 @@ interface RegistrationState {
 }
 
 const defaultGroupInfo: GroupInfo = {
-  country:     'DE',
+  country:     '',
   karyakarta:  '',
   memberCount: 1,
 }
