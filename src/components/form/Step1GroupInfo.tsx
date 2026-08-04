@@ -22,6 +22,7 @@ export default function Step1GroupInfo() {
   const [karyakarta,  setKaryakarta]  = useState(groupInfo.karyakarta)
   const [memberCount, setMemberCount] = useState(groupInfo.memberCount)
   const [karyakartaError, setKaryakartaError] = useState('')
+  const [countryError, setCountryError] = useState('')
 
   // null = still loading, string[] = loaded (empty means fetch failed → fall back to all)
   const [availableCodes, setAvailableCodes] = useState<string[] | null>(null)
@@ -34,7 +35,9 @@ export default function Step1GroupInfo() {
   useEffect(() => {
     fetchAvailableCountryCodes().then(codes => {
       setAvailableCodes(codes)
-      if (codes.length > 0 && !codes.includes(countryRef.current)) {
+      // Only correct a stale/no-longer-available selection — don't auto-pick
+      // one on behalf of a member who hasn't chosen a country yet.
+      if (codes.length > 0 && countryRef.current && !codes.includes(countryRef.current)) {
         setCountry(codes[0])
         setMemberCount(1)
       }
@@ -57,6 +60,10 @@ export default function Step1GroupInfo() {
   }, [country])
 
   const handleNext = () => {
+    if (!country) {
+      setCountryError('Country of residence is required.')
+      return
+    }
     if (!karyakarta.trim()) {
       setKaryakartaError('Local karyakarta name is required.')
       return
@@ -77,14 +84,17 @@ export default function Step1GroupInfo() {
 
       <Box sx={step1Styles.fieldStack}>
         {/* Country of residence */}
-        <FormControl fullWidth>
+        <FormControl fullWidth error={!!countryError}>
           <InputLabel>Country of residence *</InputLabel>
           <Select
             value={country}
             label="Country of residence *"
-            onChange={(e) => { setCountry(e.target.value); setMemberCount(1) }}
+            onChange={(e) => { setCountry(e.target.value); setMemberCount(1); setCountryError('') }}
             disabled={availableCodes === null}
           >
+            <MenuItem value="" disabled>
+              <em>Select your country</em>
+            </MenuItem>
             {(availableCodes === null || availableCodes.length === 0
               ? COUNTRIES
               : COUNTRIES.filter(c => availableCodes.includes(c.code))
@@ -94,6 +104,7 @@ export default function Step1GroupInfo() {
               </MenuItem>
             ))}
           </Select>
+          {countryError && <FormHelperText>{countryError}</FormHelperText>}
           {quotaLoading && (
             <FormHelperText>
               <CircularProgress size={10} sx={{ mr: 0.5 }} />

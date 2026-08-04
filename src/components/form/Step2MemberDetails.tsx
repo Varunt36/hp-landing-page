@@ -20,6 +20,7 @@ import {
   Select,
   MenuItem,
   InputAdornment,
+  FormHelperText,
 } from '@mui/material';
 import { useRegistrationStore } from '../../store/registrationStore';
 import { type MemberDetail } from '../../api/registrations';
@@ -42,7 +43,7 @@ const EMPTY_MEMBER: MemberDetail = {
   firstName: '',
   middleName: '',
   lastName: '',
-  gender: 'male',
+  gender: '' as MemberDetail['gender'],
   dob: '',
   email: '',
   phone: '',
@@ -55,6 +56,7 @@ type Errors = Partial<Record<keyof MemberDetail, string>>;
 // Returns a map of field-level errors; empty object means the form is valid
 function validate(form: MemberDetail): Errors {
   const errors: Errors = {};
+  if (!form.gender) errors.gender = 'Please select a gender.';
   if (!form.firstName.trim()) errors.firstName = 'First name is required.';
   if (!form.lastName.trim()) errors.lastName = 'Last name is required.';
   if (!form.dob) {
@@ -217,7 +219,7 @@ export default function Step2MemberDetails() {
           </Grid>
         </Grid>
 
-        <FormControl>
+        <FormControl error={!!errors.gender}>
           <FormLabel>Gender *</FormLabel>
           <RadioGroup
             row
@@ -231,6 +233,7 @@ export default function Step2MemberDetails() {
               label="Female"
             />
           </RadioGroup>
+          {errors.gender && <FormHelperText>{errors.gender}</FormHelperText>}
         </FormControl>
 
         <Box>
