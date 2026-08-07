@@ -8,6 +8,7 @@ export default function RegistrationClosed() {
     <Box sx={{ textAlign: 'center', py: { xs: 3, md: 4 } }}>
       <Typography
         variant="h3"
+        component="p"
         sx={{
           fontFamily: '"Blue Mirage", serif',
           fontSize: { xs: '1.15rem', md: '1.3rem' },
@@ -57,6 +58,22 @@ export default function RegistrationClosed() {
               }}
             >
               {person.phone.replace('tel:', '')}
+            </Box>
+            <Box
+              component="a"
+              href={person.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                display: 'block',
+                mt: 0.5,
+                fontSize: '0.95rem',
+                color: C.muted,
+                textDecoration: 'none',
+                '&:hover': { color: C.purple800 },
+              }}
+            >
+              WhatsApp
             </Box>
           </Box>
         ))}

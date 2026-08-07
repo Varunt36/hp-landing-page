@@ -92,21 +92,23 @@ export default function RegisterModal() {
           <CloseIcon fontSize="small" />
         </IconButton>
 
-        <Typography
-          component="span"
-          sx={{
-            display: 'block',
-            textAlign: 'center',
-            fontSize: '0.68rem',
-            letterSpacing: '0.18em',
-            textTransform: 'uppercase',
-            color: C.purple600,
-            fontWeight: 600,
-            mb: 1,
-          }}
-        >
-          Reserve your place
-        </Typography>
+        {registrationOpen && (
+          <Typography
+            component="span"
+            sx={{
+              display: 'block',
+              textAlign: 'center',
+              fontSize: '0.68rem',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: C.purple600,
+              fontWeight: 600,
+              mb: 1,
+            }}
+          >
+            Reserve your place
+          </Typography>
+        )}
 
         <Typography
           variant="h2"
@@ -149,19 +151,23 @@ export default function RegisterModal() {
           />
         </Box>
 
-        <Typography
-          variant="h3"
-          sx={{ fontSize: { xs: '1.1rem', md: '1.35rem' }, mb: 0.5, fontFamily: '"Blue Mirage", serif', textAlign: 'center' }}
-        >
-          Begin your divine journey
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ fontSize: '0.9rem', textAlign: 'center' }}
-        >
-          Please share a few details. A confirmation will be sent to your email.
-        </Typography>
+        {registrationOpen && (
+          <>
+            <Typography
+              variant="h3"
+              sx={{ fontSize: { xs: '1.1rem', md: '1.35rem' }, mb: 0.5, fontFamily: '"Blue Mirage", serif', textAlign: 'center' }}
+            >
+              Begin your divine journey
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontSize: '0.9rem', textAlign: 'center' }}
+            >
+              Please share a few details. A confirmation will be sent to your email.
+            </Typography>
+          </>
+        )}
       </DialogTitle>
 
       {/* ── Content ── */}

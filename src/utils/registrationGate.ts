@@ -12,7 +12,11 @@ export function isPastDeadline(): boolean {
 }
 
 export function hasBypass(): boolean {
-  return sessionStorage.getItem(BYPASS_KEY) === '1'
+  try {
+    return sessionStorage.getItem(BYPASS_KEY) === '1'
+  } catch {
+    return false
+  }
 }
 
 // Call once on app load. If the URL carries a valid ?invite= code,
@@ -23,13 +27,13 @@ export function consumeInviteParam(): void {
 
   const params = new URLSearchParams(window.location.search)
   const invite = params.get('invite')
-  if (invite !== BYPASS_CODE) return
+  if (invite?.trim() !== BYPASS_CODE?.trim()) return
 
   sessionStorage.setItem(BYPASS_KEY, '1')
   params.delete('invite')
   const query = params.toString()
   const newUrl = window.location.pathname + (query ? `?${query}` : '') + window.location.hash
-  window.history.replaceState({}, '', newUrl)
+  window.history.replaceState(window.history.state, '', newUrl)
 }
 
 // Snapshot helper — call once at the moment registration is entered
