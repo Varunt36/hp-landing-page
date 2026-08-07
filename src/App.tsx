@@ -1,5 +1,6 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
+import { consumeInviteParam } from './utils/registrationGate'
 import { Box, CircularProgress, Typography, Button } from '@mui/material'
 import { C } from './theme/theme'
 import Navbar from './components/layout/Navbar'
@@ -76,6 +77,10 @@ function NotFoundPage() {
 }
 
 export default function App() {
+  useEffect(() => {
+    consumeInviteParam()
+  }, [])
+
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
