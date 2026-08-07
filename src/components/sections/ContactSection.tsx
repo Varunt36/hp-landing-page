@@ -1,19 +1,6 @@
 import { Box, Container, Typography } from '@mui/material'
 import { C } from '../../theme/theme'
-import { FOOTER } from '../../data/data'
-
-const PEOPLE = [
-  {
-    name: 'Varun Thaker',
-    phone:    'tel:+4917685645884',
-    whatsapp: 'https://wa.me/4917685645884?text=Hi%20Varunbhai%2C%0AJai%20Swaminarayan%20I%20have%20a%20query%20regarding%20HP%20Amrut%20Mahotsav%202026%20registration.',
-  },
-  {
-    name: 'Nirmal Goyani',
-    phone:    'tel:+4917641691513',
-    whatsapp: 'https://wa.me/4917641691513?text=Hi%20Nirmalbhai%2C%0AJai%20Swaminarayan%20I%20have%20a%20query%20regarding%20HP%20Amrut%20Mahotsav%202026%20registration.',
-  },
-]
+import { FOOTER, PEOPLE } from '../../data/data'
 
 const cardSx = {
   background: C.cream,

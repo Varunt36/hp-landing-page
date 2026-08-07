@@ -67,6 +67,19 @@ export const FOOTER = {
   closing: 'Jai Swaminarayan 🙏',
 };
 
+export const PEOPLE = [
+  {
+    name: 'Varun Thaker',
+    phone:    'tel:+4917685645884',
+    whatsapp: 'https://wa.me/4917685645884?text=Hi%20Varunbhai%2C%0AJai%20Swaminarayan%20I%20have%20a%20query%20regarding%20HP%20Amrut%20Mahotsav%202026%20registration.',
+  },
+  {
+    name: 'Nirmal Goyani',
+    phone:    'tel:+4917641691513',
+    whatsapp: 'https://wa.me/4917641691513?text=Hi%20Nirmalbhai%2C%0AJai%20Swaminarayan%20I%20have%20a%20query%20regarding%20HP%20Amrut%20Mahotsav%202026%20registration.',
+  },
+];
+
 export const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Venue', href: '/venue' },
