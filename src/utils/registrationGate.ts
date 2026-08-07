@@ -3,6 +3,8 @@
 // The cutoff is a hardcoded instant; the bypass is a shared secret
 // code carried in the URL once, then remembered for the browser tab.
 
+import { useRegistrationStore } from '../store/registrationStore'
+
 const CLOSE_AT = new Date('2026-08-09T18:00:00+02:00')
 const BYPASS_CODE = import.meta.env.VITE_REGISTRATION_BYPASS_CODE as string | undefined
 const BYPASS_KEY = 'hp_reg_bypass'
@@ -30,6 +32,7 @@ export function consumeInviteParam(): void {
   if (invite?.trim() !== BYPASS_CODE?.trim()) return
 
   sessionStorage.setItem(BYPASS_KEY, '1')
+  useRegistrationStore.getState().openModal()
   params.delete('invite')
   const query = params.toString()
   const newUrl = window.location.pathname + (query ? `?${query}` : '') + window.location.hash
