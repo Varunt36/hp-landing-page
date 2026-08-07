@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Dialog, DialogTitle, DialogContent,
   IconButton, Typography, Box,
@@ -11,7 +11,9 @@ import Step2MemberDetails from './Step2MemberDetails'
 import Step3Terms from './Step3Terms'
 import Step4Payment from './Step4Payment'
 import Step5Confirmation from './Step5Confirmation'
+import RegistrationClosed from './RegistrationClosed'
 import { useRegistrationStore } from '../../store/registrationStore'
+import { isRegistrationOpenNow } from '../../utils/registrationGate'
 import { C } from '../../theme/theme'
 
 export default function RegisterModal() {
@@ -20,6 +22,14 @@ export default function RegisterModal() {
   const contentRef = useRef<HTMLDivElement>(null)
 
   const { modalOpen, closeModal, currentStep } = useRegistrationStore()
+
+  const [registrationOpen, setRegistrationOpen] = useState(true)
+
+  useEffect(() => {
+    if (modalOpen) {
+      setRegistrationOpen(isRegistrationOpenNow())
+    }
+  }, [modalOpen])
 
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'instant' })
@@ -159,11 +169,16 @@ export default function RegisterModal() {
         ref={contentRef}
         sx={{ px: { xs: 2, md: 4 }, pb: 4, pt: 2.5 }}
       >
-        <ProgressStepper />
-
-        <Box key={currentStep} sx={{ animation: 'slideIn 300ms ease both' }}>
-          {stepComponents[currentStep]}
-        </Box>
+        {registrationOpen ? (
+          <>
+            <ProgressStepper />
+            <Box key={currentStep} sx={{ animation: 'slideIn 300ms ease both' }}>
+              {stepComponents[currentStep]}
+            </Box>
+          </>
+        ) : (
+          <RegistrationClosed />
+        )}
       </DialogContent>
     </Dialog>
   );
