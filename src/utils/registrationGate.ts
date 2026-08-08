@@ -31,7 +31,11 @@ export function consumeInviteParam(): void {
   const invite = params.get('invite')
   if (invite?.trim() !== BYPASS_CODE?.trim()) return
 
-  sessionStorage.setItem(BYPASS_KEY, '1')
+  try {
+    sessionStorage.setItem(BYPASS_KEY, '1')
+  } catch {
+    // storage blocked — bypass won't persist past this page load, but continue anyway
+  }
   useRegistrationStore.getState().openModal()
   params.delete('invite')
   const query = params.toString()

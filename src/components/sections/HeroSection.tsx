@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, Container, Stack } from '@mui/material';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { Box, Typography, Button, Container, Stack, Link } from '@mui/material';
 import { heroStyles as s } from './HeroSection.styles';
 import { useRegistrationStore } from '../../store/registrationStore';
 import { useRegistrationOpen } from '../../hooks/useRegistrationOpen';
@@ -82,10 +82,9 @@ export default function HeroSection() {
           ) : (
             <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14, textAlign: 'center', mb: 2, px: 2 }}>
               Registration is now closed. For queries, please visit our{' '}
-              <Box component="span" onClick={() => navigate('/contact')}
-                sx={{ cursor: 'pointer', textDecoration: 'underline', fontWeight: 600 }}>
+              <Link component={RouterLink} to="/contact" sx={{ fontWeight: 600, cursor: 'pointer' }}>
                 Contact page
-              </Box>.
+              </Link>.
             </Typography>
           )}
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, width: '100%' }}>
@@ -173,12 +172,11 @@ export default function HeroSection() {
                 </Button>
               </Stack>
             ) : (
-              <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17, textAlign: 'center' }}>
+              <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17, textAlign: 'center', mt: 2.5 }}>
                 Registration is now closed. For queries, please visit our{' '}
-                <Box component="span" onClick={() => navigate('/contact')}
-                  sx={{ cursor: 'pointer', textDecoration: 'underline', fontWeight: 600 }}>
+                <Link component={RouterLink} to="/contact" sx={{ fontWeight: 600, cursor: 'pointer' }}>
                   Contact page
-                </Box>.
+                </Link>.
               </Typography>
             )}
 
