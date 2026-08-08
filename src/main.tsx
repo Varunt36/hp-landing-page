@@ -7,6 +7,9 @@ import App from './App.tsx'
 import theme from './theme/theme.ts'
 import { AuthProvider } from './context/AuthContext.tsx'
 import ScrollToTop from './components/utils/ScrollToTop.tsx'
+import { consumeInviteParam } from './utils/registrationGate'
+
+consumeInviteParam()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

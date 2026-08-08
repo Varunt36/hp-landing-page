@@ -1,0 +1,65 @@
+// src/utils/registrationGate.ts
+// Single source of truth for whether registration is open.
+// The cutoff is a hardcoded instant; the bypass is a shared secret
+// code carried in the URL once, then remembered for the browser tab.
+
+import { useRegistrationStore } from '../store/registrationStore'
+
+// 18:00 on the German wall clock. Germany is on CEST (UTC+2) in August
+// (not CET/UTC+1, which only applies in winter), so the offset is +02:00.
+const CLOSE_AT = new Date('2026-08-09T18:00:00+02:00');
+const BYPASS_CODE = import.meta.env.VITE_REGISTRATION_BYPASS_CODE as string | undefined
+const BYPASS_KEY = 'hp_reg_bypass'
+
+export function isPastDeadline(): boolean {
+  return Date.now() >= CLOSE_AT.getTime()
+}
+
+export function hasBypass(): boolean {
+  try {
+    return sessionStorage.getItem(BYPASS_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+// Called when the registration modal is closed manually (not on a
+// successful completion, which navigates away via Stripe redirect
+// instead of closing the modal). Spends the bypass so a later plain
+// "Register Now" click shows the closed message again — the invite
+// link itself still works if revisited.
+export function clearBypass(): void {
+  try {
+    sessionStorage.removeItem(BYPASS_KEY)
+  } catch {
+    // storage blocked — nothing to clear anyway
+  }
+}
+
+// Call once on app load. If the URL carries a valid ?invite= code,
+// remember it for the rest of this browser tab's session and strip
+// the param from the address bar.
+export function consumeInviteParam(): void {
+  if (!BYPASS_CODE) return
+
+  const params = new URLSearchParams(window.location.search)
+  const invite = params.get('invite')
+  if (invite?.trim() !== BYPASS_CODE?.trim()) return
+
+  try {
+    sessionStorage.setItem(BYPASS_KEY, '1')
+  } catch {
+    // storage blocked — bypass won't persist past this page load, but continue anyway
+  }
+  useRegistrationStore.getState().openModal()
+  params.delete('invite')
+  const query = params.toString()
+  const newUrl = window.location.pathname + (query ? `?${query}` : '') + window.location.hash
+  window.history.replaceState(window.history.state, '', newUrl)
+}
+
+// Snapshot helper — call once at the moment registration is entered
+// (modal open), not on every render.
+export function isRegistrationOpenNow(): boolean {
+  return !isPastDeadline() || hasBypass()
+}

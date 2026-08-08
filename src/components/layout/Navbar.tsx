@@ -21,6 +21,7 @@ import { NAV_LINKS } from '../../data/data';
 import { navbarStyles as s } from './Navbar.styles';
 import { C } from '../../theme/theme';
 import { useRegistrationStore } from '../../store/registrationStore';
+import { useRegistrationOpen } from '../../hooks/useRegistrationOpen';
 
 function BrandLogo() {
   return (
@@ -47,6 +48,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const openModal = useRegistrationStore((s) => s.openModal);
+  const registrationOpen = useRegistrationOpen();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -128,11 +130,15 @@ export default function Navbar() {
                       variant="contained"
                       fullWidth
                       onClick={() => {
-                        openModal();
+                        if (registrationOpen) {
+                          openModal();
+                        } else {
+                          navigate('/venue');
+                        }
                         setDrawerOpen(false);
                       }}
                     >
-                      Register Now
+                      {registrationOpen ? 'Register Now' : 'Learn More'}
                     </Button>
                   </ListItem>
                 </List>
@@ -164,14 +170,14 @@ export default function Navbar() {
             <Button
               variant="contained"
               size="large"
-              onClick={openModal}
+              onClick={registrationOpen ? openModal : () => navigate('/venue')}
               sx={{
                 ...s.registerButton,
                 fontFamily: '"Blue Mirage", serif',
                 fontSize: 17,
               }}
             >
-              Register Now
+              {registrationOpen ? 'Register Now' : 'Learn More'}
             </Button>
           </Box>
         )}
