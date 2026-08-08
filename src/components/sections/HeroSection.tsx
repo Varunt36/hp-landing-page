@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Container, Stack } from '@mui/material';
 import { heroStyles as s } from './HeroSection.styles';
 import { useRegistrationStore } from '../../store/registrationStore';
+import { useRegistrationOpen } from '../../hooks/useRegistrationOpen';
 
 const EVENT_DATE = new Date("2026-08-15T00:00:00+02:00"); // Berlin CEST
 
@@ -32,6 +33,7 @@ function useCountdown() {
 export default function HeroSection() {
   const navigate = useNavigate();
   const openModal = useRegistrationStore((s) => s.openModal);
+  const registrationOpen = useRegistrationOpen();
   const { d, h, m, sec } = useCountdown();
 
   const cd = [
@@ -61,21 +63,31 @@ export default function HeroSection() {
               maskComposite: 'intersect',
             }}
           />
-          <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', justifyContent: 'center', mb: 2 }}>
-            <Button variant="contained" size="large" onClick={openModal}
-              sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14 }}>
-              Register Now
-              <Box component="svg" aria-hidden="true" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"
-                sx={{ width: 14, height: 14, ml: 0.5 }}>
-                <path d="M5 12h14M13 5l7 7-7 7" />
-              </Box>
-            </Button>
-            <Button variant="outlined" size="large" onClick={() => navigate('/venue')}
-              sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14 }}>
-              Learn More
-            </Button>
-          </Stack>
+          {registrationOpen ? (
+            <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', justifyContent: 'center', mb: 2 }}>
+              <Button variant="contained" size="large" onClick={openModal}
+                sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14 }}>
+                Register Now
+                <Box component="svg" aria-hidden="true" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"
+                  sx={{ width: 14, height: 14, ml: 0.5 }}>
+                  <path d="M5 12h14M13 5l7 7-7 7" />
+                </Box>
+              </Button>
+              <Button variant="outlined" size="large" onClick={() => navigate('/venue')}
+                sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14 }}>
+                Learn More
+              </Button>
+            </Stack>
+          ) : (
+            <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14, textAlign: 'center', mb: 2, px: 2 }}>
+              Registration is now closed. For queries, please visit our{' '}
+              <Box component="span" onClick={() => navigate('/contact')}
+                sx={{ cursor: 'pointer', textDecoration: 'underline', fontWeight: 600 }}>
+                Contact page
+              </Box>.
+            </Typography>
+          )}
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, width: '100%' }}>
             {cd.map(({ num, label }) => (
               <Box key={label} sx={s.cdCell}>
@@ -129,36 +141,46 @@ export default function HeroSection() {
               15&nbsp;·&nbsp;16&nbsp;·&nbsp;17 August 2026
             </Box>
 
-            <Stack direction="row" spacing={1.5} sx={s.ctaRow}>
-              <Button
-                variant="contained"
-                size="large"
-                onClick={openModal}
-                sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17 }}
-              >
-                Register Now
-                <Box
-                  component="svg"
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  sx={{ width: 14, height: 14, ml: 0.5 }}
+            {registrationOpen ? (
+              <Stack direction="row" spacing={1.5} sx={s.ctaRow}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={openModal}
+                  sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17 }}
                 >
-                  <path d="M5 12h14M13 5l7 7-7 7" />
-                </Box>
-              </Button>
-              <Button
-                variant="outlined"
-                size="large"
-                onClick={() => navigate("/venue")}
-                sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17 }}
-              >
-                Learn More
-              </Button>
-            </Stack>
+                  Register Now
+                  <Box
+                    component="svg"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    sx={{ width: 14, height: 14, ml: 0.5 }}
+                  >
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </Box>
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  onClick={() => navigate("/venue")}
+                  sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17 }}
+                >
+                  Learn More
+                </Button>
+              </Stack>
+            ) : (
+              <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17, textAlign: 'center' }}>
+                Registration is now closed. For queries, please visit our{' '}
+                <Box component="span" onClick={() => navigate('/contact')}
+                  sx={{ cursor: 'pointer', textDecoration: 'underline', fontWeight: 600 }}>
+                  Contact page
+                </Box>.
+              </Typography>
+            )}
 
             <Box sx={s.countdown}>
               {cd.map(({ num, label }) => (
