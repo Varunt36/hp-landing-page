@@ -19,7 +19,7 @@ export default function RegistrationClosed() {
         Registration is now closed
       </Typography>
 
-      <Typography sx={{ color: C.muted, fontSize: '0.95rem', mb: 3, maxWidth: 420, mx: 'auto' }}>
+      <Typography sx={{ color: C.purple700, fontSize: '0.95rem', mb: 3, maxWidth: 420, mx: 'auto' }}>
         Jai Swaminarayan Bhagat, registration for HariPrabodham Amrut Mahotsav 2026 has now closed.
         For any queries, please reach out to one of us below.
       </Typography>

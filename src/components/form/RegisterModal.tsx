@@ -13,7 +13,7 @@ import Step4Payment from './Step4Payment'
 import Step5Confirmation from './Step5Confirmation'
 import RegistrationClosed from './RegistrationClosed'
 import { useRegistrationStore } from '../../store/registrationStore'
-import { isRegistrationOpenNow } from '../../utils/registrationGate'
+import { isRegistrationOpenNow, clearBypass } from '../../utils/registrationGate'
 import { C } from '../../theme/theme'
 
 export default function RegisterModal() {
@@ -22,6 +22,11 @@ export default function RegisterModal() {
   const contentRef = useRef<HTMLDivElement>(null)
 
   const { modalOpen, closeModal, currentStep } = useRegistrationStore()
+
+  const handleClose = () => {
+    clearBypass()
+    closeModal()
+  }
 
   const [registrationOpen, setRegistrationOpen] = useState(true)
 
@@ -46,7 +51,7 @@ export default function RegisterModal() {
   return (
     <Dialog
       open={modalOpen}
-      onClose={closeModal}
+      onClose={handleClose}
       maxWidth="md"
       fullWidth
       fullScreen={isMobile}
@@ -85,7 +90,7 @@ export default function RegisterModal() {
         }}
       >
         <IconButton
-          onClick={closeModal}
+          onClick={handleClose}
           size="small"
           sx={{ position: 'absolute', top: 12, right: 12, color: C.muted }}
         >
@@ -155,6 +160,7 @@ export default function RegisterModal() {
           <>
             <Typography
               variant="h3"
+              component="p"
               sx={{ fontSize: { xs: '1.1rem', md: '1.35rem' }, mb: 0.5, fontFamily: '"Blue Mirage", serif', textAlign: 'center' }}
             >
               Begin your divine journey

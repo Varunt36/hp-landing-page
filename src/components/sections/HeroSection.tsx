@@ -4,8 +4,9 @@ import { Box, Typography, Button, Container, Stack, Link } from '@mui/material';
 import { heroStyles as s } from './HeroSection.styles';
 import { useRegistrationStore } from '../../store/registrationStore';
 import { useRegistrationOpen } from '../../hooks/useRegistrationOpen';
+import { C } from '../../theme/theme';
 
-const EVENT_DATE = new Date("2026-08-15T00:00:00+02:00"); // Berlin CEST
+const EVENT_DATE = new Date('2026-08-15T00:00:00+02:00'); // Berlin CEST
 
 function useCountdown() {
   const [t, setT] = useState({ d: 0, h: 0, m: 0, sec: 0 });
@@ -37,17 +38,27 @@ export default function HeroSection() {
   const { d, h, m, sec } = useCountdown();
 
   const cd = [
-    { num: String(d).padStart(3, "0"), label: "Days" },
-    { num: String(h).padStart(2, "0"), label: "Hours" },
-    { num: String(m).padStart(2, "0"), label: "Mins" },
-    { num: String(sec).padStart(2, "0"), label: "Secs" },
+    { num: String(d).padStart(3, '0'), label: 'Days' },
+    { num: String(h).padStart(2, '0'), label: 'Hours' },
+    { num: String(m).padStart(2, '0'), label: 'Mins' },
+    { num: String(sec).padStart(2, '0'), label: 'Secs' },
   ];
 
   return (
     <Box id="hero" sx={s.outerBox}>
-      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2, px: { xs: 0, md: undefined } }}>
+      <Container
+        maxWidth="xl"
+        sx={{ position: 'relative', zIndex: 2, px: { xs: 0, md: undefined } }}
+      >
         {/* ── Mobile layout (xs only) ── */}
-        <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', alignItems: 'center', px: 2 }}>
+        <Box
+          sx={{
+            display: { xs: 'flex', md: 'none' },
+            flexDirection: 'column',
+            alignItems: 'center',
+            px: 2,
+          }}
+        >
           <Box
             component="img"
             src="/images/Mobile%20View%20Cover%20Page.jpeg"
@@ -57,37 +68,78 @@ export default function HeroSection() {
               height: 'auto',
               mb: 1.5,
               display: 'block',
-              WebkitMaskImage: 'linear-gradient(to bottom, black 95%, transparent 100%), linear-gradient(to right, transparent 0%, black 5%, black 92%, transparent 100%)',
-              maskImage: 'linear-gradient(to bottom, black 95%, transparent 100%), linear-gradient(to right, transparent 0%, black 5%, black 92%, transparent 100%)',
+              WebkitMaskImage:
+                'linear-gradient(to bottom, black 95%, transparent 100%), linear-gradient(to right, transparent 0%, black 5%, black 92%, transparent 100%)',
+              maskImage:
+                'linear-gradient(to bottom, black 95%, transparent 100%), linear-gradient(to right, transparent 0%, black 5%, black 92%, transparent 100%)',
               WebkitMaskComposite: 'source-in',
               maskComposite: 'intersect',
             }}
           />
           {registrationOpen ? (
-            <Stack direction="row" spacing={1.5} sx={{ flexWrap: 'wrap', justifyContent: 'center', mb: 2 }}>
-              <Button variant="contained" size="large" onClick={openModal}
-                sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14 }}>
+            <Stack
+              direction="row"
+              spacing={1.5}
+              sx={{ flexWrap: 'wrap', justifyContent: 'center', mb: 2 }}
+            >
+              <Button
+                variant="contained"
+                size="large"
+                onClick={openModal}
+                sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14 }}
+              >
                 Register Now
-                <Box component="svg" aria-hidden="true" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"
-                  sx={{ width: 14, height: 14, ml: 0.5 }}>
+                <Box
+                  component="svg"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  sx={{ width: 14, height: 14, ml: 0.5 }}
+                >
                   <path d="M5 12h14M13 5l7 7-7 7" />
                 </Box>
               </Button>
-              <Button variant="outlined" size="large" onClick={() => navigate('/venue')}
-                sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14 }}>
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={() => navigate('/venue')}
+                sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14 }}
+              >
                 Learn More
               </Button>
             </Stack>
           ) : (
-            <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 14, textAlign: 'center', mb: 2, px: 2 }}>
+            <Typography
+              sx={{
+                fontFamily: '"Blue Mirage", serif',
+                fontSize: 14,
+                textAlign: 'center',
+                mb: 2,
+                px: 2,
+              }}
+            >
               Registration is now closed. For queries, please visit our{' '}
-              <Link component={RouterLink} to="/contact" sx={{ fontWeight: 600, cursor: 'pointer' }}>
+              <Link
+                component={RouterLink}
+                to="/contact"
+                sx={{ fontWeight: 600, cursor: 'pointer' }}
+              >
                 Contact page
-              </Link>.
+              </Link>
+              .
             </Typography>
           )}
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, width: '100%' }}>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: 1,
+              width: '100%',
+            }}
+          >
             {cd.map(({ num, label }) => (
               <Box key={label} sx={s.cdCell}>
                 <Typography sx={s.cdNum}>{num}</Typography>
@@ -165,18 +217,31 @@ export default function HeroSection() {
                 <Button
                   variant="outlined"
                   size="large"
-                  onClick={() => navigate("/venue")}
+                  onClick={() => navigate('/venue')}
                   sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17 }}
                 >
                   Learn More
                 </Button>
               </Stack>
             ) : (
-              <Typography sx={{ fontFamily: '"Blue Mirage", serif', fontSize: 17, textAlign: 'center', mt: 2.5 }}>
+              <Typography
+                sx={{
+                  fontFamily: '"Blue Mirage", serif',
+                  fontSize: 18,
+                  color: C.purple700,
+                  textAlign: 'center',
+                  mt: 2.5,
+                }}
+              >
                 Registration is now closed. For queries, please visit our{' '}
-                <Link component={RouterLink} to="/contact" sx={{ fontWeight: 600, cursor: 'pointer' }}>
+                <Link
+                  component={RouterLink}
+                  to="/contact"
+                  sx={{ fontWeight: 600, cursor: 'pointer' }}
+                >
                   Contact page
-                </Link>.
+                </Link>
+                .
               </Typography>
             )}
 
@@ -209,7 +274,12 @@ export default function HeroSection() {
         viewBox="0 0 1440 160"
         preserveAspectRatio="none"
         aria-hidden="true"
-        sx={{ ...s.waveBottom, width: "100%", height: { xs: 50, md: 110 }, display: "block" }}
+        sx={{
+          ...s.waveBottom,
+          width: '100%',
+          height: { xs: 50, md: 110 },
+          display: 'block',
+        }}
       >
         {/* Back wave — softer purple */}
         <path

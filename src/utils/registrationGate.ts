@@ -5,7 +5,9 @@
 
 import { useRegistrationStore } from '../store/registrationStore'
 
-const CLOSE_AT = new Date('2026-08-09T18:00:00+02:00')
+// 18:00 on the German wall clock. Germany is on CEST (UTC+2) in August
+// (not CET/UTC+1, which only applies in winter), so the offset is +02:00.
+const CLOSE_AT = new Date('2026-08-09T18:00:00+02:00');
 const BYPASS_CODE = import.meta.env.VITE_REGISTRATION_BYPASS_CODE as string | undefined
 const BYPASS_KEY = 'hp_reg_bypass'
 
@@ -18,6 +20,19 @@ export function hasBypass(): boolean {
     return sessionStorage.getItem(BYPASS_KEY) === '1'
   } catch {
     return false
+  }
+}
+
+// Called when the registration modal is closed manually (not on a
+// successful completion, which navigates away via Stripe redirect
+// instead of closing the modal). Spends the bypass so a later plain
+// "Register Now" click shows the closed message again — the invite
+// link itself still works if revisited.
+export function clearBypass(): void {
+  try {
+    sessionStorage.removeItem(BYPASS_KEY)
+  } catch {
+    // storage blocked — nothing to clear anyway
   }
 }
 
