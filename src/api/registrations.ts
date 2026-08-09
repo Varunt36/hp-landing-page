@@ -54,7 +54,9 @@ function friendlyField(field: string): string {
   return field;
 }
 
-function parseApiError(body: Record<string, unknown>): string {
+// Exported for reuse by cityTour.ts — the backend error envelope is identical
+// across both flows. No logic change.
+export function parseApiError(body: Record<string, unknown>): string {
   // Backend format: { code, message, details: [{ field, message }] }
   if (typeof body.message === 'string') {
     const details = body.details;
