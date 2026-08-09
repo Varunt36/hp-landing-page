@@ -16,6 +16,8 @@ const ContactPage    = lazy(() => import('./pages/ContactPage'))
 const ImpressumPage  = lazy(() => import('./pages/ImpressumPage'))
 const PaymentSuccess  = lazy(() => import('./pages/PaymentSuccess'))
 const PaymentCancel   = lazy(() => import('./pages/PaymentCancel'))
+const CityTourPage    = lazy(() => import('./pages/city-tour/CityTourPage'))
+const CityTourSuccess = lazy(() => import('./pages/city-tour/CityTourSuccess'))
 const DataPrivacyPage = lazy(() => import('./pages/DataPrivacyPage'))
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
 const AdminScan  = lazy(() => import('./pages/admin/AdminScan'))
@@ -88,6 +90,11 @@ export default function App() {
         <Route path="/data-privacy"    element={<DataPrivacyPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/cancel"  element={<PaymentCancel />} />
+        {/* The form gets the full site shell; the post-Stripe page stays bare,
+            matching /payment/success. Stripe's cancel_url is /payment/cancel
+            for both flows — the backend hardcodes it. */}
+        <Route path="/city-tour"         element={<PageShell><CityTourPage /></PageShell>} />
+        <Route path="/city-tour/success" element={<CityTourSuccess />} />
         <Route path="/admin/login"     element={<AdminLogin />} />
         <Route path="/admin/scan"      element={<ProtectedRoute><AdminScan /></ProtectedRoute>} />
         <Route path="*"               element={<NotFoundPage />} />
