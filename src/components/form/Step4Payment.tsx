@@ -21,6 +21,7 @@ import {
 import { step4Styles } from './Step4Payment.styles';
 import { sharedFormStyles } from './FormShared.styles';
 import { C } from '../../theme/theme';
+import { markPaymentFlow } from '../../utils/paymentFlow';
 
 const PRICING = {
   perPerson: Number(import.meta.env.VITE_PRICE_PER_PERSON) || 290,
@@ -165,6 +166,9 @@ export default function Step4Payment() {
       // 2. sessionStorage — survives the full-page navigation that Stripe's redirect causes
       setConfirmRef(result.reference);
       sessionStorage.setItem('hp_confirm_ref', result.reference);
+      // Overwrite any city tour mark left in this tab, so /payment/cancel
+      // offers "Try Again" against registration and not the tour.
+      markPaymentFlow('registration');
       window.location.href = result.payment_url;
     } catch (err: unknown) {
       setError(

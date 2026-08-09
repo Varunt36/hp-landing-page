@@ -16,6 +16,7 @@ import { COUNTRIES } from '../../data/data'
 import { MAX_ATTENDEES, submitCityTour } from '../../api/cityTour'
 import { cityTourStyles as s } from './CityTourPage.styles'
 import { usePageMeta } from '../../hooks/usePageMeta'
+import { markPaymentFlow } from '../../utils/paymentFlow'
 import { C } from '../../theme/theme'
 
 // Presentational only. The backend's CITY_TOUR_DONATION_EUR is what Stripe
@@ -128,6 +129,9 @@ export default function CityTourPage() {
         memberNames: names,
         termsAccepted: terms,
       })
+      // Tells /payment/cancel to send an abandoned checkout back here rather
+      // than to the main registration — the cancel_url is shared by both flows.
+      markPaymentFlow('city-tour')
       // Full navigation, not a router push — this leaves the SPA for Stripe.
       window.location.href = payment_url
     } catch (err) {
