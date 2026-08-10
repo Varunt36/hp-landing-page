@@ -56,23 +56,28 @@ function SlimColumnMenu(props: GridColumnMenuProps) {
   return <GridColumnMenu {...props} slots={{ columnMenuColumnsItem: null }} />;
 }
 import { Html5Qrcode } from "html5-qrcode";
-import * as XLSX from "xlsx";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../lib/supabase";
 import {
   fetchAllMembers,
   checkInByTicket,
   fetchMembersByCountry,
+  fetchCityTourAttendees,
   type Member,
   type CountryMember,
+  type CityTourAttendee,
 } from "../../api/admin";
 import { fetchAllQuotas, type CountryQuotaRow } from "../../api/quotas";
-import { COUNTRIES } from "../../data/data";
+import { downloadExcel } from "../../utils/excel";
+import { countryMeta } from "../../data/data";
+import {
+  CountryCell,
+  IndexCell,
+  ListStatCard,
+  ListStatDialog,
+} from "./ListStat";
 
 // ── Dashboard helpers ─────────────────────────────────────
-const countryMeta = (code: string) =>
-  COUNTRIES.find((c) => c.code === code) ?? { label: code, flag: "🌐" };
-
 function quotaFillColor(pct: number) {
   if (pct >= 90) return "#d32f2f";
   if (pct >= 70) return "#f57c00";
@@ -240,6 +245,10 @@ export default function AdminScan() {
   // Event birthday list (Aug 15–17)
   const [birthdayDialogOpen, setBirthdayDialogOpen] = useState(false);
 
+  // City tour attendees
+  const [cityTour, setCityTour] = useState<CityTourAttendee[]>([]);
+  const [cityTourDialogOpen, setCityTourDialogOpen] = useState(false);
+
   const openCountryDialog = async (
     code: string,
     label: string,
@@ -317,12 +326,16 @@ export default function AdminScan() {
   const loadMembers = async () => {
     setTableLoading(true);
     try {
-      const [data, q] = await Promise.all([
+      const [data, q, tour] = await Promise.all([
         fetchAllMembers(),
         fetchAllQuotas(),
+        // Kept separate: the city tour tables are read-restricted, so a
+        // missing grant must not blank out the whole dashboard.
+        fetchCityTourAttendees().catch(() => [] as CityTourAttendee[]),
       ]);
       setMembers(data);
       setQuotas(q);
+      setCityTour(tour);
       setLastUpdated(new Date());
     } catch {
       // silently ignore — table just stays empty
@@ -506,22 +519,7 @@ export default function AdminScan() {
         headerName: "Country",
         flex: 1,
         minWidth: 130,
-        renderCell: ({ row }) =>
-          row.country && row.country !== "—" ? (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.75,
-                height: "100%",
-              }}
-            >
-              <span>{countryMeta(row.country).flag}</span>
-              <span>{countryMeta(row.country).label}</span>
-            </Box>
-          ) : (
-            "—"
-          ),
+        renderCell: ({ row }) => <CountryCell code={row.country} />,
       },
       {
         field: "ticket_number",
@@ -582,105 +580,76 @@ export default function AdminScan() {
   ); // eslint-disable-line
 
   const downloadCountryExcel = () => {
-    if (!countryDialog || !countryMembers.length) return;
-    const rows = countryMembers.map((m, i) => ({
-      "#": i + 1,
-      "First Name": m.first_name,
-      "Last Name": m.last_name,
-      Gender: m.gender.charAt(0).toUpperCase() + m.gender.slice(1),
-      Payment: m.paid ? "Paid" : "Pending",
-      "Checked In": m.checked_in ? "Yes" : "No",
-    }));
-    const ws = XLSX.utils.json_to_sheet(rows);
-    ws["!cols"] = [
-      { wch: 4 },
-      { wch: 16 },
-      { wch: 16 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 12 },
-    ];
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, countryDialog.label);
-    XLSX.writeFile(wb, `${countryDialog.label}_members.xlsx`);
+    if (!countryDialog) return;
+    downloadExcel(
+      countryMembers.map((m, i) => ({
+        "#": i + 1,
+        "First Name": m.first_name,
+        "Last Name": m.last_name,
+        Gender: m.gender.charAt(0).toUpperCase() + m.gender.slice(1),
+        Payment: m.paid ? "Paid" : "Pending",
+        "Checked In": m.checked_in ? "Yes" : "No",
+      })),
+      countryDialog.label,
+      `${countryDialog.label}_members.xlsx`,
+    );
   };
 
   const downloadAgeExcel = () => {
     if (!ageDialog) return;
-    const list = ageBuckets[ageDialog.key];
-    if (!list.length) return;
-    const rows = list.map((m, i) => ({
-      "#": i + 1,
-      "First Name": m.first_name,
-      "Last Name": m.last_name,
-      Country: countryMeta(m.country).label,
-      Gender: m.gender.charAt(0).toUpperCase() + m.gender.slice(1),
-      Age: ageAtEvent(m.dob),
-      "Checked In": m.checked_in ? "Yes" : "No",
-    }));
-    const ws = XLSX.utils.json_to_sheet(rows);
-    ws["!cols"] = [
-      { wch: 4 },
-      { wch: 16 },
-      { wch: 16 },
-      { wch: 16 },
-      { wch: 10 },
-      { wch: 6 },
-      { wch: 12 },
-    ];
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, ageDialog.label);
-    XLSX.writeFile(
-      wb,
+    downloadExcel(
+      ageBuckets[ageDialog.key].map((m, i) => ({
+        "#": i + 1,
+        "First Name": m.first_name,
+        "Last Name": m.last_name,
+        Country: countryMeta(m.country).label,
+        Gender: m.gender.charAt(0).toUpperCase() + m.gender.slice(1),
+        Age: ageAtEvent(m.dob),
+        "Checked In": m.checked_in ? "Yes" : "No",
+      })),
+      ageDialog.label,
       `Age_${ageDialog.label.replace(/[^\w]+/g, "_")}_members.xlsx`,
     );
   };
 
-  const downloadUnderAgeExcel = () => {
-    if (!underAgeMembers.length) return;
-    const rows = underAgeMembers.map((m, i) => ({
-      "#": i + 1,
-      "First Name": m.first_name,
-      "Last Name": m.last_name,
-      Age: ageAtEvent(m.dob),
-      Birthdate: formatDob(m.dob),
-      Country: countryMeta(m.country).label,
-    }));
-    const ws = XLSX.utils.json_to_sheet(rows);
-    ws["!cols"] = [
-      { wch: 4 },
-      { wch: 16 },
-      { wch: 16 },
-      { wch: 6 },
-      { wch: 12 },
-      { wch: 16 },
-    ];
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, `Under ${underAgeThreshold}`);
-    XLSX.writeFile(wb, `Under_${underAgeThreshold}_members.xlsx`);
-  };
+  const downloadUnderAgeExcel = () =>
+    downloadExcel(
+      underAgeMembers.map((m, i) => ({
+        "#": i + 1,
+        "First Name": m.first_name,
+        "Last Name": m.last_name,
+        Age: ageAtEvent(m.dob),
+        Birthdate: formatDob(m.dob),
+        Country: countryMeta(m.country).label,
+      })),
+      `Under ${underAgeThreshold}`,
+      `Under_${underAgeThreshold}_members.xlsx`,
+    );
 
-  const downloadBirthdayExcel = () => {
-    if (!birthdayMembers.length) return;
-    const rows = birthdayMembers.map((m, i) => ({
-      "#": i + 1,
-      "First Name": m.first_name,
-      "Last Name": m.last_name,
-      Country: countryMeta(m.country).label,
-      Birthday: formatBirthday(m.dob),
-    }));
-    const ws = XLSX.utils.json_to_sheet(rows);
-    ws["!cols"] = [
-      { wch: 4 },
-      { wch: 16 },
-      { wch: 16 },
-      { wch: 16 },
-      { wch: 10 },
-    ];
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Event Birthdays");
-    XLSX.writeFile(wb, "Event_Birthdays_Aug15-17.xlsx");
-  };
+  const downloadBirthdayExcel = () =>
+    downloadExcel(
+      birthdayMembers.map((m, i) => ({
+        "#": i + 1,
+        "First Name": m.first_name,
+        "Last Name": m.last_name,
+        Country: countryMeta(m.country).label,
+        Birthday: formatBirthday(m.dob),
+      })),
+      "Event Birthdays",
+      "Event_Birthdays_Aug15-17.xlsx",
+    );
+
+  const downloadCityTourExcel = () =>
+    downloadExcel(
+      cityTour.map((a, i) => ({
+        "#": i + 1,
+        "Full Name": a.full_name,
+        Reference: a.reference,
+        Country: countryMeta(a.country).label,
+      })),
+      "City Tour",
+      "City_Tour_Attendees.xlsx",
+    );
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
@@ -1092,7 +1061,7 @@ export default function AdminScan() {
                 </Card>
               </Box>
 
-              {/* Under-age filter + Event birthdays */}
+              {/* Under-age filter + Event birthdays + City tour */}
               <Box
                 sx={{
                   display: "flex",
@@ -1102,218 +1071,71 @@ export default function AdminScan() {
                   flexWrap: "wrap",
                 }}
               >
-                {/* Under-age filter card */}
-                <Card
-                  elevation={0}
-                  sx={{
-                    flex: "1 1 260px",
-                    minWidth: 0,
-                    borderRadius: "16px",
-                    position: "relative",
-                    overflow: "hidden",
-                    "&::before": {
-                      content: '""',
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: "3px",
-                      background: "#c2185b",
-                    },
-                  }}
+                <ListStatCard
+                  accent="#c2185b"
+                  title="Members Under Age"
+                  count={underAgeMembers.length}
+                  caption={`under ${underAgeThreshold} yrs`}
+                  onView={() => setUnderAgeDialogOpen(true)}
                 >
-                  <CardContent sx={{ pt: 2, pb: "12px !important" }}>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      fontWeight={600}
-                      fontSize={12}
-                      sx={{
-                        mb: 1.25,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                      }}
-                    >
-                      Members Under Age
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                        mb: 1.25,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <TextField
-                        type="number"
-                        size="small"
-                        value={underAgeThreshold}
-                        onChange={(e) =>
-                          setUnderAgeThreshold(
-                            Math.max(0, Number(e.target.value) || 0),
-                          )
-                        }
-                        slotProps={{ htmlInput: { min: 0, max: 100 } }}
-                        sx={{ width: 84 }}
-                      />
-                      <Box sx={{ display: "flex", gap: 0.5 }}>
-                        {[12, 14, 16, 18].map((preset) => (
-                          <Chip
-                            key={preset}
-                            label={preset}
-                            size="small"
-                            onClick={() => setUnderAgeThreshold(preset)}
-                            color={
-                              underAgeThreshold === preset
-                                ? "primary"
-                                : "default"
-                            }
-                            variant={
-                              underAgeThreshold === preset
-                                ? "filled"
-                                : "outlined"
-                            }
-                            sx={{ fontWeight: 600, cursor: "pointer" }}
-                          />
-                        ))}
-                      </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 1.25,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <TextField
+                      type="number"
+                      size="small"
+                      value={underAgeThreshold}
+                      onChange={(e) =>
+                        setUnderAgeThreshold(
+                          Math.max(0, Number(e.target.value) || 0),
+                        )
+                      }
+                      slotProps={{ htmlInput: { min: 0, max: 100 } }}
+                      sx={{ width: 84 }}
+                    />
+                    <Box sx={{ display: "flex", gap: 0.5 }}>
+                      {[12, 14, 16, 18].map((preset) => (
+                        <Chip
+                          key={preset}
+                          label={preset}
+                          size="small"
+                          onClick={() => setUnderAgeThreshold(preset)}
+                          color={
+                            underAgeThreshold === preset ? "primary" : "default"
+                          }
+                          variant={
+                            underAgeThreshold === preset ? "filled" : "outlined"
+                          }
+                          sx={{ fontWeight: 600, cursor: "pointer" }}
+                        />
+                      ))}
                     </Box>
-                    <Box
-                      onClick={() => setUnderAgeDialogOpen(true)}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        borderRadius: 2,
-                        bgcolor: "#c2185b0d",
-                        border: "1px solid",
-                        borderColor: "#c2185b25",
-                        px: 1.5,
-                        py: 1,
-                        cursor: "pointer",
-                        transition:
-                          "background-color .15s, border-color .15s",
-                        "&:hover": {
-                          bgcolor: "#c2185b1a",
-                          borderColor: "#c2185b50",
-                        },
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          fontWeight={800}
-                          fontSize={{ xs: 20, sm: 24 }}
-                          color="#c2185b"
-                          lineHeight={1}
-                        >
-                          {underAgeMembers.length}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          fontWeight={600}
-                          fontSize={11}
-                        >
-                          under {underAgeThreshold} yrs
-                        </Typography>
-                      </Box>
-                      <Typography
-                        sx={{ fontSize: 11, fontWeight: 700, color: "#c2185b" }}
-                      >
-                        View →
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
+                  </Box>
+                </ListStatCard>
 
-                {/* Event birthdays card */}
-                <Card
-                  elevation={0}
-                  sx={{
-                    flex: "1 1 260px",
-                    minWidth: 0,
-                    borderRadius: "16px",
-                    position: "relative",
-                    overflow: "hidden",
-                    "&::before": {
-                      content: '""',
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: "3px",
-                      background: "#f57c00",
-                    },
-                  }}
-                >
-                  <CardContent sx={{ pt: 2, pb: "12px !important" }}>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      fontWeight={600}
-                      fontSize={12}
-                      sx={{
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                      }}
-                    >
-                      Event Birthdays
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ display: "block", mb: 1.25 }}
-                    >
-                      15 – 17 August
-                    </Typography>
-                    <Box
-                      onClick={() => setBirthdayDialogOpen(true)}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        borderRadius: 2,
-                        bgcolor: "#f57c000d",
-                        border: "1px solid",
-                        borderColor: "#f57c0025",
-                        px: 1.5,
-                        py: 1,
-                        cursor: "pointer",
-                        transition:
-                          "background-color .15s, border-color .15s",
-                        "&:hover": {
-                          bgcolor: "#f57c001a",
-                          borderColor: "#f57c0050",
-                        },
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          fontWeight={800}
-                          fontSize={{ xs: 20, sm: 24 }}
-                          color="#f57c00"
-                          lineHeight={1}
-                        >
-                          {birthdayMembers.length}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          fontWeight={600}
-                          fontSize={11}
-                        >
-                          member{birthdayMembers.length !== 1 ? "s" : ""}
-                        </Typography>
-                      </Box>
-                      <Typography
-                        sx={{ fontSize: 11, fontWeight: 700, color: "#f57c00" }}
-                      >
-                        View →
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
+                <ListStatCard
+                  accent="#f57c00"
+                  title="Event Birthdays"
+                  subtitle="15 – 17 August"
+                  count={birthdayMembers.length}
+                  caption={`member${birthdayMembers.length !== 1 ? "s" : ""}`}
+                  onView={() => setBirthdayDialogOpen(true)}
+                />
+
+                <ListStatCard
+                  accent="#0277bd"
+                  title="City Tour"
+                  subtitle="Berlin — paid bookings"
+                  count={cityTour.length}
+                  caption={`attendee${cityTour.length !== 1 ? "s" : ""}`}
+                  onView={() => setCityTourDialogOpen(true)}
+                />
               </Box>
 
               <Typography
@@ -2237,262 +2059,106 @@ export default function AdminScan() {
       </Dialog>
 
       {/* Under-age members dialog */}
-      <Dialog
+      <ListStatDialog
         open={underAgeDialogOpen}
         onClose={() => setUnderAgeDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-        slotProps={{ paper: { sx: { borderRadius: 3 } } }}
+        accent="#c2185b"
+        title={`Under ${underAgeThreshold} yrs`}
+        subtitle="Members below the selected age"
+        count={underAgeMembers.length}
+        empty={`No members under ${underAgeThreshold} yrs found.`}
+        columns={[
+          { label: "#" },
+          { label: "Name" },
+          { label: "Age", align: "center" },
+          { label: "Birthdate" },
+          { label: "Country" },
+        ]}
+        onDownload={downloadUnderAgeExcel}
       >
-        <DialogTitle
-          sx={{ display: "flex", alignItems: "center", gap: 1, pb: 1 }}
-        >
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              bgcolor: "#c2185b18",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#c2185b",
-              flexShrink: 0,
-              fontWeight: 800,
-            }}
-          >
-            {underAgeMembers.length}
-          </Box>
-          <Box>
-            <Typography fontWeight={700} fontSize="1.1rem">
-              Under {underAgeThreshold} yrs
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Members below the selected age
-            </Typography>
-          </Box>
-        </DialogTitle>
-        <DialogContent sx={{ p: 0 }}>
-          {underAgeMembers.length === 0 ? (
-            <Box sx={{ py: 4, textAlign: "center" }}>
-              <Typography color="text.secondary">
-                No members under {underAgeThreshold} yrs found.
-              </Typography>
-            </Box>
-          ) : (
-            <>
-              <Box sx={{ px: 3, pb: 1 }}>
-                <Chip
-                  label={`${underAgeMembers.length} member${underAgeMembers.length !== 1 ? "s" : ""}`}
-                  size="small"
-                  color="success"
-                  sx={{ fontWeight: 700 }}
-                />
-              </Box>
-              <TableContainer>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow sx={{ bgcolor: "rgba(107,74,150,0.06)" }}>
-                      <TableCell sx={{ fontWeight: 700 }}>#</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }} align="center">
-                        Age
-                      </TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Birthdate</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Country</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {underAgeMembers.map((m, i) => {
-                      const meta = countryMeta(m.country);
-                      return (
-                        <TableRow
-                          key={m.id}
-                          sx={{ "&:hover": { bgcolor: "action.hover" } }}
-                        >
-                          <TableCell
-                            sx={{ color: "text.secondary", fontSize: 12 }}
-                          >
-                            {i + 1}
-                          </TableCell>
-                          <TableCell>
-                            {m.first_name} {m.last_name}
-                          </TableCell>
-                          <TableCell align="center">
-                            {ageAtEvent(m.dob)}
-                          </TableCell>
-                          <TableCell>{m.dob ? formatDob(m.dob) : "—"}</TableCell>
-                          <TableCell>
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 0.5,
-                              }}
-                            >
-                              <span>{meta.flag}</span>
-                              <span>{meta.label}</span>
-                            </Box>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </>
-          )}
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
-          <Button
-            onClick={() => setUnderAgeDialogOpen(false)}
-            variant="outlined"
-            sx={{ borderRadius: 2 }}
-          >
-            Close
-          </Button>
-          <Button
-            onClick={downloadUnderAgeExcel}
-            variant="contained"
-            disabled={underAgeMembers.length === 0}
-            sx={{ borderRadius: 2, fontWeight: 700 }}
-          >
-            Download Excel ({underAgeMembers.length})
-          </Button>
-        </DialogActions>
-      </Dialog>
+        {underAgeMembers.map((m, i) => (
+          <TableRow key={m.id} sx={{ "&:hover": { bgcolor: "action.hover" } }}>
+            <IndexCell value={i + 1} />
+            <TableCell>
+              {m.first_name} {m.last_name}
+            </TableCell>
+            <TableCell align="center">{ageAtEvent(m.dob)}</TableCell>
+            <TableCell>{m.dob ? formatDob(m.dob) : "—"}</TableCell>
+            <TableCell>
+              <CountryCell code={m.country} />
+            </TableCell>
+          </TableRow>
+        ))}
+      </ListStatDialog>
 
       {/* Event birthdays dialog */}
-      <Dialog
+      <ListStatDialog
         open={birthdayDialogOpen}
         onClose={() => setBirthdayDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-        slotProps={{ paper: { sx: { borderRadius: 3 } } }}
+        accent="#f57c00"
+        title="Event Birthdays"
+        subtitle="15 – 17 August"
+        count={birthdayMembers.length}
+        empty="No members have a birthday during the event."
+        columns={[
+          { label: "#" },
+          { label: "Name" },
+          { label: "Country" },
+          { label: "Birthday", align: "center" },
+        ]}
+        onDownload={downloadBirthdayExcel}
       >
-        <DialogTitle
-          sx={{ display: "flex", alignItems: "center", gap: 1, pb: 1 }}
-        >
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              bgcolor: "#f57c0018",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#f57c00",
-              flexShrink: 0,
-              fontWeight: 800,
-            }}
-          >
-            {birthdayMembers.length}
-          </Box>
-          <Box>
-            <Typography fontWeight={700} fontSize="1.1rem">
-              Event Birthdays
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              15 – 17 August
-            </Typography>
-          </Box>
-        </DialogTitle>
-        <DialogContent sx={{ p: 0 }}>
-          {birthdayMembers.length === 0 ? (
-            <Box sx={{ py: 4, textAlign: "center" }}>
-              <Typography color="text.secondary">
-                No members have a birthday during the event.
-              </Typography>
-            </Box>
-          ) : (
-            <>
-              <Box sx={{ px: 3, pb: 1 }}>
-                <Chip
-                  label={`${birthdayMembers.length} member${birthdayMembers.length !== 1 ? "s" : ""}`}
-                  size="small"
-                  color="success"
-                  sx={{ fontWeight: 700 }}
-                />
-              </Box>
-              <TableContainer>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow sx={{ bgcolor: "rgba(107,74,150,0.06)" }}>
-                      <TableCell sx={{ fontWeight: 700 }}>#</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Country</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }} align="center">
-                        Birthday
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {birthdayMembers.map((m, i) => {
-                      const meta = countryMeta(m.country);
-                      return (
-                        <TableRow
-                          key={m.id}
-                          sx={{ "&:hover": { bgcolor: "action.hover" } }}
-                        >
-                          <TableCell
-                            sx={{ color: "text.secondary", fontSize: 12 }}
-                          >
-                            {i + 1}
-                          </TableCell>
-                          <TableCell>
-                            {m.first_name} {m.last_name}
-                          </TableCell>
-                          <TableCell>
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 0.5,
-                              }}
-                            >
-                              <span>{meta.flag}</span>
-                              <span>{meta.label}</span>
-                            </Box>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Chip
-                              label={formatBirthday(m.dob)}
-                              size="small"
-                              sx={{
-                                fontWeight: 700,
-                                bgcolor: "#f57c0018",
-                                color: "#f57c00",
-                              }}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </>
-          )}
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
-          <Button
-            onClick={() => setBirthdayDialogOpen(false)}
-            variant="outlined"
-            sx={{ borderRadius: 2 }}
-          >
-            Close
-          </Button>
-          <Button
-            onClick={downloadBirthdayExcel}
-            variant="contained"
-            disabled={birthdayMembers.length === 0}
-            sx={{ borderRadius: 2, fontWeight: 700 }}
-          >
-            Download Excel ({birthdayMembers.length})
-          </Button>
-        </DialogActions>
-      </Dialog>
+        {birthdayMembers.map((m, i) => (
+          <TableRow key={m.id} sx={{ "&:hover": { bgcolor: "action.hover" } }}>
+            <IndexCell value={i + 1} />
+            <TableCell>
+              {m.first_name} {m.last_name}
+            </TableCell>
+            <TableCell>
+              <CountryCell code={m.country} />
+            </TableCell>
+            <TableCell align="center">
+              <Chip
+                label={formatBirthday(m.dob)}
+                size="small"
+                sx={{ fontWeight: 700, bgcolor: "#f57c0018", color: "#f57c00" }}
+              />
+            </TableCell>
+          </TableRow>
+        ))}
+      </ListStatDialog>
+
+      {/* City tour attendees dialog */}
+      <ListStatDialog
+        open={cityTourDialogOpen}
+        onClose={() => setCityTourDialogOpen(false)}
+        accent="#0277bd"
+        title="City Tour Attendees"
+        subtitle="Berlin — paid bookings"
+        count={cityTour.length}
+        unit="attendee"
+        empty="No city tour bookings yet."
+        columns={[
+          { label: "#" },
+          { label: "Full Name" },
+          { label: "Reference" },
+          { label: "Country" },
+        ]}
+        onDownload={downloadCityTourExcel}
+      >
+        {cityTour.map((a, i) => (
+          <TableRow key={a.id} sx={{ "&:hover": { bgcolor: "action.hover" } }}>
+            <IndexCell value={i + 1} />
+            <TableCell>{a.full_name}</TableCell>
+            <TableCell sx={{ fontFamily: "monospace", fontSize: "0.72rem" }}>
+              {a.reference}
+            </TableCell>
+            <TableCell>
+              <CountryCell code={a.country} />
+            </TableCell>
+          </TableRow>
+        ))}
+      </ListStatDialog>
 
       {/* Logout confirmation dialog */}
       <Dialog

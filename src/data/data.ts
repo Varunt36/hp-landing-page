@@ -60,6 +60,9 @@ export const COUNTRIES = [
   { code: 'US', label: 'United States', flag: '🇺🇸', dialCode: '+1' },
 ];
 
+export const countryMeta = (code: string) =>
+  COUNTRIES.find(c => c.code === code) ?? { label: code, flag: '🌐' };
+
 export const FOOTER = {
   brand: 'HariPrabodham Germany',
   legal: `© ${new Date().getFullYear()} Yogi Divine Society e.V. Germany. All rights reserved.`,

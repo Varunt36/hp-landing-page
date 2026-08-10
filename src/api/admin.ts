@@ -97,6 +97,42 @@ export async function fetchMembersByCountry(countryCode: string): Promise<Countr
   }))
 }
 
+export interface CityTourAttendee {
+  id:        string
+  full_name: string
+  reference: string   // CT-2026-NNNNN, from the parent booking
+  country:   string   // ISO-2
+}
+
+// Every city_tour_registrations row is a paid booking — the webhook writes it
+// only after Stripe confirms — so there is no payment status to filter on.
+export async function fetchCityTourAttendees(): Promise<CityTourAttendee[]> {
+  const { data, error } = await supabase
+    .from('city_tour_members')
+    .select('id, member_index, full_name, booking:city_tour_registrations!inner(reference, country)')
+
+  if (error) throw new Error(error.message)
+
+  const rows = (data ?? []) as unknown as {
+    id:           string
+    member_index: number
+    full_name:    string
+    booking:      { reference: string; country: string }
+  }[]
+
+  return rows
+    .sort((a, b) =>
+      b.booking.reference.localeCompare(a.booking.reference) ||
+      a.member_index - b.member_index,
+    )
+    .map(r => ({
+      id:        r.id,
+      full_name: r.full_name,
+      reference: r.booking.reference,
+      country:   r.booking.country,
+    }))
+}
+
 export interface CountryRegistrationStat {
   country:       string
   registrations: number   // number of registration groups
