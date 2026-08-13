@@ -52,6 +52,7 @@ export interface CountryMember {
   first_name:    string
   last_name:     string
   gender:        string
+  phone:         string | null   // stored as "49 176 1234567" (dial code, no '+')
   ticket_number: string | null
   checked_in:    boolean
   paid:          boolean
@@ -82,7 +83,7 @@ export async function fetchMembersByCountry(countryCode: string): Promise<Countr
   // 3. Fetch members for those registrations
   const { data: members } = await supabase
     .from('members')
-    .select('first_name, last_name, gender, ticket_number, checked_in, registration_id')
+    .select('first_name, last_name, gender, phone, ticket_number, checked_in, registration_id')
     .in('registration_id', regIds)
     .order('last_name', { ascending: true })
   if (!members) return []
@@ -91,6 +92,7 @@ export async function fetchMembersByCountry(countryCode: string): Promise<Countr
     first_name:    m.first_name    as string,
     last_name:     m.last_name     as string,
     gender:        m.gender        as string,
+    phone:         (m.phone        as string | null) ?? null,
     ticket_number: m.ticket_number as string | null,
     checked_in:    m.checked_in    as boolean,
     paid:          paidRegIds.has(m.registration_id as string),

@@ -102,4 +102,56 @@ export const cityTourStyles: Record<string, SxProps<Theme>> = {
     textAlign: 'center',
     color: C.muted,
   },
+
+  // Shown while the seat count is in flight, in place of the form. Sized so
+  // the card does not visibly resize when the form takes over.
+  loadingBox: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 180,
+  },
+
+  soldOutBox: {
+    textAlign: 'center',
+    py: { xs: 2, md: 3 },
+  },
+
+  soldOutHeading: {
+    fontFamily: '"Blue Mirage", serif',
+    fontSize: { xs: '1.15rem', md: '1.3rem' },
+    color: C.purple800,
+    mb: 1.5,
+  },
+
+  soldOutBody: {
+    color: C.purple700,
+    fontSize: '0.95rem',
+    maxWidth: 420,
+    mx: 'auto',
+  },
+
+  soldOutContact: {
+    mt: 2.5,
+    mx: 'auto',
+    maxWidth: 260,
+    p: 2,
+    borderRadius: '14px',
+    border: `1px solid ${C.lavender200}B3`,
+  },
+
+  soldOutContactName: {
+    fontSize: '0.95rem',
+    fontWeight: 700,
+    color: C.purple800,
+  },
+
+  soldOutContactLink: {
+    display: 'block',
+    mt: 0.5,
+    fontSize: '0.95rem',
+    color: C.muted,
+    textDecoration: 'none',
+    '&:hover': { color: C.purple800 },
+  },
 }
