@@ -584,9 +584,11 @@ export default function AdminScan() {
     downloadExcel(
       countryMembers.map((m, i) => ({
         "#": i + 1,
-        "First Name": m.first_name,
-        "Last Name": m.last_name,
+        Name: `${m.first_name} ${m.last_name}`.trim(),
         Gender: m.gender.charAt(0).toUpperCase() + m.gender.slice(1),
+        // No leading '+': Excel reads it as the start of a formula when the
+        // cell is copied into another sheet. The country code is still there.
+        "Contact Number": m.phone ? m.phone.replace(/^\+/, "") : "—",
         Payment: m.paid ? "Paid" : "Pending",
         "Checked In": m.checked_in ? "Yes" : "No",
       })),
@@ -1834,9 +1836,9 @@ export default function AdminScan() {
                   <TableHead>
                     <TableRow sx={{ bgcolor: "rgba(107,74,150,0.06)" }}>
                       <TableCell sx={{ fontWeight: 700 }}>#</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>First Name</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Last Name</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Gender</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Contact</TableCell>
                       <TableCell sx={{ fontWeight: 700 }} align="center">
                         Payment
                       </TableCell>
@@ -1856,10 +1858,14 @@ export default function AdminScan() {
                         >
                           {i + 1}
                         </TableCell>
-                        <TableCell>{m.first_name}</TableCell>
-                        <TableCell>{m.last_name}</TableCell>
+                        <TableCell>
+                          {`${m.first_name} ${m.last_name}`.trim()}
+                        </TableCell>
                         <TableCell sx={{ textTransform: "capitalize" }}>
                           {m.gender}
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          {m.phone ? `+${m.phone.replace(/^\+/, "")}` : "—"}
                         </TableCell>
                         <TableCell align="center">
                           {m.paid ? (
