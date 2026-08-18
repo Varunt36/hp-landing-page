@@ -648,6 +648,9 @@ export default function AdminScan() {
         "Full Name": a.full_name,
         Reference: a.reference,
         Country: countryMeta(a.country).label,
+        // Same as the country sheet: no leading '+', which Excel reads as the
+        // start of a formula once the cell is copied elsewhere.
+        "Contact Number": a.phone ? a.phone.replace(/^\+/, "") : "—",
       })),
       "City Tour",
       "City_Tour_Attendees.xlsx",

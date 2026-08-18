@@ -104,6 +104,8 @@ export interface CityTourAttendee {
   full_name: string
   reference: string   // CT-2026-NNNNN, from the parent booking
   country:   string   // ISO-2
+  phone:     string   // E.164, from the parent booking — one per booking, so
+                      // members of the same booking repeat the same number
 }
 
 // Every city_tour_registrations row is a paid booking — the webhook writes it
@@ -111,7 +113,7 @@ export interface CityTourAttendee {
 export async function fetchCityTourAttendees(): Promise<CityTourAttendee[]> {
   const { data, error } = await supabase
     .from('city_tour_members')
-    .select('id, member_index, full_name, booking:city_tour_registrations!inner(reference, country)')
+    .select('id, member_index, full_name, booking:city_tour_registrations!inner(reference, country, phone)')
 
   if (error) throw new Error(error.message)
 
@@ -119,7 +121,7 @@ export async function fetchCityTourAttendees(): Promise<CityTourAttendee[]> {
     id:           string
     member_index: number
     full_name:    string
-    booking:      { reference: string; country: string }
+    booking:      { reference: string; country: string; phone: string | null }
   }[]
 
   return rows
@@ -132,6 +134,7 @@ export async function fetchCityTourAttendees(): Promise<CityTourAttendee[]> {
       full_name: r.full_name,
       reference: r.booking.reference,
       country:   r.booking.country,
+      phone:     r.booking.phone ?? '',
     }))
 }
 
